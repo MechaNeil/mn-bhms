@@ -81,7 +81,7 @@ new class extends Component {
 
     <x-header title="User" separator progress-indicator>
         <x-slot:middle class="!justify-end">
-            <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
+            <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" @click.stop="$dispatch('mary-search-open')"/>
         </x-slot:middle>
         <x-slot:actions>
             <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
