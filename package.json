@@ -16,6 +16,7 @@
         "vite": "^6.0"
     },
     "dependencies": {
-        "alpinejs": "^3.14.7"
+        "alpinejs": "^3.14.7",
+        "cropperjs": "^1.6.2"
     }
 }
