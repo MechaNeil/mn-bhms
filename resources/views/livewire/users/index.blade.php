@@ -79,13 +79,13 @@ new class extends Component {
 <div>
     <!-- HEADER -->
 
-    <x-header title="User" separator progress-indicator>
+    <x-header title="User" separator progress-indicator class="text-4xl font-extrabold">
         <x-slot:middle class="!justify-end">
             <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" @click.stop="$dispatch('mary-search-open')"/>
         </x-slot:middle>
         <x-slot:actions>
-            <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
-            <x-button label="Create" link="/users/create" responsive icon="o-plus" class="btn-primary" />   
+            <x-button class="btn normal-case bg-base-300" label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
+            <x-button class="btn normal-case btn-primary" label="Create" link="/users/create" responsive icon="o-plus" class="btn-primary" />   
         </x-slot:actions>
     </x-header>
 
