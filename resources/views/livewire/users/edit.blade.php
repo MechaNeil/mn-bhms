@@ -8,7 +8,6 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
 use App\Models\Country;
 
-
 new class extends Component {
     //
 
@@ -80,7 +79,7 @@ new class extends Component {
 <div>
     <x-header title="Update {{ $user->name }}" separator />
 
-    
+
     <x-form wire:submit="save">
 
         <div class="lg:grid grid-cols-5">
@@ -90,7 +89,7 @@ new class extends Component {
                 <div class="hidden lg:block">
                     <img src="{{ asset('images/Forms-amico.png') }}" alt="image" width="300" class="mx-auto" />
                 </div>
-                
+
             </div>
             <div class="col-span-3 grid gap-3">
                 <x-file label="Avatar" wire:model="photo" accept="image/png, image/jpeg" crop-after-change>
@@ -112,17 +111,25 @@ new class extends Component {
             </div>
             <div class="col-span-3 grid gap-3">
                 <x-choices-offline label="My languages" wire:model="my_languages" :options="$languages" searchable />
-                <x-editor wire:model="bio" label="Bio" hint="The great biography" />
+
+                @php
+                $config = [
+                    'spellChecker' => true,
+                    'toolbar' => ['heading', 'bold', 'italic', '|', 'preview'],
+                    'maxHeight' => '200px'
+                ];
+            @endphp
+             
+                <x-markdown wire:model="bio" label="Bio" hint="The great biography" :config="$config" />
             </div>
         </div>
-       
+
 
         <x-slot:actions>
             <x-button label="Cancel" link="/users" />
             {{-- The important thing here is `type="submit"` --}}
             {{-- The spinner property is nice! --}}
-            <x-button label="Save" icon="o-paper-airplane" spinner="save" type="submit"
-                class="btn-primary" />
+            <x-button label="Save" icon="o-paper-airplane" spinner="save" type="submit" class="btn-primary" />
         </x-slot:actions>
     </x-form>
 
