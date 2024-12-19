@@ -8,7 +8,8 @@
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('js/easymde/dist/easymde.min.css') }}">
-    <script src="{{ asset('js/easymde/dist/easymde.min.js') }}"></script></head>
+    <script src="{{ asset('js/easymde/dist/easymde.min.js') }}"></script>
+</head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
 
@@ -50,12 +51,46 @@
                     <x-menu-separator />
                 @endif
 
-                <x-menu-item title="Home" icon="o-sparkles" link="/" />
+                <x-menu-item title="Dashboard" icon="bi.house-door" link="/dashboard-owner" />
                 <x-menu-item title="Users" icon="o-users" link="/users" /> <x-menu-sub title="Settings"
-                    icon="o-cog-6-tooth">
-                    <x-menu-item title="Wifi" icon="o-wifi" link="####" />
-                    <x-menu-item title="Archives" icon="o-archive-box" link="####" />
+                icon="o-cog-6-tooth">
+                <x-menu-item title="Wifi" icon="o-wifi" link="/backup-database" />
+                <x-menu-item title="Archives" icon="o-archive-box" link="####" />
                 </x-menu-sub>
+
+                
+                <x-menu-sub title="Manage" icon="bi.gear">
+                    <x-menu-item title="Assistant" icon="bi.person-lines-fill" link="/permission-management" />
+                    <x-menu-item title="Apartment" icon="bi.house-door" link="/apartment" />
+                    <x-menu-item title="Room" icon="bi.door-closed" link="/room-management" />
+                    <x-menu-item title="Tenants" icon="bi.person-check-fill" link="/tenants-information" />
+                    <x-menu-item title="Beds" icon="fas.bed" link="/manage-beds" />
+                    <x-menu-item title="Assign Beds" icon="bi.check-square" link="/bed-assignment" />
+                    <x-menu-item title="Invoice" icon="bi.file-text" link="/invoice-list" />
+                    <x-menu-item title="Bills" icon="fas.money-bills" link="/utility-bills" />
+                </x-menu-sub>
+                
+                <x-menu-sub title="Notify" icon="bi.bell">
+                    <x-menu-item title="Requests" icon="bi.question-circle" link="/requests" />
+                    <x-menu-item title="SMS" icon="bi.chat" link="/sms-configuration" />
+                    <x-menu-item title="Notice Board" icon="bi.megaphone" link="/notice-board" />
+                </x-menu-sub>
+                
+                <x-menu-sub title="Reports" icon="bi.graph-up">
+                    <x-menu-item title="Collectibles Months" icon="bi.calendar-check" link="/collectibles-month" />
+                    <x-menu-item title="Collectibles Tenants" icon="bi.person-fill" link="/collectibles-tenants" />
+                    <x-menu-item title="Monthly Payments" icon="bi.wallet2" link="/monthly-payment" />
+                    <x-menu-item title="Payments List" icon="bi.credit-card" link="/payment-list" />
+                </x-menu-sub>
+                
+                <x-menu-sub title="Users" icon="bi.person-circle">
+                    <x-menu-item title="Manage Users" icon="bi.person-lines-fill" link="/users" />
+                    <x-menu-item title="Activity Logs" icon="bi.clock" link="/activity-logs" />
+                    <x-menu-item title="User Permissions" icon="bi.lock" link="/user-permissions" />
+                </x-menu-sub>
+                <x-menu-item title="Home" icon="o-sparkles" link="/" />
+                
+
             </x-menu>
         </x-slot:sidebar>
 

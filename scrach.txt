@@ -1,0 +1,46 @@
+title: Dashboard
+link: /dashboard-owner
+
+Nav Group: Manage
+title: Assistant
+link: /permission-management
+title: Apartment
+link: /apartment
+title: Room
+link: /room-management
+title: Tenants
+link: /tenants-information
+title: Beds
+link: /manage-beds
+title: Assign Beds
+link: /bed-assignment
+title: Invoice
+link: /invoice-list
+title: Bills
+link: /utility-bills
+
+Nav Group: Notify
+title: Requests
+link: /requests
+title: SMS
+link: /sms-configuration
+title: Notice Board
+link: /notice-board
+
+Nav Group: Reports
+title: Collectibles Months
+link: /collectibles-month
+title: Collectibles Tenants
+link: /collectibles-tenants
+title: Monthly Payments
+link: /monthly-payment
+title: Payments List
+link: /payment-list
+
+Nav Group: Users
+title: Manage Users
+link: /users
+title: Activity Logs
+link: /activity-logs
+title: User Permissions
+link: /user-permissions
