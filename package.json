@@ -17,8 +17,7 @@
     },
     "dependencies": {
         "alpinejs": "^3.14.7",
-        "cropperjs": "^1.6.2"
+        "cropperjs": "^1.6.2",
+        "easymde": "^2.18.0"
     }
-    
 }
-
