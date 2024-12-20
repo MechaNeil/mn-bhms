@@ -22,7 +22,7 @@ new #[Layout('components.layouts.home')] class extends Component {
     <!-- App Content -->
     <x-card title="Features" class="mt-5">
         <!-- Feature Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-2">
             @foreach ([
         ['icon' => 'bi.speedometer2', 'title' => 'Dashboard', 'description' => 'Total Active Tenants, Total Beds, Total Collection, and Total Collectibles.'],
         ['icon' => 'bi.people', 'title' => 'Tenants', 'description' => 'Manage tenant information and details.'],
@@ -35,8 +35,8 @@ new #[Layout('components.layouts.home')] class extends Component {
         ['icon' => 'bi.database', 'title' => 'Backup Database', 'description' => 'Backup system database to prevent data loss and ensure data integrity.'],
     ] as $feature)
                 <div
-                    class="bg-gray-800 text-center p-4 rounded-lg shadow-md hover:shadow-xl transform transition-all duration-300 hover:scale-105">
-                    <x-icon name="{{ $feature['icon'] }}" class="text-blue-400 text-4xl mb-4" />
+                    class="prose bg-gray-800 text-center p-4 rounded-lg shadow-md hover:shadow-xl transform transition-all duration-300 hover:scale-105">
+                    <x-icon name="{{ $feature['icon'] }}" class="text-blue-400 text-4xl w-8 h-8" />
                     <h3 class="text-lg font-semibold text-white">{{ $feature['title'] }}</h3>
                     <p class="text-sm text-gray-300 mt-2">
                         {{ $feature['description'] }}
