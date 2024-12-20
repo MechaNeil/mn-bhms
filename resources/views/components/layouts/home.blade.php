@@ -7,8 +7,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('js/easymde/dist/easymde.min.css') }}">
-    <script src="{{ asset('js/easymde/dist/easymde.min.js') }}"></script>
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
@@ -24,6 +22,8 @@
             </label>
         </x-slot:actions>
     </x-nav>
+
+    
 
     {{-- MAIN --}}
     <x-main full-width>
@@ -54,7 +54,7 @@
                 <x-menu-item title="Home" icon="o-sparkles" link="/" />
                 <x-menu-item title="Company Info" icon="bi.building" link="/company-info" />
                 <x-menu-item title="Help" icon="fas.hands-helping" link="/help" />
-                
+
             </x-menu>
         </x-slot:sidebar>
 

@@ -15,10 +15,6 @@
     <x-main full-width>
 
 
-            {{-- BRAND --}}
-            <x-app-brand class="p-5 pt-3" />
-
-
 
         {{-- The `$slot` goes here --}}
         <x-slot:content>

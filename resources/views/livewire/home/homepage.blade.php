@@ -2,7 +2,8 @@
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.home')] class extends Component {
+new #[Layout('components.layouts.home')] 
+class extends Component {
     //
 }; ?>
 
