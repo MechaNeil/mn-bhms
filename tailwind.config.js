@@ -1,6 +1,6 @@
 import defaultTheme from "tailwindcss/defaultTheme";
 import daisyui from "daisyui";
-import typography from "@tailwindcss/typography"
+import typography from "@tailwindcss/typography";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -11,6 +11,7 @@ export default {
         "./resources/**/*.js",
         "./resources/**/*.vue",
     ],
+    darkMode: 'class', 
     theme: {
         extend: {
             fontFamily: {
@@ -18,9 +19,10 @@ export default {
             },
         },
     },
-    plugins: [
-        typography,
-        daisyui, 
 
-    ],
+    plugins: [typography, daisyui],
+
+    daisyui: {
+        themes: ["light", "dark"],
+    },
 };

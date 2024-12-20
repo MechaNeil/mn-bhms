@@ -43,20 +43,28 @@
                     <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover
                         class="-mx-2 !-my-2 rounded">
                         <x-slot:actions>
-                            <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="logoff"
-                                no-wire-navigate link="/logout" />
+                            <x-dropdown>
+                                <x-slot:trigger>
+                                    <x-button icon="bi.gear" class="btn-circle btn-ghost" />
+                                </x-slot:trigger>
+
+                                <x-menu-item icon="o-power" title="Logout" no-wire-navigate link="/logout"
+                                    tooltip-left="logoff" />
+
+                                <x-menu-item title="Theme" icon="o-swatch" @click="$dispatch('mary-toggle-theme')" />
+
+
+                            </x-dropdown>
+                            <x-buttonclass="btn-circle
+                                    btn-ghost btn-xs" />
                         </x-slot:actions>
                     </x-list-item>
 
                     <x-menu-separator />
                 @endif
 
-                <x-menu-item title="Dashboard" icon="bi.house-door" link="/dashboard-owner" />
-                <x-menu-item title="Users" icon="o-users" link="/users" /> <x-menu-sub title="Settings"
-                    icon="o-cog-6-tooth">
-                    <x-menu-item title="Wifi" icon="o-wifi" link="/backup-database" />
-                    <x-menu-item title="Archives" icon="o-archive-box" link="####" />
-                </x-menu-sub>
+                <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-owner" />
+
 
 
                 <x-menu-sub title="Manage" icon="bi.gear">
@@ -84,20 +92,25 @@
                 </x-menu-sub>
 
                 <x-menu-sub title="Users" icon="bi.person-circle">
-                    <x-menu-item title="Manage Users" icon="bi.person-lines-fill" link="/users" />
+                    <x-menu-item title="Manage Users" icon="bi.person-lines-fill" link="/manage-users" />
                     <x-menu-item title="Activity Logs" icon="bi.clock" link="/activity-logs" />
                     <x-menu-item title="User Permissions" icon="bi.lock" link="/user-permissions" />
                 </x-menu-sub>
                 <x-menu-item title="Home" icon="o-sparkles" link="/" />
 
-
             </x-menu>
+
+            <x-theme-toggle darkTheme="dark" lightTheme="light" class="hidden" />
         </x-slot:sidebar>
 
         {{-- The `$slot` goes here --}}
+        
+        
+
         <x-slot:content>
             {{ $slot }}
         </x-slot:content>
+        
     </x-main>
 
     {{--  TOAST area --}}

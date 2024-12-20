@@ -18,10 +18,15 @@ class extends Component {
     <x-alert title="Efficiently manage your boarding house with our system."
         description="This system helps manage your boarding house efficiently, 
         making tasks such as tenant management, invoice tracking, and payment processing easier and more organized."
-        icon="bi.house" class="alert-info mt-4" />
+        icon="bi.house" class="alert-info mt-4 mb-11" />
 
     <!-- App Content -->
-    <x-card title="Features" class="mt-5">
+    <x-menu-separator />
+    <div class="prose">
+        <h2>Features</h2>
+    </div>
+
+    <div title="Features" class="mt-5">
         <!-- Feature Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-2">
             @foreach ([
@@ -35,15 +40,15 @@ class extends Component {
         ['icon' => 'bi.clock', 'title' => 'Activity Log', 'description' => 'View system activities, including user logins, modifications to tenant records, and invoice generation.'],
         ['icon' => 'bi.database', 'title' => 'Backup Database', 'description' => 'Backup system database to prevent data loss and ensure data integrity.'],
     ] as $feature)
-                <div
-                    class="prose bg-gray-800 text-center p-4 rounded-lg shadow-md hover:shadow-xl transform transition-all duration-300 hover:scale-105">
+                <x-card
+                    class="card-color text-center p-4 rounded-lg transform transition-all duration-300 hover:scale-105">
                     <x-icon name="{{ $feature['icon'] }}" class="text-blue-400 text-4xl w-8 h-8" />
-                    <h3 class="text-lg font-semibold text-white">{{ $feature['title'] }}</h3>
-                    <p class="text-sm text-gray-300 mt-2">
+                    <h3 class="text-lg font-semibold ">{{ $feature['title'] }}</h3>
+                    <p class="text-sm mt-2">
                         {{ $feature['description'] }}
                     </p>
-                </div>
+                </x-card>
             @endforeach
         </div>
-    </x-card>
+    </div>
 </div>

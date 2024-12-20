@@ -24,9 +24,6 @@
 
     </x-main>
 
-    {{--  TOAST area --}}
-    <x-toast />
-
 </body>
 
 </html>
