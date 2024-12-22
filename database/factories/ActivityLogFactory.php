@@ -21,10 +21,14 @@ class ActivityLogFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(), // Generates a user if one doesn't exist
-            'property_id' => Property::factory(), // Generates a property if one doesn't exist
+            'user_id' => User::inRandomOrder()->first()->id, // Generates a user if one doesn't exist
+            'property_id' => Property::inRandomOrder()->first()->id, // Generates a property if one doesn't exist
             'activity' => $this->faker->sentence(), // Generates a random activity description
             'date' => $this->faker->dateTimeBetween('-1 year', 'now'), // Generates a random date within the last year
+            'created_at' => now(),
+            'updated_at' => now(),
+        
+        
         ];
     }
 }

@@ -117,7 +117,11 @@
     <x-toast />
 
     {{-- Spotlight --}}
-    <x-spotlight />
+    <x-spotlight
+    shortcut="ctrl.slash"
+    search-text="Find docs, app actions or users"
+    no-results-text="Ops! Nothing here."
+    url="/custom/search/url/here" />
 </body>
 
 </html>

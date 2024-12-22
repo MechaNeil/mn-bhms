@@ -19,6 +19,8 @@ class PermissionFactory extends Factory
         return [
             'permission_name' => $this->faker->word,
             'description' => $this->faker->sentence,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

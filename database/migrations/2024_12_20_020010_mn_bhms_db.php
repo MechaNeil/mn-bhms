@@ -61,19 +61,21 @@ return new class extends Migration
         // Companies table
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name');
+            $table->string('name');
             $table->string('address')->nullable();
             $table->string('contact_no')->nullable();
             $table->string('website')->nullable();
-            $table->string('company_logo')->nullable();
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
 
         // Properties table
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->string('property_name');
+            $table->string('apartment_no');
+            $table->string('image')->nullable();
+            $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
+            $table->string('name');
             $table->string('address');
             $table->string('contact_no')->nullable();
             $table->timestamps();

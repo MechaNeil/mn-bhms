@@ -4,52 +4,51 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Gender;
+use App\Models\Bed;
+use App\Models\Room;
+use App\Models\Tenant;
 use App\Models\Status;
-use App\Models\Role;
+
 use App\Models\Permission;
 use App\Models\Company;
+use App\Models\Property;
 
 class DatabaseSeeder extends Seeder
-{
-    /**
+{/**
      * Seed the application's database.
-     * 
-     * When starting seeding new data to the data base you can
-     * either delete the items below or run php artisan db:wipe to 
-     * wipe the database and php artisan migrate then 
-     * php artisan db:seed to seed the data to the database
      */
     public function run(): void
     {
         // Create the Admin role
-        Role::factory()->createAdmin();
-
-        // Create the Tenant and Assistant roles
-        Role::factory()->count(2)->create();
-
-        Gender::factory()->count(3)->create();
-
-        // Seed Statuses
-        Status::factory()->count(5)->create();
-
-        // Seed Roles
-
-        // Seed Permissions
-        Permission::factory()->count(10)->create();
+        // ...
 
         // Seed Companies
-        Company::factory()->count(5)->create();
+        Company::factory()->count(4)->create();
+
+        // Seed Properties
+        Property::factory()->count(10)->create();
+
+        // Seed Genders, Roles, and Statuses
+        $this->call([
+            GenderSeeder::class,
+            RolesSeeder::class,
+            StatusSeeder::class,
+            UserSeeder::class,
+        ]);
 
         // Seed Users
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($user) {
-                // Assign random role or other relationships if needed
-                $user->activityLogs()->createMany(
-                    \App\Models\ActivityLog::factory()->count(3)->make()->toArray()
-                );
-            });
+        User::factory()->count(10)->create();
+
+
+        // Seed Rooms
+        Room::factory()->count(20)->create();
+
+        // Seed Statuses
+
+        // Seed Beds
+        Bed::factory()->count(10)->create();
+
+        // Seed Tenants
+        Tenant::factory()->count(10)->create();
     }
 }
