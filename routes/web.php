@@ -39,11 +39,17 @@ Route::middleware(['auth'])->group(function () {
     // Apartment
     Volt::route('/apartment', 'roles.owner.pages.manage.property.apartment')->name('apartment'); // Apartment Management
     Volt::route('/create-apartment', 'roles.owner.pages.manage.property.components.create-apartment'); // Unit Management
-    Volt::route('/property/{property}/edit', 'roles.owner.pages.manage.property.components/edit-apartment'); // Edit Apartment
+    Volt::route('/property/{property}/edit', 'roles.owner.pages.manage.property.components.edit-apartment'); // Edit Apartment
 
 
     // Room Management
     Volt::route('/room-management', 'roles.owner.pages.manage.room.room-management'); // Room Management
+    Volt::route('/create-room', 'roles.owner.pages.manage.room.components.create-room'); // Create Room
+    Volt::route('/room/{room}/edit', 'roles.owner.pages.manage.room.components.edit-room'); // Edit Room
+
+
+
+
     Volt::route('/bed-assignment', 'roles.owner.pages.manage.beds.bed-assignment');   // Bed Assignment
     Volt::route('/manage-beds', 'roles.owner.pages.manage.beds.manage-beds');         // Manage Beds
     Volt::route('/tenants-information', 'roles.owner.pages.manage.tenant.tenants-info'); // Tenants Information

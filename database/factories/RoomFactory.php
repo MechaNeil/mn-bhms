@@ -21,8 +21,8 @@ class RoomFactory extends Factory
         return [
             'property_id' => Property::inRandomOrder()->first()->id,
             'room_no' => 'RM-' . str_pad(self::$roomNumber++, 4, '0', STR_PAD_LEFT), // Format room number
-            'room_image' => $this->faker->imageUrl(300, 300, 'room'),
-            'room_description' => $this->faker->paragraph,
+            'image' => $this->faker->imageUrl(300, 300, 'room'),
+            'description' => $this->faker->paragraph,
             'created_at' => now(),
             'updated_at' => now(),
         ];

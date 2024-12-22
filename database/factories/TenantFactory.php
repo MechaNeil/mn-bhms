@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Property;
 use App\Models\Gender;
 use App\Models\Status;
+use App\Models\Tenant;  
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<Tenant>
  */

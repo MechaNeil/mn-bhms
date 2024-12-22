@@ -101,7 +101,26 @@ new class extends Component {
         if (!is_array($value) && $value != '') {
             $this->resetPage();
         }
+    
     }
+
+    public function activeFiltersCount(): int
+    {
+        // return collect([$this->search, $this->company_id])->filter(fn($filter) => $filter)->count();
+        $count = 0;
+
+    if ($this->search) {
+        $count++;
+    }
+
+    if ($this->company_id) {
+        $count++;
+    }
+
+    return $count;
+    }
+
+
 }; ?>
 
 <div>
@@ -109,10 +128,10 @@ new class extends Component {
 
     <x-header title="Property" separator progress-indicator>
         <x-slot:middle class="!justify-end">
-            <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
+            <x-input placeholder="Name..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
         </x-slot:middle>
         <x-slot:actions>
-            <x-button class="btn normal-case bg-base-300" label="Filters" @click="$wire.drawer = true" responsive
+            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}" @click="$wire.drawer = true" responsive
                 icon="o-funnel" />
             <x-button class="btn normal-case btn-primary" label="Create" link="/create-apartment" responsive
                 icon="o-plus" class="btn-primary" />
@@ -124,9 +143,11 @@ new class extends Component {
     <x-card>
         <x-table :headers="$headers" :rows="$properties" :sort-by="$sortBy" with-pagination
             link="property/{id}/edit?name={name}&ap={ap.name}">
+
             @scope('cell_image', $property)
-            <x-avatar image="{{ $property->image ?? '/empty-user.jpg' }}" class="!w-10" />
+            <x-avatar image="{{ $property->image ?? '/empty-user.jpg' }}" class="!w-10 !rounded-lg" />
             @endscope
+            
             @scope('actions', $property)
             <x-button icon="o-trash" wire:click="delete({{ $property['id'] }})" wire:confirm="Are you sure?" spinner
                 class="btn-ghost btn-sm text-red-500" />
@@ -142,10 +163,10 @@ new class extends Component {
     <!-- FILTER DRAWER -->
     <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
         <div class="grid gap-5">
-            <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass"
+            <x-input placeholder="Name..." wire:model.live.debounce="search" icon="o-magnifying-glass"
                 @keydown.enter="$wire.drawer = false" />
 
-            <x-select placeholder="Company" label="Company" wire:model.live="company_id" :options="$companies"
+            <x-select placeholder="Company" wire:model.live="company_id" :options="$companies"
                 icon="o-flag" placeholder-value="0" />
         </div>
 

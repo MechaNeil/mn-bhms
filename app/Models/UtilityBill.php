@@ -9,5 +9,5 @@ class UtilityBill extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['rate', 'bills_name'];
+    protected $fillable = ['rate', 'name'];
 }

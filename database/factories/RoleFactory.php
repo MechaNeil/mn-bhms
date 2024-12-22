@@ -28,7 +28,7 @@ class RoleFactory extends Factory
     public function createAdmin()
     {
         return Role::create([
-            'role_name' => 'Admin',
+            'name' => 'Admin',
             'description' => 'Administrator with full permissions.',
         ]);
     }

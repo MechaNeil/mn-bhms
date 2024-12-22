@@ -21,7 +21,7 @@ class RolesSeeder extends Seeder
 
         Role::insert([
             [
-                'role_name' => 'Tenant',
+                'name' => 'Tenant',
                 'description' => 'Tenant Role'
                 ,
                 'created_at' => Carbon::now(),
@@ -29,21 +29,21 @@ class RolesSeeder extends Seeder
 
             ],
             [
-                'role_name' => 'Assistant',
+                'name' => 'Assistant',
                 'description' => 'Helper for the Owner'
                 ,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(), // Optional: if you also want to set
             ],
             [
-                'role_name' => 'Owner',
+                'name' => 'Owner',
                 'description' => 'Owner of the Property'
                 ,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(), // Optional: if you also want to set
             ],
             [
-                'role_name' => 'Admin',
+                'name' => 'Admin',
                 'description' => 'Admin Role'
                 ,
                 'created_at' => Carbon::now(),

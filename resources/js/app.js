@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'tinymce/tinymce.min.js';
 
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';

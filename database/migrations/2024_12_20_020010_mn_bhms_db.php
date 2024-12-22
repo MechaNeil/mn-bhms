@@ -37,7 +37,7 @@ return new class extends Migration
         // Roles table
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('role_name');
+            $table->string('name');
             $table->string('description')->nullable();
             $table->timestamps();
         });
@@ -45,7 +45,7 @@ return new class extends Migration
         // Permissions table
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('permission_name');
+            $table->string('name');
             $table->string('description')->nullable();
             $table->timestamps();
         });
@@ -86,8 +86,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
             $table->string('room_no');
-            $table->string('room_image')->nullable();
-            $table->text('room_description')->nullable();
+            $table->string('image')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
 
@@ -154,7 +154,7 @@ return new class extends Migration
         // UtilityBills table
         Schema::create('utility_bills', function (Blueprint $table) {
             $table->id();
-            $table->string('bills_name');
+            $table->string('name');
             $table->decimal('rate', 10, 2);
             $table->timestamps();
         });
