@@ -21,6 +21,7 @@ class PropertyFactory extends Factory
     {
 
         return [
+            'user_id' => Company::inRandomOrder()->first(), // Default user
             'company_id' => Company::inRandomOrder()->first(), // Generates a company if one doesn't exist
             'image' => $this->faker->imageUrl(100, 100, 'building'),
             'apartment_no' => 'AP-' . str_pad(self::$apartmentNumber++, 4, '0', STR_PAD_LEFT), // Format apartment number            

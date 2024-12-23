@@ -3,6 +3,7 @@
 use Livewire\WithFileUploads;
 use App\Models\Property;
 use App\Models\Company;
+use App\Models\User; // Added User model
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
@@ -29,11 +30,18 @@ new class extends Component {
     #[Rule('required')]
     public ?int $company_id = null;
 
+    #[Rule('required')]
+    public ?int $user_id = null; // Added user_id property
+
     // Dependencies for dropdowns
     public function with(): array
     {
         return [
             'companies' => Company::all(),
+            'users' => User::all()->map(function ($user) { // Added users dependency
+                $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                return $user;
+            })
         ];
     }
     public function mount(): void
@@ -106,6 +114,9 @@ new class extends Component {
 
                 <x-select label="Company" icon-right="o-building-office" wire:model.blur="company_id" :options="$companies"
                     placeholder="---" />
+                <x-choices label="User" height="max-h-96" icon-right="o-user" wire:model.blur="user_id"
+                    option-label="full_name" option-sub-label="email" option-avatar="avatar" :options="$users"
+                    placeholder="---" single /> <!-- Added user selection form -->
             </div>
         </div>
 

@@ -3,6 +3,7 @@
 use App\Models\Property;
 
 use App\Models\Company;
+use App\Models\User;
 
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
@@ -19,14 +20,21 @@ new class extends Component {
 
     public int $company_id = 0;
 
+    public int $user_id = 0;
+
     public string $search = '';
 
     public bool $drawer = false;
 
     public array $sortBy = ['column' => 'apartment_no', 'direction' => 'asc'];
 
-    
-    #[On('apartmentCreated')] 
+    public string $full_name = '';
+
+
+
+
+
+    #[On('apartmentCreated')]
     public function apartCreated()
     {
         $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
@@ -38,8 +46,6 @@ new class extends Component {
         $this->sortBy = ['column' => 'updated_at', 'direction' => 'desc'];
     }
 
-    
-    
     public function clear(): void
     {
         $this->reset();
@@ -56,17 +62,7 @@ new class extends Component {
     // Table headers
     public function headers(): array
     {
-        return [
-            
-            ['key' => 'image', 'label' => '', 'class' => 'w-1'],
-            ['key' => 'apartment_no', 'label' => 'Apartment No', 'class' => 'w-12'],
-            ['key' => 'name', 'label' => 'Name', 'class' => 'w-64'], 
-            ['key' => 'company_name', 'label' => 'Company', 'class' => 'w-64'], 
-            ['key' => 'contact_no', 'label' => 'Contact', 'class' => 'w-64'], 
-            ['key' => 'address', 'label' => 'Address', 'class' => 'hidden lg:table-cell'],
-            ['key' => 'created_at', 'label' => '', 'class' => 'hidden'],
-            ['key' => 'updated_at', 'label' => '', 'class' => 'hidden'] 
-        ];
+        return [['key' => 'image', 'label' => '', 'class' => 'w-1'], ['key' => 'apartment_no', 'label' => 'Apartment No', 'class' => 'w-12'], ['key' => 'name', 'label' => 'Name', 'class' => 'w-64'], ['key' => 'company_name', 'label' => 'Company', 'class' => 'w-64'], ['key' => 'contact_no', 'label' => 'Contact', 'class' => 'w-64'], ['key' => 'user_first_name', 'label' => 'User', 'class' => 'w-64'], ['key' => 'address', 'label' => 'Address', 'class' => 'hidden lg:table-cell'], ['key' => 'created_at', 'label' => '', 'class' => 'hidden'], ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']];
     }
 
     /**
@@ -79,11 +75,15 @@ new class extends Component {
     {
         return Property::query()
             ->withAggregate('company', 'name')
+            ->withAggregate('user', 'first_name')
             ->with(['company'])
+            ->with(['user'])
+
             ->when($this->search, fn(Builder $q) => $q->where('name', 'like', "%$this->search%"))
             ->when($this->company_id, fn(Builder $q) => $q->where('company_id', $this->company_id))
+            ->when($this->user_id, fn(Builder $q) => $q->where('user_id', $this->user_id))
             ->orderBy(...array_values($this->sortBy))
-            
+
             ->paginate(4);
     }
 
@@ -92,16 +92,23 @@ new class extends Component {
         return [
             'properties' => $this->properties(),
             'headers' => $this->headers(),
-            'companies' => Company::all()
+
+            'companies' => Company::all(),
+            'users' => User::has('properties')
+                ->get()
+                ->map(function ($user) {
+                    $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    return $user;
+                }),
         ];
     }
+
     // Reset pagination when any component property changes
     public function updated($value): void
     {
         if (!is_array($value) && $value != '') {
             $this->resetPage();
         }
-    
     }
 
     public function activeFiltersCount(): int
@@ -109,18 +116,24 @@ new class extends Component {
         // return collect([$this->search, $this->company_id])->filter(fn($filter) => $filter)->count();
         $count = 0;
 
-    if ($this->search) {
-        $count++;
+        if ($this->search) {
+            $count++;
+        }
+
+        if ($this->company_id) {
+            $count++;
+        }
+        if ($this->user_id) {
+            $count++;
+        }
+
+        return $count;
     }
 
-    if ($this->company_id) {
-        $count++;
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->user->first_name} {$this->user->middle_name} {$this->user->last_name}");
     }
-
-    return $count;
-    }
-
-
 }; ?>
 
 <div>
@@ -131,8 +144,8 @@ new class extends Component {
             <x-input placeholder="Name..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
         </x-slot:middle>
         <x-slot:actions>
-            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}" @click="$wire.drawer = true" responsive
-                icon="o-funnel" />
+            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}"
+                @click="$wire.drawer = true" responsive icon="o-funnel" />
             <x-button class="btn normal-case btn-primary" label="Create" link="/create-apartment" responsive
                 icon="o-plus" class="btn-primary" />
         </x-slot:actions>
@@ -147,11 +160,16 @@ new class extends Component {
             @scope('cell_image', $property)
             <x-avatar image="{{ $property->image ?? '/empty-user.jpg' }}" class="!w-10 !rounded-lg" />
             @endscope
-            
+
             @scope('actions', $property)
             <x-button icon="o-trash" wire:click="delete({{ $property['id'] }})" wire:confirm="Are you sure?" spinner
                 class="btn-ghost btn-sm text-red-500" />
             @endscope
+            @scope('cell_user_first_name', $property)
+            {{ $property->user->first_name }} {{ $property->user->last_name }} {{ $property->user->last_name }}
+            @endscope
+
+
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
             </x-slot:empty>
@@ -160,14 +178,19 @@ new class extends Component {
 
     </x-card>
 
+
     <!-- FILTER DRAWER -->
     <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
         <div class="grid gap-5">
             <x-input placeholder="Name..." wire:model.live.debounce="search" icon="o-magnifying-glass"
                 @keydown.enter="$wire.drawer = false" />
 
-            <x-select placeholder="Company" wire:model.live="company_id" :options="$companies"
-                icon="o-flag" placeholder-value="0" />
+            <x-select placeholder="Company" wire:model.live="company_id" :options="$companies" icon="o-flag"
+                placeholder-value="0" />
+
+            <x-select placeholder="Select a user" wire:model.live="user_id" option-label="full_name"
+                height="max-h-96" :options="$users"
+                icon="o-user" placeholder-value="0" single />
         </div>
 
         <x-slot:actions>
@@ -175,5 +198,6 @@ new class extends Component {
             <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
         </x-slot:actions>
     </x-drawer>
+
 
 </div>

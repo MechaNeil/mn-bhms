@@ -31,7 +31,7 @@ class User extends Authenticatable
 
     public function properties(): HasMany
     {
-        return $this->hasMany(Property::class, 'user_id');
+        return $this->hasMany(Property::class);
     }
 
     public function gender()

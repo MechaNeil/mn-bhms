@@ -79,6 +79,7 @@ return new class extends Migration
             $table->string('image')->nullable();
 
             $table->foreignId('company_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('address');
             $table->string('contact_no')->nullable();

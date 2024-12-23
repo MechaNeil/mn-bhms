@@ -11,6 +11,7 @@ class Property extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'company_id',
         'name',
         'apartment_no',
@@ -19,6 +20,11 @@ class Property extends Model
         'image'
         // Add other fillable properties here
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function company()
     {
