@@ -11,6 +11,9 @@ return new class extends Migration
         // Users table
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('middle_name')->nullable();
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
@@ -74,7 +77,10 @@ return new class extends Migration
             $table->id();
             $table->string('apartment_no');
             $table->string('image')->nullable();
+
             $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+
             $table->string('name');
             $table->string('address');
             $table->string('contact_no')->nullable();

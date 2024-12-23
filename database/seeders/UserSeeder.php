@@ -18,6 +18,9 @@ class UserSeeder extends Seeder
         // Create 10 tenants with related models (User, Property, Gender, Status)
         User::insert([
             [
+                'first_name' => 'Mark Neil',
+                'last_name' => 'Teves',
+                'middle_name' => 'Torres',
                 'username' => 'Mark Neil Teves',
                 'email' => 'mn@gmail.com',
                 'password' => Hash::make('12345678'),

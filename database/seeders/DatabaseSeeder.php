@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
 
         // Seed Companies
         Company::factory()->count(4)->create();
-
+        
+        User::factory()->count(10)->create();
         // Seed Properties
         Property::factory()->count(10)->create();
 
@@ -37,7 +38,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Seed Users
-        User::factory()->count(10)->create();
+
 
 
         // Seed Rooms
@@ -49,6 +50,6 @@ class DatabaseSeeder extends Seeder
         Bed::factory()->count(10)->create();
 
         // Seed Tenants
-        Tenant::factory()->count(10)->create();
+        Tenant::factory()->count(20)->create();
     }
 }

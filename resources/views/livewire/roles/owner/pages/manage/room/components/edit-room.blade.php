@@ -91,7 +91,7 @@ new class extends Component {
     <x-modal wire:model="myModal1" class="backdrop-blur">
         <div class="mb-5">Are You Sure?</div>
         <x-button class="btn-ghost" label="Cancel" @click="$wire.myModal1 = false" />
-        <x-button icon="o-trash" class="btn-error" label="Delete" wire:click="delete({{ $room['id'] }})" spinner />
+        <x-button icon="o-trash" class="btn-error" label="Delete" wire:click="delete({{ $room['id'] }})" spinner="delete" />
     </x-modal>
 
     <x-form wire:submit="save">

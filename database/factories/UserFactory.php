@@ -15,6 +15,16 @@ class UserFactory extends Factory
      * The current password being used by the factory.
      */
     protected static ?string $password;
+    /**
+     * Generate a unique username using first name and last name.
+     *
+     * @param string $firstName
+     * @param string $lastName
+     * @return string
+     */
+    private function generateUniqueUsername(string $firstName, string $lastName): string {
+        return strtolower($firstName . '.' . $lastName . rand(1, 1000));
+    }
 
     /**
      * Define the model's default state.
@@ -23,8 +33,14 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
+
         return [
-            'username' => $this->faker->unique()->userName,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'middle_name' => $this->faker->optional()->firstName,
+            'username' => $this->generateUniqueUsername($firstName, $lastName),
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'), // Default password
             'avatar' => '/empty-user.jpg',
