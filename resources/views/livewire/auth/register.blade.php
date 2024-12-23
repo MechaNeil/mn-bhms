@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 new #[Layout('components.layouts.auth')] #[Title('Register')] class
     // <-- The same `empty` layout
     extends Component {
+
+    // first_name, last_name, middle_name, username, email, password, password_confirmation
+    public $first_name;
+    public $last_name;
+    public $middle_name;
     public $username;
     public $email;
     public $password;
@@ -20,6 +25,10 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     {
         return [
             'email' => 'required|email|unique:users',
+
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'required',
             'username' => 'required|unique:users|max:255',
             'password' => 'required|min:8',
             'password_confirmation' => 'required|same:password',
@@ -28,6 +37,9 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
 
     // Custom validation messages
     protected $messages = [
+        'first_name.required' => 'First name is required.',
+        'last_name.required' => 'Last name is required.',
+        'middle_name.required' => 'Middle name is required.',
         'email.required' => 'Your email is required to proceed.',
         'email.email' => 'Please enter a valid email address.',
         'email.unique' => 'The email is already registered. Please use a different one.',
@@ -78,11 +90,21 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     </div>
 
     <x-form wire:submit="register">
-        <x-input label="Username" wire:model.blur="username" icon="o-user" inline />
-        <x-input label="E-mail" wire:model.blur="email" icon="o-envelope" inline />
-        <x-input label="Password" wire:model.blur="password" type="password" icon="o-key" inline />
-        <x-input label="Confirm Password" wire:model.blur="password_confirmation" type="password" icon="o-key"
-            inline />
+        
+        
+        <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-4">
+                <x-input label="First Name" wire:model.blur="first_name" icon="o-user" inline />
+                <x-input label="Last Name" wire:model.blur="last_name" icon="o-user" inline />
+                <x-input label="Middle Name" wire:model.blur="middle_name" icon="o-user" inline />
+            </div>
+            <div class="grid gap-4">
+                <x-input label="Username" wire:model.blur="username" icon="o-user" inline />
+                <x-input label="E-mail" wire:model.blur="email" icon="o-envelope" inline />
+                <x-input label="Password" wire:model.blur="password" type="password" icon="o-key" inline />
+                <x-input label="Confirm Password" wire:model.blur="password_confirmation" type="password" icon="o-key" inline />
+            </div>
+        </div>
 
         <x-slot:actions>
             <x-button label="Already registered?" class="btn-ghost" link="/login" />
