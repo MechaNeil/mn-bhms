@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class Property extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'company_id',
         'name',
         'apartment_no',
         'address',
@@ -19,7 +20,7 @@ class Property extends Model
         // Add other fillable properties here
     ];
 
-    public function company(): BelongsTo
+    public function company()
     {
         return $this->belongsTo(Company::class);
     }

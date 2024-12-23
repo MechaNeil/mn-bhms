@@ -19,6 +19,12 @@ new class extends Component {
 
     #[Rule('required')]
     public string $apartment_no = '';
+    
+    #[Rule('nullable|image|max:1024')]
+    public $photo;
+
+    #[Rule('required')]
+    public ?int $company_id = null;
 
     #[Rule('required')]
     public string $address = '';
@@ -26,11 +32,6 @@ new class extends Component {
     #[Rule('required')]
     public string $contact_no = '';
 
-    #[Rule('nullable|image|max:1024')]
-    public $photo;
-
-    #[Rule('required')]
-    public ?int $company_id = null;
 
     public bool $myModal1 = false;
 
@@ -56,6 +57,7 @@ new class extends Component {
             $property->delete();
   
             $this->warning("$property->name deleted", 'Good bye!', position: 'toast-bottom', redirectTo: '/apartment');
+            $this->myModal1 = false;
         } else {
             session()->flash('error', 'Property not found.');
         }
@@ -88,18 +90,19 @@ new class extends Component {
 <div>
     <x-header title="Update {{ $property->name }}" separator>
         <x-slot:actions>
-            <x-button  icon="o-trash"  @click="$wire.myModal1 = true"  spinner
-            class="btn-ghost normal-case text-red-500" /> 
+            <x-button icon="o-trash" @click="$wire.myModal1 = true" spinner
+                class="btn-ghost normal-case text-red-500" />
         </x-slot:actions>
     </x-header>
 
     <x-modal wire:model="myModal1" class="backdrop-blur">
         <div class="mb-5">Are You Sure?</div>
         <x-button class="btn-ghost" label="Cancel" @click="$wire.myModal1 = false" />
-        <x-button icon="o-trash" class="btn-error" label="Delete" wire:click="delete({{ $property['id'] }})" spinner />
+        <x-button icon="o-trash" class="btn-error" label="Delete" wire:click="delete({{ $property['id'] }})"
+            spinner="delete" />
     </x-modal>
-    
-        
+
+
 
     <x-form wire:submit="save">
 
@@ -120,7 +123,8 @@ new class extends Component {
                 <x-input label="Name" wire:model.blur="name" />
 
 
-                <x-select label="Company" icon-right="o-building-office"  wire:model.blur="company_id" :options="$companies" placeholder="---" />
+                <x-select label="Company" icon-right="o-building-office" wire:model.blur="company_id"
+                    :options="$companies" placeholder="---" />
             </div>
         </div>
 
@@ -132,13 +136,13 @@ new class extends Component {
                 <x-header title="Details" subtitle="More about the apartment" size="text-2xl" />
             </div>
 
-            <div class="col-span-3 grid gap-3">                
+            <div class="col-span-3 grid gap-3">
                 <x-input label="Address" wire:model.blur="address" />
                 <x-input label="Contact No" wire:model.blur="contact_no" />
             </div>
 
         </div>
-        
+
 
         <x-slot:actions>
             <x-button label="Cancel" link="/apartment" />
