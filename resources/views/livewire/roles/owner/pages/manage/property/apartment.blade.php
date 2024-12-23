@@ -13,6 +13,8 @@ use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 
+use Livewire\Attributes\Reactive;
+
 new class extends Component {
     use Toast;
 
@@ -26,6 +28,7 @@ new class extends Component {
 
     public bool $drawer = false;
 
+
     public array $sortBy = ['column' => 'apartment_no', 'direction' => 'asc'];
 
     public string $full_name = '';
@@ -34,17 +37,7 @@ new class extends Component {
 
 
 
-    #[On('apartmentCreated')]
-    public function apartCreated()
-    {
-        $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
-    }
 
-    #[On('apartmentUpdated')]
-    public function aparttUpdated()
-    {
-        $this->sortBy = ['column' => 'updated_at', 'direction' => 'desc'];
-    }
 
     public function clear(): void
     {
@@ -73,6 +66,7 @@ new class extends Component {
      */
     public function properties(): LengthAwarePaginator
     {
+        
         return Property::query()
             ->withAggregate('company', 'name')
             ->withAggregate('user', 'first_name')
@@ -83,6 +77,7 @@ new class extends Component {
             ->when($this->company_id, fn(Builder $q) => $q->where('company_id', $this->company_id))
             ->when($this->user_id, fn(Builder $q) => $q->where('user_id', $this->user_id))
             ->orderBy(...array_values($this->sortBy))
+            
 
             ->paginate(4);
     }
@@ -155,7 +150,7 @@ new class extends Component {
     <!-- TABLE  -->
     <x-card>
         <x-table :headers="$headers" :rows="$properties" :sort-by="$sortBy" with-pagination
-            link="property/{id}/edit?name={name}&ap={ap.name}">
+            link="property/{id}/edit?name={name}&ap={apartment_no}">
 
             @scope('cell_image', $property)
             <x-avatar image="{{ $property->image ?? '/empty-user.jpg' }}" class="!w-10 !rounded-lg" />

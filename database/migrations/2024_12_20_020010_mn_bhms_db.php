@@ -4,22 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
-        // Users table
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('middle_name')->nullable();
-            $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('avatar')->nullable();
-            $table->timestamps();
-        });
 
         // Genders table
         Schema::create('genders', function (Blueprint $table) {
@@ -44,6 +31,24 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->timestamps();
         });
+
+        // Users table
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('middle_name')->nullable();
+            $table->string('username')->unique();
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('avatar')->nullable();
+            $table->foreignId('status_id')->constrained()->onDelete('cascade');
+            $table->foreignId('role_id')->constrained()->onDelete('cascade');
+
+
+            $table->timestamps();
+        });
+
 
         // Permissions table
         Schema::create('permissions', function (Blueprint $table) {

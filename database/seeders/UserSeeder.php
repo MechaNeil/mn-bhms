@@ -25,6 +25,8 @@ class UserSeeder extends Seeder
                 'email' => 'mn@gmail.com',
                 'password' => Hash::make('12345678'),
                 'avatar' => '/empty-user.jpg',
+                'role_id' => 4,
+                'status_id' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
 

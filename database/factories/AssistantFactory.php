@@ -4,16 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
-class UserFactory extends Factory
+class AssistantFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
     protected static ?string $password;
     /**
      * Generate a unique username using first name and last name.
@@ -44,7 +37,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'), // Default password
             'avatar' => '/empty-user.jpg',
-            'role_id' => 5,
+            'role_id' => 2,
             'status_id' => 1,
         ];
     }

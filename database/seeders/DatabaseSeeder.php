@@ -25,9 +25,9 @@ class DatabaseSeeder extends Seeder
         // Seed Companies
         Company::factory()->count(4)->create();
         
-        User::factory()->count(10)->create();
+
         // Seed Properties
-        Property::factory()->count(10)->create();
+
 
         // Seed Genders, Roles, and Statuses
         $this->call([
@@ -35,12 +35,13 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             StatusSeeder::class,
             UserSeeder::class,
+            AssistantSeeder::class,
         ]);
 
         // Seed Users
 
-
-
+        User::factory()->count(10)->create();
+        Property::factory()->count(10)->create();
         // Seed Rooms
         Room::factory()->count(20)->create();
 

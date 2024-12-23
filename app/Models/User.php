@@ -44,7 +44,7 @@ class User extends Authenticatable
         return $this->belongsTo(Status::class);
     }
 
-    public function role()
+    public function roles()
     {
         return $this->belongsTo(Role::class);
     }
@@ -53,4 +53,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(ActivityLog::class);
     }
+
+
 }

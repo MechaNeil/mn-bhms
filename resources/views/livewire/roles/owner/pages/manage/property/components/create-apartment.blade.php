@@ -7,6 +7,7 @@ use App\Models\User; // Added User model
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Reactive;
 
 new class extends Component {
     // Traits
@@ -33,12 +34,15 @@ new class extends Component {
     #[Rule('required')]
     public ?int $user_id = null; // Added user_id property
 
+    #[Reactive]
+    public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
+
     // Dependencies for dropdowns
     public function with(): array
     {
         return [
             'companies' => Company::all(),
-            'users' => User::all()->map(function ($user) { // Added users dependency
+            'users' => User::where('role_id', 2)->get()->map(function ($user) { // Filter users by role_id
                 $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
                 return $user;
             })
@@ -68,6 +72,9 @@ new class extends Component {
 
         // Set the default value
         $this->apartment_no = $newPropertyNo;
+
+        // Set the sort value
+        $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
         // Validate
         $data = $this->validate();

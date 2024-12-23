@@ -15,10 +15,6 @@ class Status extends Model
         return $this->hasMany(Bed::class);
     }
 
-    public function tenants()
-    {
-        return $this->hasMany(Tenant::class);
-    }
 
     public function invoices()
     {
@@ -34,4 +30,9 @@ class Status extends Model
     {
         return $this->hasMany(PaymentList::class, 'payment_status_id');
     }
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
 }

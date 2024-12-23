@@ -49,6 +49,9 @@ class TenantFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'), // Default password
             'avatar' => '/empty-user.jpg',
+            // role status
+            'role_id' => 1,
+            'status_id' => 1,
         ]);
 
         return [

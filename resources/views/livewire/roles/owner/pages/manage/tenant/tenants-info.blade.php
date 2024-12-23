@@ -2,6 +2,7 @@
 
 use App\Models\Tenant;
 use App\Models\Property;
+use App\Models\User; // Added User model
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -41,6 +42,8 @@ new class extends Component {
             ['key' => 'first_name', 'label' => 'First Name', 'class' => 'w-12'],
             ['key' => 'last_name', 'label' => 'Last Name', 'class' => 'w-12'],
             ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'],
+            ['key' => 'user_username', 'label' => 'Username', 'class' => 'w-64'], // Added user name column
+            ['key' => 'user_email', 'label' => 'User Email', 'class' => 'w-64'], // Added user email column
             ['key' => 'created_at', 'label' => '', 'class' => 'hidden'],
             ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']
         ];
@@ -50,7 +53,9 @@ new class extends Component {
     {
         return Tenant::query()
             ->withAggregate('property', 'name')
-            ->with(['property'])
+            ->withAggregate('user', 'username') // Added user name aggregation
+            ->withAggregate('user', 'email') // Added user email aggregation
+            ->with(['property', 'user']) // Eager load user relationship
             ->when($this->search, fn(Builder $q) => $q->where('last_name', 'like', "%$this->search%"))
             ->when($this->property_id, fn(Builder $q) => $q->where('property_id', $this->property_id))
             ->orderBy(...array_values($this->sortBy))
@@ -107,13 +112,19 @@ new class extends Component {
     <!-- TABLE -->
     <x-card>
         <x-table :headers="$headers" :rows="$tenants" :sort-by="$sortBy" with-pagination
-            link="tenant/{id}/edit?last_name={last_name}">
+            link="tenant/{id}/view?name={first_name} {last_name}">
             @scope('cell_image', $tenant)
                 <x-avatar image="{{ $tenant->profile_picture ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
             @endscope
             @scope('actions', $tenant)
                 <x-button icon="o-trash" wire:click="delete({{ $tenant['id'] }})" wire:confirm="Are you sure?" spinner
                     class="btn-ghost btn-sm text-red-500" />
+            @endscope
+            @scope('cell_user_name', $tenant)
+                {{ $tenant->user->name }}
+            @endscope
+            @scope('cell_user_email', $tenant)
+                {{ $tenant->user->email }}
             @endscope
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />

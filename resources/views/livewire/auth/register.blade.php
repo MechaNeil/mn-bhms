@@ -6,6 +6,7 @@ use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Role;
 
 new #[Layout('components.layouts.auth')] #[Title('Register')] class
     // <-- The same `empty` layout
@@ -19,6 +20,15 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     public $email;
     public $password;
     public $password_confirmation;
+    public $role_id = 0;
+
+
+    public function with(): array
+    {
+        return [
+            'roles' => Role::all(),
+        ];
+    }
 
     // Validation rules
     protected function rules()
@@ -32,6 +42,7 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
             'username' => 'required|unique:users|max:255',
             'password' => 'required|min:8',
             'password_confirmation' => 'required|same:password',
+            'role_id' => 'required',
         ];
     }
 
@@ -50,6 +61,7 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
         'password.min' => 'The password must have at least 8 characters.',
         'password_confirmation.same' => 'Password and confirmation do not match.',
         'password_confirmation.required' => 'Please confirm your password.',
+        'role_id.required' => 'Please select a role.',
     ];
 
     public function updated($propertyName)
@@ -73,6 +85,7 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
         $data = $this->validate();
         $data['avatar'] = '/empty-user.jpg';
         $data['password'] = Hash::make($data['password']);
+        $data['status_id'] = 1; // Set status_id to 1
 
         $user = User::create($data);
 
@@ -94,6 +107,13 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
         
         <div class="grid grid-cols-2 gap-4">
             <div class="grid gap-4">
+                
+                <x-select
+                icon="o-user"
+                :options="$roles"
+                placeholder="Assign Role"
+                placeholder-value="0" {{-- Set a value for placeholder. Default is `null` --}}
+                wire:model="role_id" class="h-14" />
                 <x-input label="First Name" wire:model.blur="first_name" icon="o-user" inline />
                 <x-input label="Last Name" wire:model.blur="last_name" icon="o-user" inline />
                 <x-input label="Middle Name" wire:model.blur="middle_name" icon="o-user" inline />

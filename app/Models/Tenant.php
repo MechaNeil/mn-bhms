@@ -19,7 +19,6 @@ class Tenant extends Model
         'gender_id',
         'profile_picture',
         'proof_of_identity',
-        'status_id',
     ];
 
     public function user()
@@ -37,10 +36,6 @@ class Tenant extends Model
         return $this->belongsTo(Gender::class);
     }
 
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
 
     public function bedAssignments()
     {

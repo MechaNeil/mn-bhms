@@ -20,16 +20,16 @@ class GenderSeeder extends Seeder
         
         Gender::insert([
             [
-                'name' => 'Tenant'
+                'name' => 'Male'
             ],
             [
-                'name' => 'Assistant'
+                'name' => 'Female'
             ],
             [
-                'name' => 'Owner'
+                'name' => 'Cant be determined'
             ],
             [
-                'name' => 'Admin'
+                'name' => 'Rather not say'
             ],
         ]);
     }

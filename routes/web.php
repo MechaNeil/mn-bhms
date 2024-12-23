@@ -54,8 +54,17 @@ Route::middleware(['auth'])->group(function () {
 
 
     Volt::route('/tenants-information', 'roles.owner.pages.manage.tenant.tenants-info'); // Tenants Information
+    
     Volt::route('/create-tenant', 'roles.owner.pages.manage.tenant.components.create-tenant'); // Create Tenant
+    //view tenant
+    Volt::route('/tenant/{tenant}/view', 'roles.owner.pages.manage.tenant.components.view-tenant'); // View Tenant
+    Volt::route('/tenant/{tenant}/more-info', 'roles.owner.pages.manage.tenant.components.more-info');
+
+
     Volt::route('/tenant/{tenant}/edit', 'roles.owner.pages.manage.tenant.components.edit-tenant'); // Edit Tenant
+//More info
+    
+
 
     // Invoice
     Volt::route('/utility-bills', 'roles.owner.pages.reports.other-reports.deductions'); // Utility Bills

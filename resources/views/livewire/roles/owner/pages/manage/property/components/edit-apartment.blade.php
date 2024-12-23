@@ -4,12 +4,11 @@ use Livewire\WithFileUploads;
 use App\Models\Property;
 use App\Models\Company;
 use App\Models\User;
-
-
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 
 new class extends Component {
     // Traits
@@ -43,12 +42,15 @@ new class extends Component {
 
     public bool $myModal1 = false;
 
+    #[Reactive]
+    public array $sortBy = ['column' => 'updated_at', 'direction' => 'desc'];
+
     // Dependencies for dropdowns
     public function with(): array
     {
         return [
             'companies' => Company::all(),
-            'users' => User::all()->map(function ($user) {
+            'users' => User::where('role_id', 2)->get()->map(function ($user) {
                 $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
                 return $user;
             })
@@ -95,6 +97,7 @@ new class extends Component {
             $url = $this->photo->store('apartment', 'public');
             $this->property->update(['image' => "/storage/$url"]);
         }
+        $this->sortBy = ['column' => 'updated_at', 'direction' => 'desc'];
 
 
         // Provide success feedback

@@ -49,6 +49,16 @@ class RolesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(), // Optional: if you also want to set
             ],
+
+            // guest acount
+            [
+                'name' => 'Guest',
+                'description' => 'Guest Role'
+                ,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(), // Optional: if you also want to set
+            ],
+
         ]);
     }
 }
