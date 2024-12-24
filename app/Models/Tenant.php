@@ -11,6 +11,7 @@ class Tenant extends Model
     protected $fillable = [
         'user_id',
         'property_id',
+        'status_id',
         'phone',
         'address',
         'first_name',
@@ -34,6 +35,11 @@ class Tenant extends Model
     public function gender()
     {
         return $this->belongsTo(Gender::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 
 

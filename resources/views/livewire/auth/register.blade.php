@@ -97,17 +97,14 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     }
 }; ?>
 
-<div class="md:w-96 mx-auto mt-20">
+<div class="md:w-5/6 lg:w-1/3 mx-auto mt-20">
     <div class="mb-0">
         <livewire:auth.component.register-image>
     </div>
 
     <x-form wire:submit="register">
-        
-        
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
             <div class="grid gap-4">
-                
                 <x-select
                 icon="o-user"
                 :options="$roles"

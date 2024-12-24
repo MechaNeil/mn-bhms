@@ -131,7 +131,7 @@ new class extends Component {
             <div class="col-span-2">
                 <x-header title="Basic" subtitle="Basic info for the new apartment" size="text-2xl" />
                 <div class="hidden lg:block">
-                    <livewire:roles.owner.pages.manage.property.components.form-image>
+                    <livewire:roles.owner.pages.manage.property.components.apartment-image>
                 </div>
             </div>
 

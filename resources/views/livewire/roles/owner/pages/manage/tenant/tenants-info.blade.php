@@ -44,8 +44,8 @@ new class extends Component {
             ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'],
             ['key' => 'user_username', 'label' => 'Username', 'class' => 'w-64'], // Added user name column
             ['key' => 'user_email', 'label' => 'User Email', 'class' => 'w-64'], // Added user email column
-            ['key' => 'created_at', 'label' => '', 'class' => 'hidden'],
-            ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']
+            ['key' => 'created_at', 'label' => 'Created at', 'class' => 'w-64'],
+            ['key' => 'updated_at', 'label' => 'Updated at', 'class' => 'w-64']
         ];
     }
 

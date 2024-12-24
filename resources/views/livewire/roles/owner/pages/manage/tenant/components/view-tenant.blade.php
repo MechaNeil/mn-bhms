@@ -42,7 +42,6 @@ new class extends Component {
             </x-slot:menu>
 
 
-
             <x-avatar :image="$user->avatar" class="!w-24">
                 <x-slot:title class="text-2xl pl-2">
                     {{ $user->username }}
