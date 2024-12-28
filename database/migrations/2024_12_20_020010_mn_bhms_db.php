@@ -124,7 +124,7 @@ return new class extends Migration {
             $table->string('middle_name')->nullable();
             $table->foreignId('gender_id')->constrained()->onDelete('cascade');
             $table->string('profile_picture')->nullable();
-            $table->string('proof_of_identity')->nullable();
+            $table->json('proof_of_identity')->nullable();
             $table->foreignId('status_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

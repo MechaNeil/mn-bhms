@@ -64,7 +64,7 @@ class TenantFactory extends Factory
             'middle_name' => $this->faker->optional()->firstName,
             'gender_id' => Gender::inRandomOrder()->first()->id,
             'profile_picture' => '/empty-user.jpg',
-            'proof_of_identity' => '/empty-user.jpg',
+            'proof_of_identity' => json_encode(['/empty-user.jpg']),
             'status_id' => $this->faker->randomElement([1, 2]), // Randomly assign status_id as 1 or 2
         ];
     }

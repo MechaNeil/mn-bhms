@@ -39,13 +39,13 @@ new class extends Component {
     {
         return [
             ['key' => 'image', 'label' => '', 'class' => 'w-1'],
-            ['key' => 'first_name', 'label' => 'First Name', 'class' => 'w-12'],
-            ['key' => 'last_name', 'label' => 'Last Name', 'class' => 'w-12'],
-            ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'],
-            ['key' => 'user_username', 'label' => 'Username', 'class' => 'w-64'], // Added user name column
-            ['key' => 'user_email', 'label' => 'User Email', 'class' => 'w-64'], // Added user email column
-            ['key' => 'created_at', 'label' => 'Created at', 'class' => 'w-64'],
-            ['key' => 'updated_at', 'label' => 'Updated at', 'class' => 'w-64']
+            ['key' => 'first_name', 'label' => 'First Name', 'class' => ''],
+            ['key' => 'last_name', 'label' => 'Last Name', 'class' => ''],
+            ['key' => 'property_name', 'label' => 'Property', 'class' => ''],
+            ['key' => 'user_username', 'label' => 'Username', 'class' => ''], // Added user name column
+            ['key' => 'user_email', 'label' => 'User Email', 'class' => 'hidden'], // Added user email column
+            ['key' => 'created_at', 'label' => 'Created at', 'class' => 'hidden'],
+            ['key' => 'updated_at', 'label' => 'Updated at', 'class' => 'hidden']
         ];
     }
 
@@ -120,12 +120,12 @@ new class extends Component {
                 <x-button icon="o-trash" wire:click="delete({{ $tenant['id'] }})" wire:confirm="Are you sure?" spinner
                     class="btn-ghost btn-sm text-red-500" />
             @endscope
-            @scope('cell_user_name', $tenant)
+            {{-- @scope('cell_user_name', $tenant)
                 {{ $tenant->user->name }}
             @endscope
             @scope('cell_user_email', $tenant)
                 {{ $tenant->user->email }}
-            @endscope
+            @endscope --}}
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
             </x-slot:empty>

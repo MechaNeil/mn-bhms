@@ -1,4 +1,3 @@
-
 <?php
 
 use Livewire\WithFileUploads;
@@ -26,12 +25,10 @@ new class extends Component {
 
     #[Validate('nullable|image|max:1024')]
     public $profile;
-    
-    
 
     #[Validate('nullable|array')]
-    #[Validate(['proof_of_identity.*' => 'file|max:2048'])]
-    public array $proof_of_identity = [];
+    #[Validate(['proof.*' => 'file|max:2048'])]
+    public array $proof = [];
 
     #[Validate('required')]
     public ?int $property_id;
@@ -58,20 +55,20 @@ new class extends Component {
     public string $password = '';
 
     public function mount(Tenant $tenant): void
-{
-    $this->tenant = $tenant;
-    $this->first_name = $tenant->user->first_name  ?? '';
-    $this->last_name = $tenant->user->last_name ?? '';
-    $this->middle_name = $tenant->user->middle_name ?? ''; // Ensure property exists
-    $this->profile_picture = $tenant->profile_picture ?? ''; // Ensure property exists
-    $this->property_id = $tenant->property_id ?? ''; // Ensure property exists
-    $this->user_id = $tenant->user_id ?? ''; // Ensure property exists
-    $this->phone = $tenant->phone ?? ''; // Ensure property exists
-    $this->gender_id = $tenant->gender_id ?? ''; // Ensure property exists
-    $this->address = $tenant->address ?? ''; // Ensure property exists
-    $this->username = $tenant->user->username  ?? '';
-    $this->email = $tenant->user->email  ?? '';
-}
+    {
+        $this->tenant = $tenant;
+        $this->first_name = $tenant->user->first_name ?? '';
+        $this->last_name = $tenant->user->last_name ?? '';
+        $this->middle_name = $tenant->user->middle_name ?? ''; // Ensure property exists
+        $this->profile_picture = $tenant->profile_picture ?? ''; // Ensure property exists
+        $this->property_id = $tenant->property_id ?? ''; // Ensure property exists
+        $this->user_id = $tenant->user_id ?? ''; // Ensure property exists
+        $this->phone = $tenant->phone ?? ''; // Ensure property exists
+        $this->gender_id = $tenant->gender_id ?? ''; // Ensure property exists
+        $this->address = $tenant->address ?? ''; // Ensure property exists
+        $this->username = $tenant->user->username ?? '';
+        $this->email = $tenant->user->email ?? '';
+    }
 
     public function save(): void
     {
@@ -82,17 +79,6 @@ new class extends Component {
         if ($this->profile) {
             $url = $this->profile->store('tenants', 'public');
             $this->tenant->update(['profile_picture' => "/storage/$url"]);
-
-
-        }
-
-        if (!empty($this->proof_of_identity)) {
-            $proofUrls = [];
-            foreach ($this->proof_of_identity as $file) {
-                $proofUrls[] = $file->store('proof_of_identity', 'public');
-            }
-            $data['proof_of_identity'] = json_encode($proofUrls);
-            $this->tenant->update(['proof_of_identity' => $data['proof_of_identity']]);
         }
 
         $this->tenant->user->update([
@@ -105,6 +91,8 @@ new class extends Component {
         ]);
 
         $this->success('Tenant and user account updated successfully.', redirectTo: '/tenants-information');
+
+
     }
 
     public function with(): array
@@ -190,32 +178,40 @@ new class extends Component {
         $this->validateOnly('username');
         $this->validateOnly('email');
     }
-    public function deleteProofOfIdentity(string $file): void
-{
-    $proofFiles = json_decode($this->tenant->proof_of_identity, true);
-    
-    // Remove the file from the list
-    $updatedFiles = array_filter($proofFiles, fn($proof) => $proof !== $file);
+    public function updatedProof(): void
+    {
+        $this->validateOnly('proof');
 
-    // Update the tenant record
-    $this->tenant->update(['proof_of_identity' => json_encode($updatedFiles)]);
+        foreach ($this->proof as $file) {
+            $url = $file->store('proof_of_identity', 'public');
+            $existingProofs = json_decode($this->tenant->proof_of_identity ?? '[]');
+            $existingProofs[] = "/storage/$url";
+            $this->tenant->update(['proof_of_identity' => json_encode($existingProofs)]);
+        }
 
-    // Delete the file from storage
-    if (Storage::exists($file)) {
-        Storage::delete($file);
+        // Clear file input
+        $this->proof = [];
     }
 
-    // Reflect the updated files in the UI
-    $this->proof_of_identity = $updatedFiles;
+    public function deleteProofOfIdentity(string $file): void
+    {
+        $existingProofs = json_decode($this->tenant->proof_of_identity ?? '[]');
 
-    $this->success('File deleted successfully.');
-}
+        if (($key = array_search($file, $existingProofs)) !== false) {
+            unset($existingProofs[$key]);
+            Storage::disk('public')->delete(str_replace('/storage/', '', $file));
+        }
+
+        $this->tenant->update(['proof_of_identity' => json_encode(array_values($existingProofs))]);
+        $this->success('Proof of identity file deleted successfully.');
+    }
 };
 
 ?>
 
 <div>
-    <x-header title="Update {{ $tenant->first_name . ' ' . $tenant->middle_name . ' ' . $tenant->last_name }}" separator />
+    <x-header title="Update {{ $tenant->first_name . ' ' . $tenant->middle_name . ' ' . $tenant->last_name }}"
+        separator />
 
     <x-form wire:submit="save">
 
@@ -227,20 +223,30 @@ new class extends Component {
                     accept="image/png, image/jpeg" crop-after-change>
                     <img src="{{ $tenant->profile_picture ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
                 </x-file>
-                <x-file label="Proof of Identity" wire:model="proof_of_identity" hint="Upload documents" multiple
-                    accept="image/*,.pdf,.doc,.docx" />
-                    @if($tenant->proof_of_identity)
-                    <x-card title="Current Proof of Identity Files" class="mt-3">
+                <div>
+                    <!-- Current Proof of Identity Files -->
+                    @if ($tenant->proof_of_identity)
+                    <x-card title="Current Proof of Identity Files" class="mt-3 mb-3">
                         <ul>
-                            @foreach(json_decode($tenant->proof_of_identity) as $file)
-                                <li class="flex items-center justify-between mb-2"> <!-- Added mb-2 for margin-bottom -->
-                                    <x-button label="{{ basename($file) }}" link="{{ Storage::url($file) }}" class="btn-ghost" target="_blank" />
-                                    <x-button icon="o-trash" wire:click="deleteProofOfIdentity('{{ $file }}')" class="btn-danger" />
-                                </li>
+                            @foreach (json_decode($tenant->proof_of_identity) as $file)
+                            <li class="flex items-center justify-between mb-2">
+                                <a href="{{ $file }}" target="_blank" class="text-blue-500 underline">
+                                    {{ basename($file) }}
+                                </a>
+                                <x-button wire:click="deleteProofOfIdentity('{{ $file }}')"
+                                    class="text-red-500 hover:underline">
+                                    Delete
+                                </x-button>
+                            </li>
                             @endforeach
                         </ul>
                     </x-card>
-                @endif
+                    @endif
+
+                    <!-- File Upload Input -->
+                    <x-file wire:model="proof" label="Proof Of Identity"
+                        hint="Max file size: 2MB. Accepted formats: jpeg, png, pdf, doc, docx." multiple />
+                </div>
 
 
                 <x-input label="First Name" wire:model.blur="first_name" />
