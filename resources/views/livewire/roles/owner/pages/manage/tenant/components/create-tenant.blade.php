@@ -7,50 +7,55 @@ use App\Models\User;
 use App\Models\Gender;
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
-use Livewire\Attributes\Rule;
+use Livewire\Attributes\Validate;
 use Livewire\Attributes\Reactive;
+
+
 
 new class extends Component {
     use Toast, WithFileUploads;
 
-    #[Rule('required')]
+    #[Validate('required')]
     public string $first_name = '';
 
-    #[Rule('required')]
+    #[Validate('required')]
     public string $last_name = '';
 
     public string $middle_name = '';
 
-    #[Rule('nullable|image|max:1024')]
+    #[Validate('nullable|image|max:1024')]
     public $profile_picture;
 
-    #[Rule('required')]
+    #[Validate('required|array')]
+    #[Validate(['proof_of_identity.*' => 'file|max:2048'])]
+    public array $proof_of_identity = [];
+
+    #[Validate('required')]
     public ?int $property_id = null;
 
-    #[Rule('nullable')]
+    #[Validate('nullable')]
     public ?int $user_id = null;
 
-    #[Rule('required')]
+    #[Validate('required')]
     public string $phone = '';
 
-    #[Rule('required')]
+    #[Validate('required')]
     public ?int $gender_id = null;
 
-    #[Rule('required')]
+    #[Validate('required')]
     public string $address = '';
 
-    #[Rule('required')]
+    #[Validate('required|max:20')]
     public string $username = '';
 
-    #[Rule('required|email')]
+    #[Validate('required|email')]
     public string $email = '';
 
-    #[Rule('required|min:8')]
+    #[Validate('required|min:8')]
     public string $password = 'password';
 
     public function save(): void
     {
-        // try {
         $data = $this->validate();
 
         // Create the user first
@@ -70,6 +75,15 @@ new class extends Component {
         $data['user_id'] = $user->id;
         $data['status_id'] = 1; // or any appropriate default value
 
+        // Convert proof_of_identity to JSON string
+        if (!empty($this->proof_of_identity)) {
+            $proofUrls = [];
+            foreach ($this->proof_of_identity as $file) {
+                $proofUrls[] = $file->store('proof_of_identity', 'public');
+            }
+            $data['proof_of_identity'] = json_encode($proofUrls);
+        }
+
         // Create the tenant
         $tenant = Tenant::create($data);
 
@@ -78,10 +92,7 @@ new class extends Component {
             $tenant->update(['profile_picture' => "/storage/$url"]);
         }
 
-        $this->success('Tenant and user account created successfully.', redirectTo: '/tenant-informations');
-        // } catch (\Illuminate\Validation\ValidationException $e) {
-        //     dd($e->errors());
-        // }
+        $this->success('Tenant and user account created successfully.', redirectTo: '/tenants-information');
     }
 
     public function with(): array
@@ -90,13 +101,13 @@ new class extends Component {
             'properties' => Property::all(),
             'genders' => Gender::all(),
         ];
-        
     }
 
     public function generatePassword(): void
     {
         $this->password = 'password';
     }
+
     public function generateEmailAndUsername(): void
     {
         // Trim and remove spaces from first and last names
@@ -110,7 +121,8 @@ new class extends Component {
             return; // Exit the function early
         }
 
-        $randomNumber = rand(100, 999); // Generate random number once
+        // Use user ID instead of random number
+        $userId = User::max('id') + 1;
 
         // Check last name length
         if (strlen($lastName) > 15) {
@@ -121,7 +133,7 @@ new class extends Component {
 
         // Generate email
         $baseEmail = strtolower($firstName . '.' . $lastName);
-        $this->email = $baseEmail . $randomNumber . '@example.com';
+        $this->email = $baseEmail . $userId . '@example.com';
 
         if (strlen($this->email) > 30) {
             $firstNameWords = preg_split('/\s+/', trim($this->first_name));
@@ -129,12 +141,12 @@ new class extends Component {
             foreach ($firstNameWords as $word) {
                 $initials .= strtolower(substr($word, 0, 1));
             }
-            $this->email = substr($initials, 0, 2) . '.' . strtolower($lastName) . $randomNumber . '@example.com';
+            $this->email = substr($initials, 0, 3) . '.' . strtolower($lastName) . $userId . '@example.com';
         }
 
         // Generate username
         $baseUsername = strtolower($firstName . '.' . $lastName);
-        $this->username = $baseUsername . $randomNumber;
+        $this->username = $baseUsername . $userId;
 
         if (strlen($this->username) > 20) {
             $firstNameWords = preg_split('/\s+/', trim($this->first_name));
@@ -142,7 +154,7 @@ new class extends Component {
             foreach ($firstNameWords as $word) {
                 $initials .= strtolower(substr($word, 0, 1));
             }
-            $this->username = substr($initials, 0, 2) . '.' . strtolower($lastName) . $randomNumber;
+            $this->username = substr($initials, 0, 3) . '.' . strtolower($lastName) . $userId;
         }
     }
 
@@ -154,18 +166,15 @@ new class extends Component {
     public function updatedFirstName(): void
     {
         $this->generateCredentials();
-        $this->validate([
-        'username' => 'required|string|max:255', // Add your validation rules here
-        'email' => 'required|email|max:255', // Add your validation rules here
-        'password' => 'required|string|min:8', // Add your validation rules here
-
-
-    ]);
+        $this->validateOnly('first_name');
+        $this->validateOnly('username');
+        $this->validateOnly('email');
     }
 
     public function updatedLastName(): void
     {
         $this->generateCredentials();
+        $this->validateOnly('last_name');
         $this->validateOnly('username');
         $this->validateOnly('email');
     }
@@ -186,6 +195,8 @@ new class extends Component {
                     accept="image/png, image/jpeg" crop-after-change>
                     <img src="/empty-user.jpg" class="h-40 rounded-lg" />
                 </x-file>
+                <x-file label="Proof of Identity" wire:model="proof_of_identity" hint="Upload documents" multiple
+                    accept="image/*,.pdf,.doc,.docx" />
                 <x-input label="First Name" wire:model.blur="first_name" />
                 <x-input label="Middle Name" wire:model.blur="middle_name" hint="optional" />
                 <x-input label="Last Name" wire:model.blur="last_name" />
@@ -221,14 +232,15 @@ new class extends Component {
 
                 <x-input label="Username" wire:model.blur="username" />
                 <x-input label="Email" wire:model.blur="email" />
-                <x-input label="Password" wire:model.blur="password" type="password" hint="Default password is password " />
+                <x-input label="Password" wire:model.blur="password" type="password"
+                    hint="Default password is password " />
 
             </div>
 
         </div>
 
         <x-slot:actions>
-            <x-button label="Cancel" link="/tenant-information" />
+            <x-button label="Cancel" link="/tenants-information" />
             <x-button label="Create" icon="o-paper-airplane" spinner="save" type="submit" class="btn-primary" />
         </x-slot:actions>
 

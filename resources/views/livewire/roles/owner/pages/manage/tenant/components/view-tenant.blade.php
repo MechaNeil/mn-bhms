@@ -30,14 +30,14 @@ new class extends Component {
 <div>
     <x-header title="{{ $tenant->first_name . ' ' . $tenant->middle_name . ' ' . $tenant->last_name }}" separator>
         <x-slot:actions>
-            <x-button icon="o-pencil" spinner class="btn-primary normal-case" />
+            <x-button icon="o-pencil" spinner class="btn-primary normal-case" label="Edit" link="/tenant/{{ $tenant->id }}/edit?name={{ $tenant->first_name }} {{ $tenant->last_name }}"  />
         </x-slot:actions>
     </x-header>
     <div class="grid lg:grid-cols-2 gap-8">
         
         <x-card title="Info" shadow separator>
             <x-slot:menu>
-                <x-button label="More" icon="o-identification" link="/tenant/{{ $tenant->id }}/more-info?name={{ $tenant->first_name }} {{ $tenant->last_name }}/more-info" class="btn-ghost btn-sm"  />
+                <x-button label="More" icon="o-identification" link="/tenant/{{ $tenant->id }}/more-info?name={{ $tenant->first_name }} {{ $tenant->last_name }}" class="btn-ghost btn-sm"  />
                
             </x-slot:menu>
 
