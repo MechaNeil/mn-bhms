@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\{Invoice, Property};
+use App\Models\{Invoice, Property, UtilityBill, ConstantUtilityBill};
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -33,33 +33,39 @@ new class extends Component {
     }
 
     // Table headers
-    public function headers(): array
+    public function utilityBillsHeaders(): array
     {
         return [
             ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
-            ['key' => 'invoice_no', 'label' => 'Invoice No', 'class' => 'w-36'],
-            ['key' => 'date_issued', 'label' => 'Date Issued', 'class' => 'w-24'],
-            ['key' => 'due_date', 'label' => 'Due Date', 'class' => 'w-24'],
-            ['key' => 'status_id', 'label' => 'Status', 'class' => 'w-12'],
-            ['key' => 'remarks', 'label' => 'Remarks', 'class' => 'w-64'],
-            ['key' => 'amount_paid', 'label' => 'Amount Paid', 'class' => 'w-24'],
-            ['key' => 'penalty_amount', 'label' => 'Penalty Amount', 'class' => 'w-24'],
-            ['key' => 'discount_amount', 'label' => 'Discount Amount', 'class' => 'w-24'],
-
-            ['key' => 'utility_bills', 'label' => 'Utility Bills', 'class' => 'w-24'],
-            ['key' => 'constant_utility_bills', 'label' => 'Constant Utility Bills', 'class' => 'w-24'],
+            ['key' => 'name', 'label' => 'Name', 'class' => 'w-36'],
+            ['key' => 'rate', 'label' => 'Rate', 'class' => 'w-24'],
             ['key' => 'created_at', 'label' => 'Created At', 'class' => 'w-24'],
             ['key' => 'updated_at', 'label' => 'Updated At', 'class' => 'w-24']
         ];
     }
 
-    public function invoices(): LengthAwarePaginator
+    public function constantUtilityBillsHeaders(): array
     {
-        return Invoice::query()
-            ->with(['status', 'tenant', 'property', 'user', 'room'])
-            ->when($this->search, fn(Builder $q) => $q->where('invoice_no', 'like', "%$this->search%"))
-            ->when($this->property_id, fn(Builder $q) => $q->where('property_id', $this->property_id))
-            ->orderBy(...array_values($this->sortBy))
+        return [
+            ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
+            ['key' => 'number_of_appliances', 'label' => 'Number of Appliances', 'class' => 'w-36'],
+            ['key' => 'cost', 'label' => 'Cost', 'class' => 'w-24'],
+            ['key' => 'created_at', 'label' => 'Created At', 'class' => 'w-24'],
+            ['key' => 'updated_at', 'label' => 'Updated At', 'class' => 'w-24']
+        ];
+    }
+
+    public function utilityBills(): LengthAwarePaginator
+    {
+        return UtilityBill::query()
+            ->orderBy('name', 'asc')
+            ->paginate(4);
+    }
+
+    public function constantUtilityBills(): LengthAwarePaginator
+    {
+        return ConstantUtilityBill::query()
+            ->orderBy('number_of_appliances', 'asc')
             ->paginate(4);
     }
 
@@ -81,8 +87,10 @@ new class extends Component {
     public function with(): array
     {
         return [
-            'invoices' => $this->invoices(),
-            'headers' => $this->headers(),
+            'utilityBillsHeaders' => $this->utilityBillsHeaders(),
+            'constantUtilityBillsHeaders' => $this->constantUtilityBillsHeaders(),
+            'utilityBills' => $this->utilityBills(),
+            'constantUtilityBills' => $this->constantUtilityBills(),
             'properties' => Property::all(),
             'activeFiltersCount' => $this->activeFiltersCount(),
         ];
@@ -107,12 +115,18 @@ new class extends Component {
         </x-slot:actions>
     </x-header>
 
-    <!-- TABLE -->
+    <!-- UTILITY BILLS TABLE -->
     <x-card>
-        <x-table :headers="$headers" :rows="$invoices" :sort-by="$sortBy" with-pagination link="invoice/{id}/view">
-            @scope('actions', $invoice)
-                <x-button icon="o-trash" wire:click="delete({{ $invoice['id'] }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
-            @endscope
+        <x-table :headers="$utilityBillsHeaders" :rows="$utilityBills" with-pagination>
+            <x-slot:empty>
+                <x-icon name="o-cube" label="It is empty." />
+            </x-slot:empty>
+        </x-table>
+    </x-card>
+
+    <!-- CONSTANT UTILITY BILLS TABLE -->
+    <x-card>
+        <x-table :headers="$constantUtilityBillsHeaders" :rows="$constantUtilityBills" with-pagination>
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
             </x-slot:empty>

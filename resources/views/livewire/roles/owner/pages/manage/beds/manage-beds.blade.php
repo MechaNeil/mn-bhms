@@ -119,9 +119,10 @@ new class extends Component {
         return [
             'beds' => $this->beds(),
             'headers' => $this->headers(),
-            'rooms' => Room::all(),
             'properties' => Property::all(),
+            'rooms' => Room::all(),
             'statuses' => Status::where('context', 'Bed Status')->get(),
+            'activeFiltersCount' => $this->activeFiltersCount(),
         ];
     }
 
@@ -204,7 +205,7 @@ new class extends Component {
             <x-input placeholder="Bed..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
         </x-slot>
         <x-slot:actions>
-            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}"
+            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $activeFiltersCount }}"
                 @click="$wire.drawer = true" responsive icon="o-funnel" />
             <x-button class="btn normal-case btn-primary" label="Create" icon="o-plus" @click="$wire.showModal()" />
         </x-slot>
@@ -215,11 +216,11 @@ new class extends Component {
 
 
         <x-form wire:submit="save">
+            <x-select label="Property" wire:model.blur="form.property_id" :options="$properties" option-label="name"
+                placeholder="Select a property" />
             <x-input label="Bed No" wire:model="{{ $isEditMode ? 'form.bed_no' : ' bed_no ' }}" readonly /> <x-select
                 label="Room" wire:model.blur="form.room_id" :options="$rooms" option-label="room_no"
                 placeholder="Select a room" />
-            <x-select label="Property" wire:model.blur="form.property_id" :options="$properties" option-label="name"
-                placeholder="Select a property" />
             <x-select label="Status" wire:model.blur="form.status_id" :options="$statuses" option-label="name"
                 placeholder="Select a status" />
             <x-input label="Monthly Rate" wire:model.blur="form.monthly_rate" />

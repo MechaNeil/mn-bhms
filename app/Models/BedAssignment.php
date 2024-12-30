@@ -10,7 +10,15 @@ class BedAssignment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tenant_id', 'user_id', 'bed_id', 'room_id', 'property_id', 'date_started', 'due_date'];
+    protected $fillable = [
+        'tenant_id', 
+        'bed_id', 
+        'room_id', 
+        'property_id', 
+        'date_started', 
+        'due_date',
+        'assigned_by' // Add this line
+    ];
 
     protected $casts = [
         'date_started' => 'datetime',

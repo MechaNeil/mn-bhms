@@ -21,8 +21,8 @@ class BedAssignmentFactory extends Factory
             'property_id' => Property::factory(),
             'bed_id' => Bed::factory(),
             'assigned_by' => User::factory(),
-            'date_started' => $this->faker->date('Y-m-d', '+1 day'),
-            'due_date' => $this->faker->date('Y-m-d', '+6 months'),
+            'date_started' => $this->faker->dateTimeBetween('2022-01-01', 'now')->format('Y-m-d'),
+            'due_date' => $this->faker->dateTimeBetween('+6 months', '2050-12-31')->format('Y-m-d'),
         ];
     }
 

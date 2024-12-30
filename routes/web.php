@@ -31,6 +31,7 @@ Route::get('/logout', function () {
 });
 
 
+
 // Routes with Middleware
 Route::middleware(['auth'])->group(function () {
     // Home dashboard
@@ -52,9 +53,8 @@ Route::middleware(['auth'])->group(function () {
     // Bed Management
     Volt::route('/bed-assignment', 'roles.owner.pages.manage.beds.bed-assignment');   // Bed Assignment
     Volt::route('/manage-beds', 'roles.owner.pages.manage.beds.manage-beds');         // Manage Beds
-    Volt::route('/create-bed', 'roles.owner.pages.manage.beds.components.create-bed'); // Create Bed
 
-    Volt::route('/assign-beds', 'roles.owner.pages.manage.beds.components.assign-beds'); // Assign Beds
+    Volt::route('/assign-bed', 'roles.owner.pages.manage.beds.components.assign-bed'); // Assign Beds
 
 
 
@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Invoice
-    Volt::route('/utility-bills', 'roles.owner.pages.reports.other-reports.deductions'); // Utility Bills
+    Volt::route('/utility-bills', 'roles.owner.pages.invoice.utility-bills.bills'); // Utility Bills
     Volt::route('/view-invoice', 'roles.owner.pages.invoice.tenants-invoice.view-invoice'); // View Invoice
     Volt::route('/invoice-list', 'roles.owner.pages.invoice.tenants-invoice.invoice-list'); // Invoice List
     Volt::route('/proof-of-transaction', 'roles.owner.pages.invoice.tenants-invoice.proof-of-transaction'); // Proof of Transaction

@@ -53,21 +53,6 @@ new class extends Component {
             ->paginate(4);
     }
 
-    public function with(): array
-    {
-        return [
-            'bedAssignments' => $this->bedAssignments(),
-            'headers' => $this->headers(),
-            'properties' => Property::all(),
-        ];
-    }
-
-    public function updated($value): void
-    {
-        if (!is_array($value) && $value != '') {
-            $this->resetPage();
-        }
-    }
 
     public function activeFiltersCount(): int
     {
@@ -83,6 +68,24 @@ new class extends Component {
 
         return $count;
     }
+    public function with(): array
+    {
+        return [
+            'bedAssignments' => $this->bedAssignments(),
+            'headers' => $this->headers(),
+            'properties' => Property::all(),
+            'activeFiltersCount' => $this->activeFiltersCount(),
+        ];
+    }
+
+    public function updated($value): void
+    {
+        if (!is_array($value) && $value != '') {
+            $this->resetPage();
+        }
+    }
+
+
 }; ?>
 
 
@@ -94,11 +97,10 @@ new class extends Component {
                 icon="o-magnifying-glass" />
         </x-slot:middle>
         <x-slot:actions>
-            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}"
+            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $activeFiltersCount }}"
                 @click="$wire.drawer = true" responsive icon="o-funnel" />
 
-            <x-button class="btn normal-case btn-primary" label="Create" link="/create-room" responsive icon="o-plus"
-                class="btn-primary" />
+            <x-button class="btn normal-case btn-primary" label="Assign" link="/assign-bed" responsive icon="o-plus" class="btn-primary" />
 
         </x-slot:actions>
     </x-header>
