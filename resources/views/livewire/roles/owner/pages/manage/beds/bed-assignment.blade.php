@@ -97,9 +97,9 @@ new class extends Component {
             <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}"
                 @click="$wire.drawer = true" responsive icon="o-funnel" />
 
-            <x-button class="btn normal-case btn-primary" label="Create" link="/assign-beds" responsive icon="o-plus"
+            <x-button class="btn normal-case btn-primary" label="Create" link="/create-room" responsive icon="o-plus"
                 class="btn-primary" />
-                
+
         </x-slot:actions>
     </x-header>
 

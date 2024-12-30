@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
     // Bed Management
     Volt::route('/bed-assignment', 'roles.owner.pages.manage.beds.bed-assignment');   // Bed Assignment
     Volt::route('/manage-beds', 'roles.owner.pages.manage.beds.manage-beds');         // Manage Beds
+    Volt::route('/create-bed', 'roles.owner.pages.manage.beds.components.create-bed'); // Create Bed
 
     Volt::route('/assign-beds', 'roles.owner.pages.manage.beds.components.assign-beds'); // Assign Beds
 
