@@ -52,5 +52,10 @@ class DatabaseSeeder extends Seeder
 
         // Seed Tenants
         Tenant::factory()->count(20)->create();
+
+        
+        $this->call([
+            BedAssignmentSeeder::class,
+        ]);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -11,14 +12,14 @@ use Livewire\Volt\Volt;
 
 // Home
 Volt::route('/', 'home.homepage'); // Home
-Volt::route('/help', 'home.help');  
+Volt::route('/help', 'home.help');
 Volt::route('/about-us', 'home.about-us');
 
 
 // Authentication
-Volt::route('/logout', 'auth.logout')->name('logout'); 
-Volt::route('/login', 'auth.login')->name('login');    
-Volt::route('/register', 'auth.register')->name('register'); 
+Volt::route('/logout', 'auth.logout')->name('logout');
+Volt::route('/login', 'auth.login')->name('login');
+Volt::route('/register', 'auth.register')->name('register');
 
 
 Route::get('/logout', function () {
@@ -52,9 +53,12 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/bed-assignment', 'roles.owner.pages.manage.beds.bed-assignment');   // Bed Assignment
     Volt::route('/manage-beds', 'roles.owner.pages.manage.beds.manage-beds');         // Manage Beds
 
+    Volt::route('/assign-beds', 'roles.owner.pages.manage.beds.components.assign-beds'); // Assign Beds
+
+
 
     Volt::route('/tenants-information', 'roles.owner.pages.manage.tenant.tenants-info'); // Tenants Information
-    
+
     Volt::route('/create-tenant', 'roles.owner.pages.manage.tenant.components.create-tenant'); // Create Tenant
     //view tenant
     Volt::route('/tenant/{tenant}/view', 'roles.owner.pages.manage.tenant.components.view-tenant'); // View Tenant
@@ -62,8 +66,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Volt::route('/tenant/{tenant}/edit', 'roles.owner.pages.manage.tenant.components.edit-tenant'); // Edit Tenant
-//More info
-    
+    //More info
+
 
 
     // Invoice

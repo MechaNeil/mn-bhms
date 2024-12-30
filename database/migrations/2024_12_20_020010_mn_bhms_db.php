@@ -132,7 +132,11 @@ return new class extends Migration {
         // BedAssignments table
         Schema::create('bed_assignments', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('assigned_by')->constrained('users')->onDelete('cascade');
+
+
             $table->foreignId('bed_id')->constrained()->onDelete('cascade');
             $table->foreignId('room_id')->constrained()->onDelete('cascade');
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
