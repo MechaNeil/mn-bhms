@@ -213,6 +213,8 @@ new class extends Component {
     <x-header title="Update {{ $tenant->first_name . ' ' . $tenant->middle_name . ' ' . $tenant->last_name }}"
         separator />
 
+    
+
     <x-form wire:submit="save">
 
         <div class="lg:grid grid-cols-5">

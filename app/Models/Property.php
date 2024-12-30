@@ -21,6 +21,17 @@ class Property extends Model
         // Add other fillable properties here
     ];
 
+
+    protected static function booted()
+    {
+        static::created(function ($property) {
+            $property->apartment_no = 'AP-' . str_pad($property->id, 4, '0', STR_PAD_LEFT);
+            $property->saveQuietly(); // Save without triggering events
+        });
+    }
+
+
+
     public function user()
     {
         return $this->belongsTo(User::class);

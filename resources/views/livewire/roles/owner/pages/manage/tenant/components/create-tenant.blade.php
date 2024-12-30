@@ -10,8 +10,6 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\Reactive;
 
-
-
 new class extends Component {
     use Toast, WithFileUploads;
 
@@ -45,10 +43,10 @@ new class extends Component {
     #[Validate('required')]
     public string $address = '';
 
-    #[Validate('required|max:20')]
+    #[Validate('required|max:20|unique:users')]
     public string $username = '';
 
-    #[Validate('required|email')]
+    #[Validate('required|email|unique:users')]
     public string $email = '';
 
     #[Validate('required|min:8')]
@@ -121,8 +119,15 @@ new class extends Component {
             return; // Exit the function early
         }
 
-        // Use user ID instead of random number
-        $userId = User::max('id') + 1;
+        // Generate a random user ID in 3-digit format (001 to 999)
+        $userId = str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+
+        // Ensure the user ID does not exceed 1000
+        if ($userId > 1000) {
+            // Handle the case where the user ID exceeds 1000
+            // For example, you can set it to 999 or throw an error
+            $userId = 999; // or handle as needed
+        }
 
         // Check last name length
         if (strlen($lastName) > 15) {

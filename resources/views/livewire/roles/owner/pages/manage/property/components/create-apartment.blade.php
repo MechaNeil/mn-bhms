@@ -16,7 +16,7 @@ new class extends Component {
     #[Rule('required')]
     public string $name = '';
 
-    #[Rule('required')]
+    #[Rule('nullable')]
     public string $apartment_no = '';
 
     #[Rule('required')]
@@ -48,53 +48,40 @@ new class extends Component {
             })
         ];
     }
+
     public function mount(): void
     {
-        // Fetch the latest apartment_no
-        $latestProperty = Property::orderBy('id', 'desc')->first();
-        $latestPropertyNo = $latestProperty ? $latestProperty->apartment_no : 'AP-0000';
-
-        // Increment the apartment_no
-        $newPropertyNo = 'AP-' . str_pad((int) substr($latestPropertyNo, 3) + 1, 4, '0', STR_PAD_LEFT);
-
-        // Set the default value
-        $this->apartment_no = $newPropertyNo;
+        // Initialize values
+        $this->name = '';
+        $this->address = '';
+        $this->contact_no = '';
+        $this->company_id = null;
+        $this->user_id = null;
     }
 
     public function save(): void
     {
-        // Fetch the latest apartment_no
-        $latestProperty = Property::orderBy('id', 'desc')->first();
-        $latestPropertyNo = $latestProperty ? $latestProperty->apartment_no : 'AP-0000';
-
-        // Increment the apartment_no
-        $newPropertyNo = 'AP-' . str_pad((int) substr($latestPropertyNo, 3) + 1, 4, '0', STR_PAD_LEFT);
-
-        // Set the default value
-        $this->apartment_no = $newPropertyNo;
-
-        // Set the sort value
-        $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
-
         // Validate
         $data = $this->validate();
 
-        // Create new appaertment
-        $apartment = Property::create($data);
+        // Create new property without the apartment_no
+        $property = Property::create($data);
+
+        // Update the apartment_no based on the property id
+        $property->update([
+            'apartment_no' => 'AP-' . str_pad($property->id, 4, '0', STR_PAD_LEFT),
+        ]);
 
         // Handle avatar upload if provided
         if ($this->photo) {
             $url = $this->photo->store('apartment', 'public');
-            $apartment->update(['image' => "/storage/$url"]);
+            $property->update(['image' => "/storage/$url"]);
         }
-
-
 
         // Provide success feedback
         $this->success('Property created successfully.', redirectTo: '/apartment');
     }
 };
-
 ?>
 
 <div>
@@ -115,9 +102,8 @@ new class extends Component {
                 <x-file label="Image" wire:model.blur="photo" accept="image/png, image/jpeg" crop-after-change>
                     <img src="/empty-user.jpg" class="h-40 rounded-lg" />
                 </x-file>
-                <x-input label="Property No" wire:model.blur="apartment_no" readonly />
+                {{-- <x-input label="Property No" wire:model.blur="apartment_no" readonly /> --}}
                 <x-input label="Name" wire:model.blur="name" />
-
 
                 <x-select label="Company" icon-right="o-building-office" wire:model.blur="company_id" :options="$companies"
                     placeholder="---" />

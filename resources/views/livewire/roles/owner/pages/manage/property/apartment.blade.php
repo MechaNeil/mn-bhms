@@ -28,16 +28,9 @@ new class extends Component {
 
     public bool $drawer = false;
 
-
     public array $sortBy = ['column' => 'apartment_no', 'direction' => 'asc'];
 
     public string $full_name = '';
-
-
-
-
-
-
 
     public function clear(): void
     {
@@ -52,6 +45,7 @@ new class extends Component {
         $property->delete();
         $this->warning("$property->name deleted", 'Good bye!', position: 'toast-bottom');
     }
+
     // Table headers
     public function headers(): array
     {
@@ -66,7 +60,6 @@ new class extends Component {
      */
     public function properties(): LengthAwarePaginator
     {
-        
         return Property::query()
             ->withAggregate('company', 'name')
             ->withAggregate('user', 'first_name')
@@ -77,7 +70,6 @@ new class extends Component {
             ->when($this->company_id, fn(Builder $q) => $q->where('company_id', $this->company_id))
             ->when($this->user_id, fn(Builder $q) => $q->where('user_id', $this->user_id))
             ->orderBy(...array_values($this->sortBy))
-            
 
             ->paginate(4);
     }
@@ -102,6 +94,7 @@ new class extends Component {
     public function updated($value): void
     {
         if (!is_array($value) && $value != '') {
+            
             $this->resetPage();
         }
     }
@@ -125,9 +118,12 @@ new class extends Component {
         return $count;
     }
 
+
+
     public function getFullNameAttribute(): string
     {
         return trim("{$this->user->first_name} {$this->user->middle_name} {$this->user->last_name}");
+
     }
 }; ?>
 
@@ -135,44 +131,41 @@ new class extends Component {
     <!-- HEADER -->
 
     <x-header title="Property" separator progress-indicator>
+
         <x-slot:middle class="!justify-end">
             <x-input placeholder="Name..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
-        </x-slot:middle>
+        </x-slot>
         <x-slot:actions>
+
             <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}"
                 @click="$wire.drawer = true" responsive icon="o-funnel" />
             <x-button class="btn normal-case btn-primary" label="Create" link="/create-apartment" responsive
                 icon="o-plus" class="btn-primary" />
-        </x-slot:actions>
-
+        </x-slot>
     </x-header>
 
     <!-- TABLE  -->
     <x-card>
         <x-table :headers="$headers" :rows="$properties" :sort-by="$sortBy" with-pagination
             link="property/{id}/edit?name={name}&ap={apartment_no}">
-
             @scope('cell_image', $property)
-            <x-avatar image="{{ $property->image ?? '/empty-user.jpg' }}" class="!w-10 !rounded-lg" />
+                <x-avatar image="{{ $property->image ?? '/empty-user.jpg' }}" class="!w-10 !rounded-lg" />
             @endscope
 
             @scope('actions', $property)
-            <x-button icon="o-trash" wire:click="delete({{ $property['id'] }})" wire:confirm="Are you sure?" spinner
-                class="btn-ghost btn-sm text-red-500" />
-            @endscope
-            @scope('cell_user_first_name', $property)
-            {{ $property->user->first_name }} {{ $property->user->last_name }} {{ $property->user->last_name }}
+                <x-button icon="o-trash" wire:click="delete({{ $property['id'] }})" wire:confirm="Are you sure?" spinner
+                    class="btn-ghost btn-sm text-red-500" />
             @endscope
 
+            @scope('cell_user_first_name', $property)
+                {{ $property->user->first_name }} {{ $property->user->last_name }} {{ $property->user->last_name }}
+            @endscope
 
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
-            </x-slot:empty>
-
+            </x-slot>
         </x-table>
-
     </x-card>
-
 
     <!-- FILTER DRAWER -->
     <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
@@ -183,16 +176,13 @@ new class extends Component {
             <x-select placeholder="Company" wire:model.live="company_id" :options="$companies" icon="o-flag"
                 placeholder-value="0" />
 
-            <x-select placeholder="Select a user" wire:model.live="user_id" option-label="full_name"
-                height="max-h-96" :options="$users"
-                icon="o-user" placeholder-value="0" single />
+            <x-select placeholder="Select a user" wire:model.live="user_id" option-label="full_name" height="max-h-96"
+                :options="$users" icon="o-user" placeholder-value="0" single />
         </div>
 
         <x-slot:actions>
             <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
             <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
-        </x-slot:actions>
+        </x-slot>
     </x-drawer>
-
-
 </div>

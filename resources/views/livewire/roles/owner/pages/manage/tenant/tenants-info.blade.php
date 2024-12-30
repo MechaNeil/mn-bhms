@@ -28,24 +28,44 @@ new class extends Component {
   }
 
   // Delete action
-  public function delete(Tenant $tenant): void
-  {
-    $tenant->delete();
-    $this->warning("$tenant->last_name deleted", "Good bye!", position: "toast-bottom");
-  }
+public function deleteTenant(int $tenantId): void
+{
+    // Find the tenant by ID
+    $tenant = Tenant::find($tenantId);
+    
+    if ($tenant) {
+        // Get the associated user account
+        $user = User::find($tenant->user_id);
+        
+        // Delete the user account if it exists
+        if ($user) {
+            $user->delete();
+        }
+
+        // Delete the tenant record
+        $tenant->delete();
+
+        // Provide feedback to the user
+        $this->success('Tenant and user account deleted successfully.', redirectTo: '/tenants-information');
+    } else {
+        $this->error('Tenant not found.');
+    }
+}
 
   // Table headers
   public function headers(): array
   {
     return [
+      
+      
       ["key" => "image", "label" => "", "class" => "w-1"],
       ["key" => "first_name", "label" => "First Name", "class" => ""],
       ["key" => "last_name", "label" => "Last Name", "class" => ""],
       ["key" => "property_name", "label" => "Property", "class" => ""],
       ["key" => "user_username", "label" => "Username", "class" => ""], // Added user name column
       ["key" => "user_email", "label" => "User Email", "class" => "hidden"], // Added user email column
-      ["key" => "created_at", "label" => "Created at", "class" => "hidden"],
-      ["key" => "updated_at", "label" => "Updated at", "class" => "hidden"],
+      ["key" => "created_at", "label" => "Created at", "class" => ""],
+      ["key" => "updated_at", "label" => "Updated at", "class" => ""],
     ];
   }
 
@@ -115,7 +135,7 @@ new class extends Component {
       @endscope
 
       @scope("actions", $tenant)
-        <x-button icon="o-trash" wire:click="delete({{ $tenant['id'] }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
+        <x-button icon="o-trash" wire:click="deleteTenant({{ $tenant->id  }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
       @endscope
 
       {{--
