@@ -2,14 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Country;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class UserFactory extends Factory
 {
@@ -17,6 +15,16 @@ class UserFactory extends Factory
      * The current password being used by the factory.
      */
     protected static ?string $password;
+    /**
+     * Generate a unique username using first name and last name.
+     *
+     * @param string $firstName
+     * @param string $lastName
+     * @return string
+     */
+    private function generateUniqueUsername(string $firstName, string $lastName): string {
+        return strtolower($firstName . '.' . $lastName . rand(1, 1000));
+    }
 
     /**
      * Define the model's default state.
@@ -25,14 +33,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
+
         return [
-            'country_id' => Country::inRandomOrder()->first(),
-            'name' => fake()->name(),
-            'bio' => fake()->paragraph(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'middle_name' => $this->faker->optional()->firstName,
+            'username' => $this->generateUniqueUsername($firstName, $lastName),
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => Hash::make('password'), // Default password
+            'avatar' => '/empty-user.jpg',
+            'role_id' => 5,
+            'status_id' => 1,
         ];
     }
 
@@ -41,7 +54,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

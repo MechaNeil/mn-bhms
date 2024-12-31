@@ -77,7 +77,7 @@ new class extends Component {
 ?>
 
 <div>
-    <x-header title="Update {{ $user->name }}" separator class="text-4xl font-extrabold">
+    <x-header title="Update {{ $user->name }}" separator>
         <x-slot:actions>
             <x-button class="btn normal-case btn-primary" label="Create" link="/users/create" responsive icon="o-plus" class="btn-primary" />   
         </x-slot:actions>

@@ -1,55 +1,58 @@
 <?php
 
 namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $guarded = ['id'];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'middle_name',
+        'username',
+        'email',
         'password',
-        'remember_token',
+        'avatar',
+        'status_id',
+        'gender_id',
+        'role_id'
     ];
 
-    public function country(): BelongsTo
+    public function tenant()
     {
-        return $this->belongsTo(Country::class);
+        return $this->hasOne(Tenant::class);
     }
 
-    public function languages(): BelongsToMany
+    public function properties(): HasMany
     {
-        return $this->belongsToMany(Language::class);
+        return $this->hasMany(Property::class);
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function gender()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(Gender::class);
     }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+
 }
