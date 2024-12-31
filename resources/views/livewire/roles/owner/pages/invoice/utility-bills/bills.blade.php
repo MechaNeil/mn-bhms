@@ -16,7 +16,6 @@ new class extends Component {
     public int $property_id = 0;
     public string $search = '';
     public bool $drawer = false;
-    public array $sortBy = ['column' => 'invoice_no', 'direction' => 'asc'];
 
     public function clear(): void
     {
@@ -116,7 +115,7 @@ new class extends Component {
     </x-header>
 
     <!-- UTILITY BILLS TABLE -->
-    <x-card>
+    <x-card title="Utility Bills" shadow separator>
         <x-table :headers="$utilityBillsHeaders" :rows="$utilityBills" with-pagination>
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
@@ -125,7 +124,7 @@ new class extends Component {
     </x-card>
 
     <!-- CONSTANT UTILITY BILLS TABLE -->
-    <x-card>
+    <x-card class="mt-8" title="Constant Utility Bills" shadow separator>
         <x-table :headers="$constantUtilityBillsHeaders" :rows="$constantUtilityBills" with-pagination>
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />

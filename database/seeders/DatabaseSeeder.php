@@ -36,6 +36,9 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             UserSeeder::class,
             AssistantSeeder::class,
+            ConstantUtilityBillSeeder::class,
+            UtilityBillSeeder::class,
+
         ]);
 
         // Seed Users
