@@ -59,7 +59,7 @@ return new class extends Migration {
         });
 
         // RolePermission pivot table
-        Schema::create('role_permission', function (Blueprint $table) {
+        Schema::create('role_permissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
@@ -257,10 +257,19 @@ return new class extends Migration {
             $table->text('message');
             $table->timestamps();
         });
+
+        // Notices table
+        Schema::create('notices', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('body');
+            $table->timestamps();
+        });
     }
 
     public function down()
     {
+        Schema::dropIfExists('notices');
         Schema::dropIfExists('sms');
         Schema::dropIfExists('activity_logs');
         Schema::dropIfExists('suggestions');

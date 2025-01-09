@@ -15,7 +15,7 @@ class BedForm extends Form
 
 
     #[Validate('nullable')]
-    public $bed_no;
+    public $bed_no='';
 
     #[Validate('required')]
     public $property_id;
@@ -45,24 +45,22 @@ class BedForm extends Form
     public function store()
     {
 
-        $latestBed = Bed::orderBy('id', 'desc')->first();
-        $latestBedNo = $latestBed ? $latestBed->bed_no : 'BD-0000';
-
-        // Increment the room_no
-        $newBedNo = 'BD-' . str_pad((int) substr($latestBedNo, 3) + 1, 4, '0', STR_PAD_LEFT);
-
-        // Set the default value
-        $this->bed_no = $newBedNo;
-        
-        Bed::create([
-
+        $this->bed_no = '';
+        // Create the bed record without setting bed_no initially
+        $bed = Bed::create([
             'bed_no' => $this->bed_no,
             'property_id' => $this->property_id,
             'status_id' => $this->status_id,
             'room_id' => $this->room_id,
             'monthly_rate' => $this->monthly_rate,
-
         ]);
+    
+        // Update the bed_no to match the newly created bed's id
+        $bed->update([
+            'bed_no' => 'BD-' . str_pad($bed->id, 4, '0', STR_PAD_LEFT),
+        ]);
+    
+        // Reset the form
         $this->reset();
     }
 
@@ -78,6 +76,5 @@ class BedForm extends Form
 
         ]);
         $this->reset();
-
     }
 }

@@ -37,7 +37,10 @@ new class extends Component {
     // Table headers
     public function headers(): array
     {
-        return [['key' => 'image', 'label' => '', 'class' => 'w-1'], ['key' => 'room_no', 'label' => 'Room No', 'class' => 'w-12'], ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'], ['key' => 'created_at', 'label' => '', 'class' => 'hidden'], ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']];
+        return [['key' => 'image', 'label' => '', 'class' => 'w-1'], 
+        ['key' => 'room_no', 'label' => 'Room No', 'class' => 'w-12'], 
+        ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'], 
+        ['key' => 'created_at', 'label' => '', 'class' => 'hidden'], ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']];
     }
 
     public function rooms(): LengthAwarePaginator

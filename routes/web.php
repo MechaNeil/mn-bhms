@@ -73,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Invoice
     Volt::route('/utility-bills', 'roles.owner.pages.invoice.utility-bills.bills'); // Utility Bills
-    Volt::route('/view-invoice', 'roles.owner.pages.invoice.tenants-invoice.view-invoice'); // View Invoice
+    Volt::route('invoice/{invoice}/view', 'roles.owner.pages.invoice.tenants-invoice.view-invoice'); // View Invoice
     Volt::route('/invoice-list', 'roles.owner.pages.invoice.tenants-invoice.invoice-list'); // Invoice List
     Volt::route('/proof-of-transaction', 'roles.owner.pages.invoice.tenants-invoice.proof-of-transaction'); // Proof of Transaction
 

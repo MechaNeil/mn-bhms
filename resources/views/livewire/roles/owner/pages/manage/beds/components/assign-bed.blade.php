@@ -51,15 +51,21 @@ new class extends Component {
         return [
             'properties' => Property::all(),
             'rooms' => Room::where('property_id', $this->property_id)->get(),
-            'beds' => Bed::where('room_id', $this->room_id)->whereDoesntHave('bedAssignments')->get(),
-            'tenants' => Tenant::whereDoesntHave('bedAssignments')->get()->map(function ($user) {
-                $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
-                return $user;
-            }),
-            'users' => User::where('role_id', 2)->get()->map(function ($user) {
-                $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
-                return $user;
-            })
+            'beds' => Bed::where('room_id', $this->room_id)
+                ->whereDoesntHave('bedAssignments')
+                ->get(),
+            'tenants' => Tenant::whereDoesntHave('bedAssignments')
+                ->get()
+                ->map(function ($user) {
+                    $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    return $user;
+                }),
+            'users' => User::where('role_id', 2)
+                ->get()
+                ->map(function ($user) {
+                    $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    return $user;
+                }),
         ];
     }
 
@@ -90,7 +96,7 @@ new class extends Component {
         $counter = 1;
 
         while ($currentDate->lessThanOrEqualTo($dueDate)) {
-            $uniqueInvoiceNo = "INV-" . $data['tenant_id'] . "-" . $counter . "-" . now()->timestamp;
+            $uniqueInvoiceNo = 'INV-' . $data['tenant_id'] . '-' . $currentDate->copy()->startOfMonth()->format('Ymd') . '-' . $counter;
 
             Invoice::create([
                 'invoice_no' => $uniqueInvoiceNo,
@@ -100,7 +106,7 @@ new class extends Component {
                 'property_id' => $data['property_id'],
                 'room_id' => $data['room_id'],
                 'user_id' => $data['assigned_by'],
-                'status_id' => 1, // Assuming 1 is the default status ID for new invoices
+                'status_id' => 11, // Assuming 1 is the default status ID for new invoices
                 'amount_paid' => 0, // Default unpaid
             ]);
 
@@ -126,11 +132,16 @@ new class extends Component {
             </div>
 
             <div class="col-span-3 grid gap-3">
-                <x-select label="Tenant" wire:model.blur="tenant_id" :options="$tenants" option-label="full_name" placeholder="---" />
-                <x-select label="Property" wire:model.blur="property_id" :options="$properties" option-label="name" placeholder="---" />
-                <x-select label="Room" wire:model.blur="room_id" :options="$rooms" option-label="room_no" placeholder="---" />
-                <x-select label="Bed" wire:model.blur="bed_id" :options="$beds" option-label="bed_no" placeholder="---" />
-                <x-select label="Assigned By" wire:model.blur="assigned_by" :options="$users" option-label="full_name" placeholder="---" />
+                <x-select label="Tenant" wire:model.blur="tenant_id" :options="$tenants" option-label="full_name"
+                    placeholder="---" />
+                <x-select label="Property" wire:model.blur="property_id" :options="$properties" option-label="name"
+                    placeholder="---" />
+                <x-select label="Room" wire:model.blur="room_id" :options="$rooms" option-label="room_no"
+                    placeholder="---" />
+                <x-select label="Bed" wire:model.blur="bed_id" :options="$beds" option-label="bed_no"
+                    placeholder="---" />
+                <x-select label="Assigned By" wire:model.blur="assigned_by" :options="$users" option-label="full_name"
+                    placeholder="---" />
                 <x-input label="Start Date" wire:model.blur="date_started" type="date" />
                 <x-input label="Due Date" wire:model.blur="due_date" type="date" />
             </div>

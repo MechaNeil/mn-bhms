@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\{Invoice, Status};
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,11 +12,11 @@ class BedAssignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tenant_id', 
-        'bed_id', 
-        'room_id', 
-        'property_id', 
-        'date_started', 
+        'tenant_id',
+        'bed_id',
+        'room_id',
+        'property_id',
+        'date_started',
         'due_date',
         'assigned_by' // Add this line
     ];
@@ -35,14 +36,14 @@ class BedAssignment extends Model
 
         while ($currentDate->lessThanOrEqualTo($dueDate)) {
             Invoice::factory()->create([
-                'invoice_no' => "INV-" . $this->id . "-" . $counter,
+                'invoice_no' => "INV-" . $this->tenant_id . '-' . $currentDate->copy()->startOfMonth()->format('Ymd') . '-' . $counter,
                 'date_issued' => $currentDate->copy()->startOfMonth(),
                 'due_date' => $currentDate->copy()->endOfMonth(),
                 'tenant_id' => $this->tenant_id,
                 'property_id' => $this->property_id,
                 'room_id' => $this->room_id,
                 'user_id' => $this->assigned_by,
-                'status_id' => Status::factory(),
+                'status_id' => 11,
                 'amount_paid' => 0, // Default unpaid
             ]);
 
@@ -50,7 +51,6 @@ class BedAssignment extends Model
             $counter++;
         }
     }
-
 
     public function tenant()
     {

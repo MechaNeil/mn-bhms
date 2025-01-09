@@ -129,7 +129,7 @@ public function deleteTenant(int $tenantId): void
 
   <!-- TABLE -->
   <x-card>
-    <x-table :headers="$headers" :rows="$tenants" :sort-by="$sortBy" with-pagination link="tenant/{id}/view?name={first_name} {last_name}">
+    <x-table :headers="$headers" :rows="$tenants" :sort-by="$sortBy" with-pagination link="tenant/{id}/view?name={first_name}+{last_name}">
       @scope("cell_image", $tenant)
         <x-avatar image="{{ $tenant->profile_picture ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
       @endscope

@@ -20,10 +20,7 @@ new class extends Component {
         $this->user = $tenant->user;
     }
 
-    public function moreInfo()
-    {
-        return redirect();
-    }
+
 
 }; ?>
 

@@ -41,6 +41,7 @@ class Tenant extends Model
     {
         return $this->belongsTo(Status::class);
     }
+    
 
 
     public function bedAssignments()

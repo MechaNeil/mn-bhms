@@ -59,6 +59,8 @@ class DatabaseSeeder extends Seeder
         
         $this->call([
             BedAssignmentSeeder::class,
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

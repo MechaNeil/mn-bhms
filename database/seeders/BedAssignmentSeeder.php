@@ -10,7 +10,7 @@ class BedAssignmentSeeder extends Seeder
     public function run(): void
     {
         BedAssignment::factory()
-            ->count(5)
+            ->count(2)
             ->create()
             ->each(function ($bedAssignment) {
                 $bedAssignment->createInvoices($bedAssignment);

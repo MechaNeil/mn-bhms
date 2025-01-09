@@ -49,15 +49,6 @@ new class extends Component {
         $this->month = date('n'); // Set current month (1-12)
         $this->year = date('Y'); // Set current year (e.g., 2023)
 
-        $latestBed = Bed::orderBy('id', 'desc')->first();
-        $latestBedNo = $latestBed ? $latestBed->bed_no : 'BD-0000';
-
-        // Increment the room_no
-        $newBedNo = 'BD-' . str_pad((int) substr($latestBedNo, 3) + 1, 4, '0', STR_PAD_LEFT);
-
-        // Set the default value
-        $this->bed_no = $newBedNo;
-        // Initialize a new Room instance
     }
 
     public function getDaysInMonth(): int
@@ -175,14 +166,8 @@ new class extends Component {
         $this->bedModal = true;
         $this->isEditMode = false; // Set to true when editing
         $this->form->isEditMode = false; // Set to true when editing
-        $latestBed = Bed::orderBy('id', 'desc')->first();
-        $latestBedNo = $latestBed ? $latestBed->bed_no : 'BD-0000';
 
-        // Increment the room_no
-        $newBedNo = 'BD-' . str_pad((int) substr($latestBedNo, 3) + 1, 4, '0', STR_PAD_LEFT);
 
-        // Set the default value
-        $this->bed_no = $newBedNo;
     }
 
     public function save()
@@ -218,8 +203,11 @@ new class extends Component {
         <x-form wire:submit="save">
             <x-select label="Property" wire:model.blur="form.property_id" :options="$properties" option-label="name"
                 placeholder="Select a property" />
-            <x-input label="Bed No" wire:model="{{ $isEditMode ? 'form.bed_no' : ' bed_no ' }}" readonly /> <x-select
-                label="Room" wire:model.blur="form.room_id" :options="$rooms" option-label="room_no"
+            @if ($isEditMode)
+                <x-input label="Bed No" wire:model="{{ $isEditMode ? 'form.bed_no' : ' bed_no ' }}" readonly />
+            @endif
+
+            <x-select label="Room" wire:model.blur="form.room_id" :options="$rooms" option-label="room_no"
                 placeholder="Select a room" />
             <x-select label="Status" wire:model.blur="form.status_id" :options="$statuses" option-label="name"
                 placeholder="Select a status" />
