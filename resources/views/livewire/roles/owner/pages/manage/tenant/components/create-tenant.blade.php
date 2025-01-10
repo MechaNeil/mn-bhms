@@ -2,7 +2,7 @@
 
 use Livewire\WithFileUploads;
 use App\Models\Tenant;
-use App\Models\Property;
+
 use App\Models\User;
 use App\Models\Gender;
 use Mary\Traits\Toast;
@@ -27,9 +27,6 @@ new class extends Component {
     #[Validate('required|array')]
     #[Validate(['proof_of_identity.*' => 'file|max:2048'])]
     public array $proof_of_identity = [];
-
-    #[Validate('required')]
-    public ?int $property_id = null;
 
     #[Validate('nullable')]
     public ?int $user_id = null;
@@ -96,7 +93,6 @@ new class extends Component {
     public function with(): array
     {
         return [
-            'properties' => Property::all(),
             'genders' => Gender::all(),
         ];
     }
@@ -207,7 +203,6 @@ new class extends Component {
                 <x-input label="Last Name" wire:model.blur="last_name" />
 
                 <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
-                <x-select label="Property" wire:model.blur="property_id" :options="$properties" placeholder="---" />
                 <x-input label="Phone" wire:model.blur="phone" />
                 <x-input label="Address" wire:model.blur="address" />
 

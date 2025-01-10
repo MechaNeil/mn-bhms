@@ -37,10 +37,13 @@ new class extends Component {
     // Table headers
     public function headers(): array
     {
-        return [['key' => 'image', 'label' => '', 'class' => 'w-1'], 
-        ['key' => 'room_no', 'label' => 'Room No', 'class' => 'w-12'], 
-        ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'], 
-        ['key' => 'created_at', 'label' => '', 'class' => 'hidden'], ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']];
+        return [
+            ['key' => 'image', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'room_no', 'label' => 'Room No', 'class' => 'w-12'],
+            ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-64'],
+            ['key' => 'created_at', 'label' => '', 'class' => 'hidden'],
+            ['key' => 'updated_at', 'label' => '', 'class' => 'hidden']
+        ];
     }
 
     public function rooms(): LengthAwarePaginator
@@ -113,11 +116,11 @@ new class extends Component {
         <x-table :headers="$headers" :rows="$rooms" :sort-by="$sortBy" with-pagination
             link="room/{id}/edit?room_no={room_no}">
             @scope('cell_image', $room)
-                <x-avatar image="{{ $room->image ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
+            <x-avatar image="{{ $room->image ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
             @endscope
             @scope('actions', $room)
-                <x-button icon="o-trash" wire:click="delete({{ $room['id'] }})" wire:confirm="Are you sure?" spinner
-                    class="btn-ghost btn-sm text-red-500" />
+            <x-button icon="o-trash" wire:click="delete({{ $room['id'] }})" wire:confirm="Are you sure?" spinner
+                class="btn-ghost btn-sm text-red-500" />
             @endscope
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />

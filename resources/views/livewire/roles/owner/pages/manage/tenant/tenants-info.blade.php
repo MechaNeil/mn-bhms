@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Tenant;
-use App\Models\Property;
 use App\Models\User; // Added User model
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
@@ -15,7 +14,8 @@ new class extends Component {
   use Toast;
   use WithPagination;
 
-  public int $property_id = 0;
+  // Remove property_id
+  // public int $property_id = 0;
   public string $search = "";
   public bool $drawer = false;
   public array $sortBy = ["column" => "last_name", "direction" => "asc"];
@@ -56,12 +56,11 @@ public function deleteTenant(int $tenantId): void
   public function headers(): array
   {
     return [
-      
-      
       ["key" => "image", "label" => "", "class" => "w-1"],
       ["key" => "first_name", "label" => "First Name", "class" => ""],
       ["key" => "last_name", "label" => "Last Name", "class" => ""],
-      ["key" => "property_name", "label" => "Property", "class" => ""],
+      // Remove property column
+      // ["key" => "property_name", "label" => "Property", "class" => ""],
       ["key" => "user_username", "label" => "Username", "class" => ""], // Added user name column
       ["key" => "user_email", "label" => "User Email", "class" => "hidden"], // Added user email column
       ["key" => "created_at", "label" => "Created at", "class" => ""],
@@ -72,12 +71,12 @@ public function deleteTenant(int $tenantId): void
   public function tenants(): LengthAwarePaginator
   {
     return Tenant::query()
-      ->withAggregate("property", "name")
       ->withAggregate("user", "username") // Added user name aggregation
       ->withAggregate("user", "email") // Added user email aggregation
-      ->with(["property", "user"]) // Eager load user relationship
+      ->with(["user"]) // Eager load user relationship
       ->when($this->search, fn (Builder $q) => $q->where("last_name", "like", "%$this->search%"))
-      ->when($this->property_id, fn (Builder $q) => $q->where("property_id", $this->property_id))
+      // Remove property filter
+      // ->when($this->property_id, fn (Builder $q) => $q->where("property_id", $this->property_id))
       ->orderBy(...array_values($this->sortBy))
       ->paginate(4);
   }
@@ -87,7 +86,8 @@ public function deleteTenant(int $tenantId): void
     return [
       "tenants" => $this->tenants(),
       "headers" => $this->headers(),
-      "properties" => Property::all(),
+      // Remove properties
+      // "properties" => Property::all(),
     ];
   }
 
@@ -106,9 +106,10 @@ public function deleteTenant(int $tenantId): void
       $count++;
     }
 
-    if ($this->property_id) {
-      $count++;
-    }
+    // Remove property filter count
+    // if ($this->property_id) {
+    //   $count++;
+    // }
 
     return $count;
   }
@@ -156,7 +157,7 @@ public function deleteTenant(int $tenantId): void
   <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
     <div class="grid gap-5">
       <x-input placeholder="Tenant..." wire:model.live.debounce="search" icon="o-magnifying-glass" @keydown.enter="$wire.drawer = false" />
-      <x-select placeholder="Property" wire:model.live="property_id" :options="$properties" icon="o-flag" placeholder-value="0" />
+      <!-- Remove Property filter -->
     </div>
     <x-slot:actions>
       <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />

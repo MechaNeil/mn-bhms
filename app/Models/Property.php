@@ -52,11 +52,6 @@ class Property extends Model
         return $this->hasMany(Bed::class);
     }
 
-    public function tenants()
-    {
-        return $this->hasMany(Tenant::class);
-    }
-
     public function activityLogs()
     {
         return $this->hasMany(ActivityLog::class);

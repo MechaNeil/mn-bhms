@@ -56,7 +56,6 @@ class TenantFactory extends Factory
 
         return [
             'user_id' => $user->id,
-            'property_id' => Property::inRandomOrder()->first()->id,
             'phone' => $this->faker->phoneNumber,
             'address' => $this->faker->address,
             'first_name' => $firstName,

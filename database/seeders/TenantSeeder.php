@@ -13,7 +13,7 @@ class TenantSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 tenants with related models (User, Property, Gender, Status)
+        // Create 10 tenants with related models (User, Gender, Status)
         Tenant::factory()
             ->count(10)
             ->create();

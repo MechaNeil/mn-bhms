@@ -10,7 +10,7 @@ class Tenant extends Model
 
     protected $fillable = [
         'user_id',
-        'property_id',
+
         'status_id',
         'phone',
         'address',
@@ -27,10 +27,11 @@ class Tenant extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
-    }
+    // Remove property relationship
+    // public function property()
+    // {
+    //     return $this->belongsTo(Property::class);
+    // }
 
     public function gender()
     {

@@ -2,7 +2,7 @@
 
 use Livewire\WithFileUploads;
 use App\Models\Tenant;
-use App\Models\Property;
+
 use App\Models\User;
 use App\Models\Gender;
 use Mary\Traits\Toast;
@@ -30,8 +30,8 @@ new class extends Component {
     #[Validate(['proof.*' => 'file|max:2048'])]
     public array $proof = [];
 
-    #[Validate('required')]
-    public ?int $property_id;
+    // #[Validate('required')]
+    // public ?int $property_id;
 
     #[Validate('nullable')]
     public ?int $user_id;
@@ -61,7 +61,7 @@ new class extends Component {
         $this->last_name = $tenant->user->last_name ?? '';
         $this->middle_name = $tenant->user->middle_name ?? ''; // Ensure property exists
         $this->profile_picture = $tenant->profile_picture ?? ''; // Ensure property exists
-        $this->property_id = $tenant->property_id ?? ''; // Ensure property exists
+        // $this->property_id = $tenant->property_id ?? ''; // Ensure property exists
         $this->user_id = $tenant->user_id ?? ''; // Ensure property exists
         $this->phone = $tenant->phone ?? ''; // Ensure property exists
         $this->gender_id = $tenant->gender_id ?? ''; // Ensure property exists
@@ -98,7 +98,7 @@ new class extends Component {
     public function with(): array
     {
         return [
-            'properties' => Property::all(),
+            // 'properties' => Property::all(),
             'genders' => Gender::all(),
         ];
     }
@@ -256,7 +256,7 @@ new class extends Component {
                 <x-input label="Last Name" wire:model.blur="last_name" />
 
                 <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
-                <x-select label="Property" wire:model.blur="property_id" :options="$properties" placeholder="---" />
+
                 <x-input label="Phone" wire:model.blur="phone" />
                 <x-input label="Address" wire:model.blur="address" />
 
