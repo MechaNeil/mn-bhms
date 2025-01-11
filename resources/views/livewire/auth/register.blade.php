@@ -74,9 +74,13 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     }
     public function mount()
     {
-        // It is logged in
-        if (auth()->user()) {
-            return redirect('/dashboard-owner');
+        // Check if the user is logged in and redirect based on role
+        if ($user = auth()->user()) {
+            if ($user->role_id == 4) {
+                return redirect('/dashboard-owner'); // Redirect to admin dashboard
+            } elseif ($user->role_id == 1) {
+                return redirect('/dashboard-tenant'); // Redirect to tenant dashboard
+            }
         }
     }
 
@@ -93,7 +97,14 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
 
         request()->session()->regenerate();
 
-        return redirect('/dashboard-owner');
+        // Redirect based on user role
+        if ($user->role_id == 4) {
+            return redirect()->intended('/dashboard-owner'); // Redirect to admin dashboard
+        } elseif ($user->role_id == 1) {
+            return redirect()->intended('/dashboard-tenant'); // Redirect to tenant dashboard
+        } else {
+            return redirect()->intended('/'); // Default redirect
+        }
     }
 }; ?>
 

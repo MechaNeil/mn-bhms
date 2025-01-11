@@ -39,7 +39,7 @@
                 {{-- User --}}
                 @if ($user = auth()->user())
                     <x-menu-separator />
-                    <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover
+                    <x-list-item :item="$user" value="username" sub-value="role.name"  no-separator no-hover
                     class="-mx-2 !-my-2 rounded">
                     <x-slot:actions>
                         <x-dropdown>
@@ -59,7 +59,11 @@
                 </x-list-item>
 
                     <x-menu-separator />
-                    <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-owner" />
+                    @if ($user->role_id == 4)
+                        <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-owner" />
+                    @elseif ($user->role_id == 1)
+                        <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-tenant" />
+                    @endif
                 @else
                     <x-menu-separator />
                     <x-menu-item title="Get Started" link="/login" icon="o-paper-airplane" responsive />
