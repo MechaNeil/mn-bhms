@@ -25,8 +25,17 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
 
     public function with(): array
     {
+        $roles = Role::all();
+        // Check if an admin already exists
+        if (User::where('role_id', 4)->exists()) {
+            // Remove admin role from the roles list
+            $roles = $roles->filter(function ($role) {
+                return $role->id != 4;
+            });
+        }
+
         return [
-            'roles' => Role::all(),
+            'roles' => $roles,
         ];
     }
 
@@ -87,6 +96,13 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     public function register()
     {
         $data = $this->validate();
+
+        // Check if an admin already exists before creating a new user
+        if ($data['role_id'] == 4 && User::where('role_id', 4)->exists()) {
+            session()->flash('error', 'An admin already exists.');
+            return;
+        }
+
         $data['avatar'] = '/empty-user.jpg';
         $data['password'] = Hash::make($data['password']);
         $data['status_id'] = 1; // Set status_id to 1
