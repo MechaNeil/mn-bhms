@@ -50,6 +50,9 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
 - **Volt**
 - **Vite**
 
+## 📦 Package Manager
+- **Yarn**
+
 ## 🌻Ui Framworks
 - **Tailwind**
 - **Daisy Ui**
