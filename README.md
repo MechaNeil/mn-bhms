@@ -6,61 +6,86 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+![MasterHead](https://github.com/user-attachments/assets/936e055c-0200-43da-94c7-90d022fae139)
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Boarding House Management System (BHMS)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📲 Introduction
+The **Boarding House Management System (BHMS)** is an automated platform designed to streamline the operations of boarding houses. It allows management to electronically monitor, track, and manage all operations efficiently, providing an improved experience for both tenants and landlords.
 
-## Laravel Sponsors
+## 💁‍♂️ Purpose
+This system was developed to automate the management of boarding houses, ensuring a smoother and more effective process. By creating an online platform for recording transactions and communications between tenants and the management, BHMS significantly improves operational efficiency.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## ⚙️ Features
+- **Tenant Management**: Easily manage tenant information and profiles.
+- **Room Management**: Track and monitor room availability and assignments.
+- **Payment Tracking**: Simplify rental payment processes with automated tracking.
+- **Report Generation**: Generate real-time reports for collectibles, payments, and more.
 
-### Premium Partners
+## 🔎 System Benefits
+The BHMS has been evaluated by end-users and received high ratings in terms of:
+- User acceptability
+- System effectiveness
+- Productivity
+- Dependability
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+The system ensures an efficient, user-friendly experience for all users, enhancing the productivity and operational efficiency of boarding house management.
 
-## Contributing
+ <img align="right" alt="coffe" width="40" src="https://user-images.githubusercontent.com/74038190/216120974-24a76b31-7f39-41f1-a38f-b3c1377cc612.png">
+ 
+## 💻 Technologies
+- **Laravel (Latest version)**
+- **Livewire (Version 3)**
+- **Vite**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 👨‍💻 Installation 
+- You need this software before you start:
+    `Laravel Herd`
+    `Composer`
+    `Node.js`
+    `Vscode`.
+- Download the File
+- Extract the file
+    - Open Laravel Herd and 
+    - In Herd click Open Sites
+    - Click Add
+    - Choose Link existing project
+    - Choose the the folder of the Extracted file
+- If it doesn't work Do this instead 
+    - Manualy Move the file to this directory `C:\Users\{username}\Herd`
+    - After that go to your Laravel Herd, Open sites
+    - If it doesn't show up, refresh the site you can do this by right clicking to the Add and click `refresh`
+    - After that the site `bhms-main` should show up
+    - If you click the link at first it will not work and that's ok follow the next steps 
+    - open that file in Vscode and follow the steps and install Dependences
 
-## Code of Conduct
+#### ⚙️ **Install Dependences**
+- In vscode create/open terminal or use this shortcut {Ctrl+Shift+`}
+- In the terminal run
+    - `npm install`
+    - `composer install`
+    - `cp .env.example .env` 
+- in your .env file connect it to your database
+- Open the terminal again and run
+    - `php artisan key:generate`
+    - `php artisan migrate`
+    - `npm run dev` for production use this `npm run build`
+- In Laravel Herd inside the open site choose the `bhms-main`
+- Click the url again and it should work normaly, enjoy!!
+  
+Please Contribute to this project by leaving a star ⭐
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+## 👀 Conclusion
+The BHMS is a reliable and effective solution for automating the daily operations of boarding houses. It provides an online platform that meets the needs of both management and tenants, enhancing productivity and improving overall satisfaction.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+**Developed by:** Neil
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
