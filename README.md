@@ -1,12 +1,7 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 ![MasterHead](https://github.com/user-attachments/assets/936e055c-0200-43da-94c7-90d022fae139)
+
 
 
 
@@ -68,14 +63,14 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
 #### ⚙️ **Install Dependences**
 - In vscode create/open terminal or use this shortcut {Ctrl+Shift+`}
 - In the terminal run
-    - `npm install`
+    - `yarn`
     - `composer install`
     - `cp .env.example .env` 
 - in your .env file connect it to your database
 - Open the terminal again and run
     - `php artisan key:generate`
     - `php artisan migrate`
-    - `npm run dev` for production use this `npm run build`
+    - `yarn dev` for production use this `yarn build`
 - In Laravel Herd inside the open site choose the `bhms-main`
 - Click the url again and it should work normaly, enjoy!!
   
