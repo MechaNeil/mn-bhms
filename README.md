@@ -47,7 +47,13 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
 ## 💻 Technologies
 - **Laravel (Latest version)**
 - **Livewire (Version 3)**
+- **Volt**
 - **Vite**
+
+## 🌻Ui Framworks
+- **Tailwind**
+- **Daisy Ui**
+- **Mary Ui**
 
 ## 👨‍💻 Installation 
 - You need this software before you start:
