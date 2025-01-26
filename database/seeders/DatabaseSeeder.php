@@ -9,22 +9,23 @@ use App\Models\Room;
 use App\Models\Tenant;
 use App\Models\Status;
 
+use App\Models\Assistant;
+
 use App\Models\Permission;
 use App\Models\Company;
 use App\Models\Property;
 
 class DatabaseSeeder extends Seeder
 {/**
-     * Seed the application's database.
-     */
+ * Seed the application's database.
+ */
     public function run(): void
     {
         // Create the Admin role
         // ...
 
-        // Seed Companies
-        Company::factory()->count(4)->create();
-        
+
+
 
         // Seed Properties
 
@@ -32,32 +33,42 @@ class DatabaseSeeder extends Seeder
         // Seed Genders, Roles, and Statuses
         $this->call([
             GenderSeeder::class,
-            RolesSeeder::class,
             StatusSeeder::class,
-            UserSeeder::class,
-            AssistantSeeder::class,
+            RolesSeeder::class,
+            AdminSeeder::class,
+            OwnerSeeder::class,
+
             ConstantUtilityBillSeeder::class,
-            UtilityBillSeeder::class,
 
         ]);
 
         // Seed Users
-
         User::factory()->count(10)->create();
+
+        // Seed Companies
+        Company::factory()->count(4)->create();
+
+        // Seed Tenants        
+        Tenant::factory()->count(20)->create();
+
+        // Seed Properties
         Property::factory()->count(10)->create();
+
+        // Seed Assistant
+        Assistant::factory()->count(10)->create();
+
         // Seed Rooms
         Room::factory()->count(20)->create();
-
-        // Seed Statuses
 
         // Seed Beds
         Bed::factory()->count(10)->create();
 
-        // Seed Tenants
-        Tenant::factory()->count(20)->create();
 
-        
+
         $this->call([
+            
+            UtilityTypeSeeder::class,
+            UtilityBillSeeder::class,
             BedAssignmentSeeder::class,
             PermissionSeeder::class,
             RolePermissionSeeder::class,

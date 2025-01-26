@@ -8,7 +8,7 @@ class Status extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'context'];
+    protected $fillable = ['name', 'context'];
 
     public function beds()
     {
@@ -21,18 +21,20 @@ class Status extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function proofOfTransactions()
-    {
-        return $this->hasMany(ProofOfTransaction::class);
-    }
-
-    public function paymentLists()
-    {
-        return $this->hasMany(PaymentList::class, 'payment_status_id');
-    }
     public function users()
     {
         return $this->hasMany(User::class);
     }
+    //suggestions
+    public function suggestions()
+    {
+        return $this->hasMany(Suggestion::class);
+    }
+    //bed assignments
+    public function bedAssignments()
+    {
+        return $this->hasMany(BedAssignment::class);
+    }
+
 
 }

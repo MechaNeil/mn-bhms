@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Gender;
 use Illuminate\Support\Str;
 
 /**
@@ -43,8 +44,11 @@ class UserFactory extends Factory
             'username' => $this->generateUniqueUsername($firstName, $lastName),
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'), // Default password
+            'address' => $this->faker->address,
+            'contact_no' => $this->faker->phoneNumber,
             'avatar' => '/empty-user.jpg',
             'role_id' => 5,
+            'gender_id' => Gender::inRandomOrder()->first()->id,
             'status_id' => 1,
         ];
     }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Carbon\Carbon;
 
-class UserSeeder extends Seeder
+class AdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,11 +21,17 @@ class UserSeeder extends Seeder
                 'first_name' => 'Mark Neil',
                 'last_name' => 'Teves',
                 'middle_name' => 'Torres',
-                'username' => 'Mark Neil Teves',
+                'username' => 'Neil',
                 'email' => 'mn@gmail.com',
+                //gender
+                'gender_id' => 1,
+                //contact_no
+                'contact_no' => '09123456789',
+                //address
+                'address' => 'Begonia, Viga, Catanduanes',
                 'password' => Hash::make('12345678'),
                 'avatar' => '/empty-user.jpg',
-                'role_id' => 4,
+                'role_id' => 1,
                 'status_id' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

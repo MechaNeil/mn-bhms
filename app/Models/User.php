@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class User extends Authenticatable
 {
@@ -17,10 +17,12 @@ class User extends Authenticatable
         'middle_name',
         'username',
         'email',
+        'contact_no',
+        'address',
+        'gender_id',
         'password',
         'avatar',
         'status_id',
-        'gender_id',
         'role_id'
     ];
 
@@ -28,11 +30,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Tenant::class);
     }
-
-    public function properties(): HasMany
+    public function assistant()
     {
-        return $this->hasMany(Property::class);
+        return $this->hasOne(Assistant::class);
     }
+
+
 
     public function gender()
     {
@@ -44,10 +47,18 @@ class User extends Authenticatable
         return $this->belongsTo(Status::class);
     }
 
-    public function roles()
+    public function suggestions()
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasMany(Suggestion::class);
     }
+
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
+    }
+    
+    
+
 
     public function role()
     {
@@ -59,5 +70,8 @@ class User extends Authenticatable
         return $this->hasMany(ActivityLog::class);
     }
 
-
+    public function relatedActivityLogs()
+    {
+        return $this->morphMany(ActivityLog::class, 'related');
+    }
 }

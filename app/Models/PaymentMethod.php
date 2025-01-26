@@ -11,8 +11,8 @@ class PaymentMethod extends Model
 
     protected $fillable = ['name', 'payment_logo', 'description'];
 
-    public function proofOfTransactions()
+    public function payments()
     {
-        return $this->hasMany(ProofOfTransaction::class);
+        return $this->hasMany(Payment::class);
     }
 }

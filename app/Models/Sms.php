@@ -9,5 +9,5 @@ class Sms extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['api_code', 'api', 'set_alarm', 'message'];
+    protected $fillable = ['api_key', 'api_url', 'alarm_time', 'message'];
 }

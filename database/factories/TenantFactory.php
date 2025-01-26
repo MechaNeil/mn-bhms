@@ -47,24 +47,21 @@ class TenantFactory extends Factory
             'middle_name' => $this->faker->optional()->firstName,
             'username' => $this->generateUniqueUsername($firstName, $lastName),
             'email' => $this->faker->unique()->safeEmail,
+            'gender_id' => Gender::inRandomOrder()->first()->id,
+            'address' => $this->faker->address,
+            'contact_no' => $this->faker->phoneNumber,
             'password' => Hash::make('password'), // Default password
             'avatar' => '/empty-user.jpg',
             // role status
-            'role_id' => 1,
-            'status_id' => 1,
+            'role_id' => 4,
+            'status_id' => $this->faker->randomElement([1, 2]), // Randomly assign status_id as 1 or 2
         ]);
 
         return [
             'user_id' => $user->id,
-            'phone' => $this->faker->phoneNumber,
-            'address' => $this->faker->address,
-            'first_name' => $firstName,
-            'last_name' => $lastName,
-            'middle_name' => $this->faker->optional()->firstName,
-            'gender_id' => Gender::inRandomOrder()->first()->id,
-            'profile_picture' => '/empty-user.jpg',
-            'proof_of_identity' => json_encode(['/empty-user.jpg']),
-            'status_id' => $this->faker->randomElement([1, 2]), // Randomly assign status_id as 1 or 2
+            'document_type' => 'Id',
+            'document_url' => '/empty-user.jpg',
+
         ];
     }
 }

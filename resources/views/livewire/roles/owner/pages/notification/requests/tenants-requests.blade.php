@@ -18,6 +18,10 @@ new class extends Component {
     public bool $drawer = false;
     public array $sortBy = ['column' => 'date_issued', 'direction' => 'asc'];
 
+    
+
+
+
     public function clear(): void
     {
         $this->reset();

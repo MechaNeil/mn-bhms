@@ -14,17 +14,22 @@ class BedAssignment extends Model
     protected $fillable = [
         'tenant_id',
         'bed_id',
-        'room_id',
-        'property_id',
         'date_started',
         'due_date',
-        'assigned_by' // Add this line
+        'assigned_by',
+        'constant_utility_bill_id',
+        'status_id'
     ];
 
     protected $casts = [
         'date_started' => 'datetime',
         'due_date' => 'datetime',
     ];
+
+    /**
+ * The function `createInvoices` generates monthly invoices for a tenant based on the start and due
+ * dates provided.
+ */
 
     public function createInvoices(): void
     {
@@ -37,12 +42,9 @@ class BedAssignment extends Model
         while ($currentDate->lessThanOrEqualTo($dueDate)) {
             Invoice::factory()->create([
                 'invoice_no' => "INV-" . $this->tenant_id . '-' . $currentDate->copy()->startOfMonth()->format('Ymd') . '-' . $counter,
+                'bed_assignment_id' => $this->id,
                 'date_issued' => $currentDate->copy()->startOfMonth(),
                 'due_date' => $currentDate->copy()->endOfMonth(),
-                'tenant_id' => $this->tenant_id,
-                'property_id' => $this->property_id,
-                'room_id' => $this->room_id,
-                'user_id' => $this->assigned_by,
                 'status_id' => 11,
                 'amount_paid' => 0, // Default unpaid
             ]);
@@ -51,24 +53,33 @@ class BedAssignment extends Model
             $counter++;
         }
     }
+    public function bed()
+    {
+        return $this->belongsTo(Bed::class);
+    }
 
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
     }
 
-    public function bed()
+    public function assignedBy()
     {
-        return $this->belongsTo(Bed::class);
+        return $this->belongsTo(User::class, 'assigned_by');
     }
 
-    public function room()
+    public function status()
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Status::class);
     }
 
-    public function property()
+    public function constantUtilityBill()
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(ConstantUtilityBill::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

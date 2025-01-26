@@ -68,7 +68,7 @@
 
 
                 <x-menu-sub title="Manage" icon="bi.gear">
-                    <x-menu-item title="Assistant" icon="bi.person-lines-fill" link="/permission-management" />
+                    <x-menu-item title="Assistant" icon="bi.person-lines-fill" link="/assistant-management" />
                     <x-menu-item title="Apartment" icon="bi.house-door" link="/apartment" />
                     <x-menu-item title="Room" icon="bi.door-closed" link="/room-management" />
                     <x-menu-item title="Tenants" icon="bi.person-check-fill" link="/tenants-information" />

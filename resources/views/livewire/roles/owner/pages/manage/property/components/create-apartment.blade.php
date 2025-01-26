@@ -3,7 +3,6 @@
 use Livewire\WithFileUploads;
 use App\Models\Property;
 use App\Models\Company;
-use App\Models\User; // Added User model
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
@@ -22,17 +21,13 @@ new class extends Component {
     #[Rule('required')]
     public string $address = '';
 
-    #[Rule('required')]
-    public string $contact_no = '';
+
 
     #[Rule('nullable|image|max:1024')]
     public $photo;
 
     #[Rule('required')]
     public ?int $company_id = null;
-
-    #[Rule('required')]
-    public ?int $user_id = null; // Added user_id property
 
     #[Reactive]
     public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
@@ -42,10 +37,6 @@ new class extends Component {
     {
         return [
             'companies' => Company::all(),
-            'users' => User::where('role_id', 2)->get()->map(function ($user) { // Filter users by role_id
-                $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
-                return $user;
-            })
         ];
     }
 
@@ -54,9 +45,7 @@ new class extends Component {
         // Initialize values
         $this->name = '';
         $this->address = '';
-        $this->contact_no = '';
         $this->company_id = null;
-        $this->user_id = null;
     }
 
     public function save(): void
@@ -107,9 +96,6 @@ new class extends Component {
 
                 <x-select label="Company" icon-right="o-building-office" wire:model.blur="company_id" :options="$companies"
                     placeholder="---" />
-                <x-choices label="User" height="max-h-96" icon-right="o-user" wire:model.blur="user_id"
-                    option-label="full_name" option-sub-label="email" option-avatar="avatar" :options="$users"
-                    placeholder="---" single /> <!-- Added user selection form -->
             </div>
         </div>
 
@@ -123,7 +109,6 @@ new class extends Component {
 
             <div class="col-span-3 grid gap-3">
                 <x-input label="Address" wire:model.blur="address" />
-                <x-input label="Contact No" wire:model.blur="contact_no" />
             </div>
 
         </div>

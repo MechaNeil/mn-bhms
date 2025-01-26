@@ -3,7 +3,6 @@
 use Livewire\WithFileUploads;
 use App\Models\Property;
 use App\Models\Company;
-use App\Models\User;
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
@@ -21,24 +20,15 @@ new class extends Component {
 
     #[Rule('required')]
     public string $apartment_no = '';
-    
+
     #[Rule('nullable|image|max:1024')]
     public $photo;
 
     #[Rule('required')]
     public ?int $company_id = null;
 
-
-    #[Rule('required')]
-    public ?int $user_id = null;
-
-
     #[Rule('required')]
     public string $address = '';
-
-    #[Rule('required')]
-    public string $contact_no = '';
-
 
     public bool $myModal1 = false;
 
@@ -50,15 +40,7 @@ new class extends Component {
     {
         return [
             'companies' => Company::all(),
-            'users' => User::where('role_id', 2)->get()->map(function ($user) {
-                $user->full_name = trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
-                return $user;
-            })
         ];
-    }
-    public function getFullNameAttribute(): string
-    {
-        return trim("{$this->user->first_name} {$this->user->middle_name} {$this->user->last_name}");
     }
 
     public function mount(): void
@@ -74,7 +56,7 @@ new class extends Component {
         $property = Property::find($propertyId);
         if ($property) {
             $property->delete();
-  
+
             $this->warning("$property->name deleted", 'Good bye!', position: 'toast-bottom', redirectTo: '/apartment');
             $this->myModal1 = false;
         } else {
@@ -82,15 +64,11 @@ new class extends Component {
         }
     }
 
-
-
     public function save(): void
     {
-
         // Validate
         $data = $this->validate();
         $this->property->update($data);
-
 
         // Handle avatar upload if provided
         if ($this->photo) {
@@ -98,7 +76,6 @@ new class extends Component {
             $this->property->update(['image' => "/storage/$url"]);
         }
         $this->sortBy = ['column' => 'updated_at', 'direction' => 'desc'];
-
 
         // Provide success feedback
         $this->success('Property updated successfully.', redirectTo: '/apartment');
@@ -108,10 +85,9 @@ new class extends Component {
 ?>
 
 <div>
-    <x-header title="Update {{ $property->name }}" separator>
+    <x-header title="Update {{ $property->name }}" size="lg:text-3xl md:text-2xl" separator>
         <x-slot:actions>
-            <x-button icon="o-trash" @click="$wire.myModal1 = true" spinner
-                class="btn-ghost normal-case text-red-500" />
+            <x-button icon="o-trash" @click="$wire.myModal1 = true" spinner class="btn-ghost normal-case text-red-500 " />
         </x-slot:actions>
     </x-header>
 
@@ -121,8 +97,6 @@ new class extends Component {
         <x-button icon="o-trash" class="btn-error" label="Delete" wire:click="delete({{ $property['id'] }})"
             spinner="delete" />
     </x-modal>
-
-
 
     <x-form wire:submit="save">
 
@@ -142,18 +116,17 @@ new class extends Component {
                 <x-input label="Property No" wire:model.blur="apartment_no" readonly />
                 <x-input label="Name" wire:model.blur="name" />
 
+                <x-select label="Company" icon-right="o-building-office" wire:model.blur="company_id" :options="$companies"
+                    placeholder="---" />
 
-                <x-select label="Company" icon-right="o-building-office" wire:model.blur="company_id"
-                    :options="$companies" placeholder="---" />
 
-                <x-choices label="User" height="max-h-96" icon-right="o-user" wire:model.blur="user_id"
-                    option-label="full_name" option-sub-label="email" option-avatar="avatar" :options="$users"
-                    placeholder="---" single />
             </div>
+
+
+
         </div>
-
         <hr class="my-5" />
-
+        
         <div class="lg:grid grid-cols-5">
 
             <div class="col-span-2">
@@ -162,12 +135,9 @@ new class extends Component {
 
             <div class="col-span-3 grid gap-3">
                 <x-input label="Address" wire:model.blur="address" />
-                <x-input label="Contact No" wire:model.blur="contact_no" />
             </div>
 
         </div>
-
-
         <x-slot:actions>
             <x-button label="Cancel" link="/apartment" />
             <x-button label="Update" icon="o-paper-airplane" spinner="save" type="submit" class="btn-primary" />

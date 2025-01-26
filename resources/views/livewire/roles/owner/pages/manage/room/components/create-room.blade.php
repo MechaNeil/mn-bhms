@@ -14,7 +14,7 @@ new class extends Component {
 
     public Room $room;
 
-    #[Rule('required')]
+        #[Rule('nullable')]
     public string $room_no = '';
 
     #[Rule('nullable|image|max:1024')]
@@ -36,40 +36,21 @@ new class extends Component {
         ];
     }
 
-    public function mount(): void
-    {
-        // Fetch the latest room_no
-        $latestRoom = Room::orderBy('id', 'desc')->first();
-        $latestRoomNo = $latestRoom ? $latestRoom->room_no : 'RM-0000';
-
-        // Increment the room_no
-        $newRoomNo = 'RM-' . str_pad((int) substr($latestRoomNo, 3) + 1, 4, '0', STR_PAD_LEFT);
-
-        // Set the default value
-        $this->room_no = $newRoomNo;
-
-        // Initialize a new Room instance
-        $this->room = new Room();
-    }
 
     public function save(): void
     {
-        // Fetch the latest room_no
-        $latestRoom = Room::orderBy('id', 'desc')->first();
-        $latestRoomNo = $latestRoom ? $latestRoom->room_no : 'RM-0000';
 
-        // Increment the room_no
-        $newRoomNo = 'RM-' . str_pad((int) substr($latestRoomNo, 3) + 1, 4, '0', STR_PAD_LEFT);
-
-        // Set the default value
-        $this->room_no = $newRoomNo;
 
         // Validate
         $data = $this->validate();
-        $this->room->fill($data);
-        $this->room->save();
 
+        // Create new property without the apartment_no
+        $room = Room::create($data);
 
+        // Update the apartment_no based on the room id
+        $room->update([
+            'room_no' => 'RM-' . str_pad($room->id, 4, '0', STR_PAD_LEFT),
+        ]);
 
 
 
@@ -107,9 +88,11 @@ new class extends Component {
                 <x-file label="Image" wire:model.blur="photo" accept="image/png, image/jpeg" crop-after-change>
                     <img src="{{ $room->image ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
                 </x-file>
-                <x-input label="Room No" wire:model.blur="room_no" readonly />
+     
                 <x-select label="Property" icon-right="o-building-office" wire:model.blur="property_id"
                     :options="$properties" placeholder="---" />
+
+                <x-input label="Capacity" placeholder="Placeholder" />
             </div>
         </div>
 

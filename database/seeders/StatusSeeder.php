@@ -14,106 +14,101 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         $statuses = [
-            // Tenant Status
+
+            // User Status 1
             [
                 'name' => 'Active',
-                'description' => 'The tenant is currently active.',
-                'context' => 'Tenant Status',
+                'context' => 'User Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 2
             [
                 'name' => 'Inactive',
-                'description' => 'The tenant is currently inactive.',
-                'context' => 'Tenant Status',
+                'context' => 'User Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 3
             [
                 'name' => 'Pending',
-                'description' => 'The tenant\'s status is pending.',
-                'context' => 'Tenant Status',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            // User Status
-            [
-                'name' => 'Active',
-                'description' => 'The user is currently active.',
                 'context' => 'User Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 4
             [
-                'name' => 'Inactive',
-                'description' => 'The user is currently inactive.',
+                'name' => 'Suspended',
                 'context' => 'User Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            // Room Status
+            // 5
+            [
+                'name' => 'Deleted',
+                'context' => 'User Status',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            // Room Status 6
             [
                 'name' => 'Occupied',
-                'description' => 'The room is currently occupied.',
                 'context' => 'Room Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 7
             [
                 'name' => 'Vacant',
-                'description' => 'The room is currently vacant.',
                 'context' => 'Room Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            // Bed Status
+            // Bed Status 8
             [
                 'name' => 'Occupied',
-                'description' => 'The bed is currently occupied.',
                 'context' => 'Bed Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 9
             [
                 'name' => 'Vacant',
-                'description' => 'The bed is currently vacant.',
                 'context' => 'Bed Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            // Payment Status
+            // Payment Status 10
             [
                 'name' => 'Paid',
-                'description' => 'The payment has been made.',
                 'context' => 'Payment Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 11
             [
                 'name' => 'Pending',
-                'description' => 'The payment is pending.',
                 'context' => 'Payment Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 12
             [
                 'name' => 'Overdue',
-                'description' => 'The payment is overdue.',
                 'context' => 'Payment Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            // Activity Status
+            // Activity Status 13
             [
                 'name' => 'Active',
-                'description' => 'The activity is currently active.',
                 'context' => 'Activity Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // 14
             [
                 'name' => 'Inactive',
-                'description' => 'The activity is currently inactive.',
                 'context' => 'Activity Status',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

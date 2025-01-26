@@ -88,7 +88,7 @@ new class extends Component {
     public function mount(Invoice $invoice)
     {
         $this->invoice = $invoice;
-        // dd($invoice);
+        dd($invoice);
 
         if ($invoice->tenant) {
             $this->tenant = $invoice->tenant;
