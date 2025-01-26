@@ -15,6 +15,9 @@ new class extends Component {
 
     public Tenant $tenant;
 
+    #[Validate('nullable')]
+    public ?int $user_id;
+
     #[Validate('required')]
     public string $first_name;
 
@@ -23,63 +26,65 @@ new class extends Component {
 
     public string $middle_name;
 
-    #[Validate('nullable|image|max:1024')]
-    public $profile;
-
-    #[Validate('nullable|array')]
-    #[Validate(['proof.*' => 'file|max:2048'])]
-    public array $proof = [];
-
-    // #[Validate('required')]
-    // public ?int $property_id;
-
-    #[Validate('nullable')]
-    public ?int $user_id;
-
-    #[Validate('required')]
-    public string $phone;
-
-    #[Validate('required')]
-    public ?int $gender_id;
-
-    #[Validate('required')]
-    public string $address;
-
     #[Validate('required|max:20')]
     public string $username;
 
     #[Validate('required|email')]
     public string $email;
 
+    #[Validate('nullable')]
+    public string $address;
+
+    #[Validate('nullable')]
+    public string $document_type = '';
+
+    #[Validate('nullable')]
+    public $document_url;
+
+    public string $gender_id;
+
     #[Validate('nullable|min:8')]
     public string $password = '';
+
+    #[Validate('nullable|image|max:1024')]
+    public $avatar;
+
+    public $doc_type = [
+        [
+            'id' => 1,
+            'name' => 'Id',
+        ],
+        [
+            'id' => 2,
+            'name' => 'Certeficate',
+        ],
+    ];
 
     public function mount(Tenant $tenant): void
     {
         $this->tenant = $tenant;
+        $this->user_id = $tenant->user_id ?? ''; // Ensure property exists
         $this->first_name = $tenant->user->first_name ?? '';
         $this->last_name = $tenant->user->last_name ?? '';
         $this->middle_name = $tenant->user->middle_name ?? ''; // Ensure property exists
-        $this->profile_picture = $tenant->profile_picture ?? ''; // Ensure property exists
-        // $this->property_id = $tenant->property_id ?? ''; // Ensure property exists
-        $this->user_id = $tenant->user_id ?? ''; // Ensure property exists
-        $this->phone = $tenant->phone ?? ''; // Ensure property exists
-        $this->gender_id = $tenant->gender_id ?? ''; // Ensure property exists
-        $this->address = $tenant->address ?? ''; // Ensure property exists
+        $this->address = $tenant->user->address ?? '';
+        $this->gender_id = $tenant->user->gender_id ?? '';
         $this->username = $tenant->user->username ?? '';
         $this->email = $tenant->user->email ?? '';
+        $this->document_type = $tenant->document_type ?? '';
+        $this->document_url = $tenant->document_url ?? '';
     }
 
     public function save(): void
     {
         $data = $this->validate();
 
-        $this->tenant->update($data);
-
-        if ($this->profile) {
-            $url = $this->profile->store('tenants', 'public');
-            $this->tenant->update(['profile_picture' => "/storage/$url"]);
+        if ($this->document_url && $this->document_url instanceof \Illuminate\Http\UploadedFile) {
+            $url = $this->document_url->store('documents', 'public');
+            $data['document_url'] = "/storage/$url";
         }
+
+        $this->tenant->update($data);
 
         $this->tenant->user->update([
             'first_name' => $this->first_name,
@@ -87,25 +92,29 @@ new class extends Component {
             'middle_name' => $this->middle_name,
             'username' => $this->username,
             'email' => $this->email,
+            'address' => $this->address,
+            'gender_id' => $this->gender_id,
             'password' => $this->password ? Hash::make($this->password) : $this->tenant->user->password,
         ]);
 
+        if ($this->avatar) {
+            $url = $this->avatar->store('avatars', 'public');
+            $this->tenant->user->update(['avatar' => "/storage/$url"]);
+        }
+
         $this->success('Tenant and user account updated successfully.', redirectTo: '/tenants-information');
+    }
 
-
+    public function download()
+    {
+        return response()->download(public_path($this->tenant->document_url));
     }
 
     public function with(): array
     {
         return [
-            // 'properties' => Property::all(),
             'genders' => Gender::all(),
         ];
-    }
-
-    public function generatePassword(): void
-    {
-        $this->password = 'password';
     }
 
     public function generateEmailAndUsername(): void
@@ -121,8 +130,15 @@ new class extends Component {
             return; // Exit the function early
         }
 
-        // Use user ID instead of random number
-        $userId = $this->tenant->user_id;
+        // Generate a random user ID in 3-digit format (001 to 999)
+        $userId = str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+
+        // Ensure the user ID does not exceed 1000
+        if ($userId > 1000) {
+            // Handle the case where the user ID exceeds 1000
+            // For example, you can set it to 999 or throw an error
+            $userId = 999; // or handle as needed
+        }
 
         // Check last name length
         if (strlen($lastName) > 15) {
@@ -178,94 +194,56 @@ new class extends Component {
         $this->validateOnly('username');
         $this->validateOnly('email');
     }
-    public function updatedProof(): void
-    {
-        $this->validateOnly('proof');
-
-        foreach ($this->proof as $file) {
-            $url = $file->store('proof_of_identity', 'public');
-            $existingProofs = json_decode($this->tenant->proof_of_identity ?? '[]');
-            $existingProofs[] = "/storage/$url";
-            $this->tenant->update(['proof_of_identity' => json_encode($existingProofs)]);
-        }
-
-        // Clear file input
-        $this->proof = [];
-    }
-
-    public function deleteProofOfIdentity(string $file): void
-    {
-        $existingProofs = json_decode($this->tenant->proof_of_identity ?? '[]');
-
-        if (($key = array_search($file, $existingProofs)) !== false) {
-            unset($existingProofs[$key]);
-            Storage::disk('public')->delete(str_replace('/storage/', '', $file));
-        }
-
-        $this->tenant->update(['proof_of_identity' => json_encode(array_values($existingProofs))]);
-        $this->success('Proof of identity file deleted successfully.');
-    }
 };
 
 ?>
 
 <div>
-    <x-header title="Update {{ $tenant->first_name . ' ' . $tenant->middle_name . ' ' . $tenant->last_name }}"
+    <x-header
+        title="Update {{ $tenant->user->first_name . ' ' . $tenant->user->middle_name . ' ' . $tenant->user->last_name }}"
         separator />
-
-    
 
     <x-form wire:submit="save">
 
         <div class="lg:grid grid-cols-5">
 
-            <div class="col-span-2 grid gap-3">
+            <div class="col-span-2 grid gap-2">
 
-                <x-file label="Profile Picture" wire:model.blur="profile" hint="Click to change | Max 1MB"
+                <x-file label="Avatar" wire:model.blur="avatar" hint="Click to change | Max 1MB"
                     accept="image/png, image/jpeg" crop-after-change>
-                    <img src="{{ $tenant->profile_picture ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
+                    <img src="{{ $tenant->user->avatar ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
                 </x-file>
-                <div>
-                    <!-- Current Proof of Identity Files -->
-                    @if ($tenant->proof_of_identity)
-                    <x-card title="Current Proof of Identity Files" class="mt-3 mb-3">
-                        <ul>
-                            @foreach (json_decode($tenant->proof_of_identity) as $file)
-                            <li class="flex items-center justify-between mb-2">
-                                <a href="{{ $file }}" target="_blank" class="text-blue-500 underline">
-                                    {{ basename($file) }}
-                                </a>
-                                <x-button wire:click="deleteProofOfIdentity('{{ $file }}')"
-                                    class="text-red-500 hover:underline">
-                                    Delete
-                                </x-button>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </x-card>
-                    @endif
+                <x-select label="Document Type" :options="$doc_type" wire:model.blur="document_type" option-value="name">
 
-                    <!-- File Upload Input -->
-                    <x-file wire:model="proof" label="Proof Of Identity"
-                        hint="Max file size: 2MB. Accepted formats: jpeg, png, pdf, doc, docx." multiple />
-                </div>
+                </x-select><x-file wire:model="document_url" label="Proof of Identity"
+                    accept="application/docx, application/pdf, image/png, image/jpeg" />
 
 
+
+                @if ($tenant->document_url)
+                    <div class="mt-2">
+                        <x-button wire:click="download" label="Download Document" icon="bi.cloud-download"
+                            class="btn-secondary" />
+                    </div>
+                @endif
                 <x-input label="First Name" wire:model.blur="first_name" />
                 <x-input label="Middle Name" wire:model.blur="middle_name" hint="optional" />
                 <x-input label="Last Name" wire:model.blur="last_name" />
 
-                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
 
-                <x-input label="Phone" wire:model.blur="phone" />
-                <x-input label="Address" wire:model.blur="address" />
+
+
+
+
 
             </div>
-            <div class="col-span-3 grid gap-4">
+            <div class="col-span-3 grid gap-4 lg:ms-10 mt-4">
 
                 <div class="hidden lg:block">
                     <livewire:roles.owner.pages.manage.tenant.components.form-image />
                 </div>
+                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
+                <x-input label="Address" wire:model.blur="address" />
 
                 <div class="m-10">
                     <x-errors title="Oops!" description="Please, fix them." icon="o-face-frown" />
@@ -283,6 +261,7 @@ new class extends Component {
             </div>
 
             <div class="col-span-3 grid gap-3">
+
 
                 <x-input label="Username" wire:model.blur="username" />
                 <x-input label="Email" wire:model.blur="email" />
