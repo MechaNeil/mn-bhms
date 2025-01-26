@@ -13,46 +13,25 @@ class Invoice extends Model
         'invoice_no',
         'date_issued',
         'due_date',
-        'status_id',
         'remarks',
         'amount_paid',
         'penalty_amount',
         'discount_amount',
-        'tenant_id',
-        'property_id',
-        'user_id',
-        'room_id',
-        'utility_bills',
-        'constant_utility_bills',
+        'bed_assignment_id',
+        'status_id'
     ];
+    public function bedAssignment()
+    {
+        return $this->belongsTo(BedAssignment::class);
+    }
 
     public function status()
     {
         return $this->belongsTo(Status::class);
     }
 
-    public function tenant()
+    public function payments()
     {
-        return $this->belongsTo(Tenant::class);
-    }
-
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function room()
-    {
-        return $this->belongsTo(Room::class);
-    }
-
-    public function paymentInvoices()
-    {
-        return $this->hasMany(PaymentInvoice::class);
+        return $this->hasMany(Payment::class);
     }
 }

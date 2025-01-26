@@ -9,16 +9,11 @@ class Suggestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tenant_id', 'property_id', 'status_id', 'date_issued', 'request', 'reply_from_owner'];
+    protected $fillable = ['user_id', 'status_id', 'content'];
 
-    public function tenant()
+    public function user()
     {
-        return $this->belongsTo(Tenant::class);
-    }
-
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(User::class);
     }
 
     public function status()

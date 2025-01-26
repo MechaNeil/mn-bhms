@@ -17,10 +17,9 @@ class BedAssignmentFactory extends Factory
     {
         return [
             'tenant_id' => Tenant::factory(),
-            'room_id' => Room::factory(),
-            'property_id' => Property::factory(),
             'bed_id' => Bed::factory(),
             'assigned_by' => User::factory(),
+            'status_id' => 11,
             'date_started' => $this->faker->dateTimeBetween('2022-01-01', 'now')->format('Y-m-d'),
             'due_date' => $this->faker->dateTimeBetween('+6 months', '2050-12-31')->format('Y-m-d'),
         ];

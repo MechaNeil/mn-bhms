@@ -68,6 +68,7 @@
 
                     <x-menu-item title="Notice" icon="bi.megaphone" link="/notice-board-tnt" />
                     <x-menu-item title="Request" icon="bi.question-circle" link="/requests-tnt" />
+                    <x-menu-item title="Invoice" icon="far.money-bill-alt" link="/invoice-tnt" />
                     <x-menu-item title="Payment History" icon="far.money-bill-1" link="/payment-history-tnt" />
                     <x-menu-item title="Proof Payment" icon="bi.credit-card" link="/proof-payment-tnt" />
                     <x-menu-item title="Home" icon="o-sparkles" link="/" />

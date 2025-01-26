@@ -59,9 +59,9 @@
                 </x-list-item>
 
                     <x-menu-separator />
-                    @if ($user->role_id == 4)
+                    @if ($user->role_id == 1)
                         <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-owner" />
-                    @elseif ($user->role_id == 1)
+                    @elseif ($user->role_id == 4)
                         <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-tenant" />
                     @endif
                 @else

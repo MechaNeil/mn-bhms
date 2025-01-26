@@ -9,12 +9,9 @@ class Bed extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['property_id', 'room_id', 'bed_no', 'monthly_rate', 'status_id'];
+    protected $fillable = ['room_id', 'bed_no', 'monthly_rate', 'status_id'];
 
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
-    }
+
 
     public function room()
     {

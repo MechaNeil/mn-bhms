@@ -22,11 +22,10 @@ class BedFactory extends Factory
     public function definition(): array
     {
         return [
-            'property_id' => Property::inRandomOrder()->first()->id,
             'room_id' => Room::inRandomOrder()->first()->id,
             'bed_no' => 'BD-' . str_pad(self::$bedNumber++, 4, '0', STR_PAD_LEFT), // Format bed number            
             'monthly_rate' => $this->faker->randomFloat(2, 500, 5000),
-            'status_id' =>  $this->faker->randomElement([8, 9]),
+            'status_id' =>  $this->faker->randomElement([6, 7]),
             'created_at' => now(),
             'updated_at' => now(),
         ];

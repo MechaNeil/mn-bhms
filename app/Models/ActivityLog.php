@@ -9,15 +9,15 @@ class ActivityLog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'property_id', 'activity', 'date'];
+    protected $fillable = ['user_id', 'activity', 'related_id', 'related_type'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function property()
+    public function related()
     {
-        return $this->belongsTo(Property::class);
+        return $this->morphTo();
     }
 }

@@ -13,14 +13,15 @@ new
     public $title = "";
     public $noticeBody = "";
     public $notice;
-    public $config = [
-        'plugins' => 'autoresize',
-        'min_height' => 150,
-        'max_height' => 250,
-        'statusbar' => false,
-        'toolbar' => false,
-        'quickbars_selection_toolbar' => 'bold italic link',
-    ];
+    // public $config = [
+    //     'plugins' => 'autoresize',
+    //     'min_height' => 250,
+    //     'max_height' => 700,
+    //     'resize' => 'both',
+    //     'statusbar' => false,
+    //     'toolbar' => false,
+    //     'quickbars_selection_toolbar' => 'bold italic link',
+    // ];
     public function mount()
     {
         $this->notice = Notice::find(1);
@@ -49,10 +50,9 @@ new
         </div>
 
         <div class="col-span-3 grid  ">
-            <x-header title="{{ $title }}" >
-
-            </x-header>
-            <x-editor wire:model="noticeBody"  :config="$config" label="Notice Body" hint="Read This" readonly />
+            <x-header title="{{ $title }}" separator />
+            <x-card class="prose max-w-none prose-img:rounded-xl prose-headings:underline prose-a:text-blue-600" >{!! $noticeBody !!}</x-card>
+            {{-- <x-editor wire:model="noticeBody"  :config="$config" label="" hint="Read This" readonly /> --}}
         </div>
         <!-- Remove the save button -->
     </div>

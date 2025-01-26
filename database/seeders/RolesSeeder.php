@@ -21,16 +21,8 @@ class RolesSeeder extends Seeder
 
         Role::insert([
             [
-                'name' => 'Tenant',
-                'description' => 'Tenant Role'
-                ,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(), // Optional: if you also want to set
-
-            ],
-            [
-                'name' => 'Assistant',
-                'description' => 'Helper for the Owner'
+                'name' => 'Admin',
+                'description' => 'Admin Role'
                 ,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(), // Optional: if you also want to set
@@ -43,11 +35,20 @@ class RolesSeeder extends Seeder
                 'updated_at' => Carbon::now(), // Optional: if you also want to set
             ],
             [
-                'name' => 'Admin',
-                'description' => 'Admin Role'
+                'name' => 'Assistant',
+                'description' => 'Helper for the Owner'
                 ,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(), // Optional: if you also want to set
+            ],
+
+            [
+                'name' => 'Tenant',
+                'description' => 'Tenant Role'
+                ,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(), // Optional: if you also want to set
+
             ],
 
             // guest acount

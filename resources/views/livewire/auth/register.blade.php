@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
 
-new #[Layout('components.layouts.auth')] #[Title('Register')] class
-    // <-- The same `empty` layout
-    extends Component {
-
+new #[Layout('components.layouts.auth')] #[Title('Register')] 
+class extends Component {
     // first_name, last_name, middle_name, username, email, password, password_confirmation
     public $first_name;
     public $last_name;
@@ -21,16 +19,17 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     public $password;
     public $password_confirmation;
     public $role_id = 0;
-
+    public $contact_no;
+    public $address;
 
     public function with(): array
     {
         $roles = Role::all();
         // Check if an admin already exists
-        if (User::where('role_id', 4)->exists()) {
+        if (User::where('role_id', 1)->exists()) {
             // Remove admin role from the roles list
             $roles = $roles->filter(function ($role) {
-                return $role->id != 4;
+                return $role->id != 1;
             });
         }
 
@@ -52,6 +51,8 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
             'password' => 'required|min:8',
             'password_confirmation' => 'required|same:password',
             'role_id' => 'required',
+            'contact_no' => 'required',
+            'address' => 'required',
         ];
     }
 
@@ -71,6 +72,8 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
         'password_confirmation.same' => 'Password and confirmation do not match.',
         'password_confirmation.required' => 'Please confirm your password.',
         'role_id.required' => 'Please select a role.',
+        'contact_no.required' => 'Contact number is required.',
+        'address.required' => 'Address is required.',
     ];
 
     public function updated($propertyName)
@@ -85,9 +88,9 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     {
         // Check if the user is logged in and redirect based on role
         if ($user = auth()->user()) {
-            if ($user->role_id == 4) {
+            if ($user->role_id == 1) {
                 return redirect('/dashboard-owner'); // Redirect to admin dashboard
-            } elseif ($user->role_id == 1) {
+            } elseif ($user->role_id == 4) {
                 return redirect('/dashboard-tenant'); // Redirect to tenant dashboard
             }
         }
@@ -98,7 +101,7 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
         $data = $this->validate();
 
         // Check if an admin already exists before creating a new user
-        if ($data['role_id'] == 4 && User::where('role_id', 4)->exists()) {
+        if ($data['role_id'] == 1 && User::where('role_id', 1)->exists()) {
             session()->flash('error', 'An admin already exists.');
             return;
         }
@@ -114,9 +117,9 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
         request()->session()->regenerate();
 
         // Redirect based on user role
-        if ($user->role_id == 4) {
+        if ($user->role_id == 1) {
             return redirect()->intended('/dashboard-owner'); // Redirect to admin dashboard
-        } elseif ($user->role_id == 1) {
+        } elseif ($user->role_id == 4) {
             return redirect()->intended('/dashboard-tenant'); // Redirect to tenant dashboard
         } else {
             return redirect()->intended('/'); // Default redirect
@@ -132,21 +135,21 @@ new #[Layout('components.layouts.auth')] #[Title('Register')] class
     <x-form wire:submit="register">
         <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
             <div class="grid gap-4">
-                <x-select
-                icon="o-user"
-                :options="$roles"
-                placeholder="Assign Role"
-                placeholder-value="0" {{-- Set a value for placeholder. Default is `null` --}}
-                wire:model="role_id" class="h-14" />
+                <x-select icon="o-user" :options="$roles" placeholder="Assign Role" placeholder-value="0"
+                    {{-- Set a value for placeholder. Default is `null` --}} wire:model="role_id" class="h-14" />
                 <x-input label="First Name" wire:model.blur="first_name" icon="o-user" inline />
                 <x-input label="Last Name" wire:model.blur="last_name" icon="o-user" inline />
                 <x-input label="Middle Name" wire:model.blur="middle_name" icon="o-user" inline />
+                <x-input label="Username" wire:model.blur="username" icon="o-user" inline />
             </div>
             <div class="grid gap-4">
-                <x-input label="Username" wire:model.blur="username" icon="o-user" inline />
+                <x-input label="Contact No" wire:model.blur="contact_no" icon="o-phone" inline />
+                <x-input label="Address" wire:model.blur="address" icon="o-map" inline />
+
                 <x-input label="E-mail" wire:model.blur="email" icon="o-envelope" inline />
                 <x-input label="Password" wire:model.blur="password" type="password" icon="o-key" inline />
-                <x-input label="Confirm Password" wire:model.blur="password_confirmation" type="password" icon="o-key" inline />
+                <x-input label="Confirm Password" wire:model.blur="password_confirmation" type="password" icon="o-key"
+                    inline />
             </div>
         </div>
 

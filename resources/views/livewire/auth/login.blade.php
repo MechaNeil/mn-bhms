@@ -33,9 +33,9 @@ class extends Component {
     {
         // Check if the user is logged in and redirect based on role
         if ($user = auth()->user()) {
-            if ($user->role_id == 4) {
+            if ($user->role_id == 1) {
                 return redirect('/dashboard-owner'); // Redirect to admin dashboard
-            } elseif ($user->role_id == 1) {
+            } elseif ($user->role_id == 4) {
                 return redirect('/dashboard-tenant'); // Redirect to tenant dashboard
             }
         }
@@ -56,9 +56,9 @@ class extends Component {
                 Auth::login($user);
 
                 // Redirect based on user role
-                if ($user->role_id == 4) {
+                if ($user->role_id == 1) {
                     return redirect()->intended('/dashboard-owner'); // Redirect to admin dashboard
-                } elseif ($user->role_id == 1) {
+                } elseif ($user->role_id == 4) {
                     return redirect()->intended('/dashboard-tenant'); // Redirect to tenant dashboard
                 } else {
                     return redirect()->intended('/'); // Default redirect

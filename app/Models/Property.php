@@ -22,6 +22,10 @@ class Property extends Model
     ];
 
 
+/**
+ * The `booted` function sets up a created event listener in PHP that automatically generates and
+ * assigns an apartment number to a property based on its ID.
+ */
     protected static function booted()
     {
         static::created(function ($property) {
@@ -52,8 +56,10 @@ class Property extends Model
         return $this->hasMany(Bed::class);
     }
 
-    public function activityLogs()
+
+
+    public function utilityBills()
     {
-        return $this->hasMany(ActivityLog::class);
+        return $this->hasMany(UtilityBill::class);
     }
 }

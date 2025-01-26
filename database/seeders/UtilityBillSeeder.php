@@ -15,18 +15,20 @@ class UtilityBillSeeder extends Seeder
     public function run()
     {
         UtilityBill::create([
-            'rate' => 0.15,
-            'name' => 'Electricity'
+            'property_id' => 1,
+            'utility_type_id' => 1,
+            'amount' => 5000.00,
+            'date_issued' => now()->format('Ymd'),
+
         ]);
 
         UtilityBill::create([
-            'rate' => 0.10,
-            'name' => 'Water'
+            'property_id' => 1,
+            'utility_type_id' => 2,
+            'amount' => 1000.00,
+            'date_issued' => now()->format('Ymd'),
+
         ]);
 
-        UtilityBill::create([
-            'rate' => 0.05,
-            'name' => 'Gas'
-        ]);
     }
 }

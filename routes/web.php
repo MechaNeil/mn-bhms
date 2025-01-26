@@ -46,29 +46,34 @@ Route::get('/logout', function () {
 
 
 
-// Routes with Middleware this is for the admin role only where the role_id is 4
+// Routes with Middleware this is for the admin role only where the role_id is 1
 Route::middleware(['auth'])->group(function () {
 
     // Tenant-specific routes
-    Route::middleware(RoleMiddleware::class . ':1')->group(function () { // Role 1: Tenant
+    Route::middleware(RoleMiddleware::class . ':4')->group(function () { // Role 3: Tenant
         Volt::route('/dashboard-tenant', 'roles.tenant.pages.dashboard.dashboard-tenant');
         Volt::route('/notice-board-tnt', 'roles.tenant.pages.notification.notice-board-tnt');
         Volt::route('/requests-tnt', 'roles.tenant.pages.notification.requests-tnt');
+
+        // Tenant payment
+        // invoice-tnt
+        Volt::route('/invoice-tnt', 'roles.tenant.pages.payment.invoice-tnt');
+
         Volt::route('/payment-history-tnt', 'roles.tenant.pages.payment.payment-history-tnt');
         Volt::route('/proof-payment-tnt', 'roles.tenant.pages.payment.proof-payment-tnt');
     });
 
 
-    Route::middleware(RoleMiddleware::class . ':4')->group(function () { // Role 4: Owner/Admin
+    Route::middleware(RoleMiddleware::class . ':1')->group(function () { // Role 1: Admin
         // Home dashboard
         Volt::route('/dashboard-owner', 'roles.owner.pages.dashboard.owner-dashboard.dashboard-owner'); // Owner Dashboard
-        Volt::route('/permission-management', 'roles.owner.pages.dashboard.manage-assistant.assistants'); // Permission Management
-
         // Apartment
         Volt::route('/apartment', 'roles.owner.pages.manage.property.apartment')->name('apartment'); // Apartment Management
         Volt::route('/create-apartment', 'roles.owner.pages.manage.property.components.create-apartment'); // Unit Management
         Volt::route('/property/{property}/edit', 'roles.owner.pages.manage.property.components.edit-apartment'); // Edit Apartment
 
+        // Assisant Management
+        Volt::route('/assistant-management', 'roles.owner.pages.manage.assistant.assistant-management'); // Assistant Management
 
         // Room Management
         Volt::route('/room-management', 'roles.owner.pages.manage.room.room-management'); // Room Management

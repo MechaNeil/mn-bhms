@@ -21,8 +21,4 @@ class Room extends Model
         return $this->hasMany(Bed::class);
     }
 
-    public function invoices()
-    {
-        return $this->hasMany(Invoice::class);
-    }
 }
