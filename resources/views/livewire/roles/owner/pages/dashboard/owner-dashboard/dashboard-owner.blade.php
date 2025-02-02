@@ -10,7 +10,7 @@ class extends Component {
 }; ?>
 
 <div>
-    <x-header title="Dahboard" separator progress-indicator>
+    <x-header title="Dashboard" separator progress-indicator>
         <x-slot:middle class="!justify-end">
             <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass"
                 @click.stop="$dispatch('mary-search-open')" />
