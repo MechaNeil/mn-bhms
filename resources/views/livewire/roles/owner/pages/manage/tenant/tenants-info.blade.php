@@ -18,7 +18,7 @@ new class extends Component {
   // public int $property_id = 0;
   public string $search = "";
   public bool $drawer = false;
-  public array $sortBy = ["column" => "last_name", "direction" => "asc"];
+  public array $sortBy = ["column" => "user_last_name", "direction" => "asc"]; // Updated column name
 
   public function clear(): void
   {
@@ -56,13 +56,17 @@ public function deleteTenant(int $tenantId): void
   public function headers(): array
   {
     return [
-      ["key" => "image", "label" => "", "class" => "w-1"],
-      ["key" => "first_name", "label" => "First Name", "class" => ""],
-      ["key" => "last_name", "label" => "Last Name", "class" => ""],
+      ["key" => "user_avatar", "label" => "Profile", "class" => "w-1"],
+      
+      ["key" => "user_first_name", "label" => "First Name", "class" => ""],
+      ["key" => "user_last_name", "label" => "Last Name", "class" => ""],
+      
       // Remove property column
       // ["key" => "property_name", "label" => "Property", "class" => ""],
       ["key" => "user_username", "label" => "Username", "class" => ""], // Added user name column
       ["key" => "user_email", "label" => "User Email", "class" => "hidden"], // Added user email column
+      ["key" => "image", "label" => "", "class" => "w-1"],
+
       ["key" => "created_at", "label" => "Created at", "class" => ""],
       ["key" => "updated_at", "label" => "Updated at", "class" => ""],
     ];
@@ -71,7 +75,10 @@ public function deleteTenant(int $tenantId): void
   public function tenants(): LengthAwarePaginator
   {
     return Tenant::query()
+      ->withAggregate("user", "avatar") // Added user name aggregation
       ->withAggregate("user", "username") // Added user name aggregation
+      ->withAggregate("user", "first_name") // Added user name aggregation
+      ->withAggregate("user", "last_name") // Added user name aggregation
       ->withAggregate("user", "email") // Added user email aggregation
       ->with(["user"]) // Eager load user relationship
       ->when($this->search, fn (Builder $q) => $q->where("last_name", "like", "%$this->search%"))
@@ -130,13 +137,14 @@ public function deleteTenant(int $tenantId): void
 
   <!-- TABLE -->
   <x-card>
-    <x-table :headers="$headers" :rows="$tenants" :sort-by="$sortBy" with-pagination link="tenant/{id}/view?name={first_name}+{last_name}">
-      @scope("cell_image", $tenant)
-        <x-avatar image="{{ $tenant->profile_picture ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
-      @endscope
+    <x-table :headers="$headers" :rows="$tenants" :sort-by="$sortBy" with-pagination link="tenant/{id}/view?name={user_first_name}+{user_last_name}">
+      @scope("cell_user_avatar", $user)
+        <x-avatar image="{{ $user->user_avatar ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
+    @endscope
+      
 
-      @scope("actions", $tenant)
-        <x-button icon="o-trash" wire:click="deleteTenant({{ $tenant->id  }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
+      @scope("actions", $user)
+        <x-button icon="o-trash" wire:click="deleteTenant({{ $user->id  }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
       @endscope
 
       {{--

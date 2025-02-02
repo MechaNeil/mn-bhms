@@ -13,81 +13,99 @@ use Livewire\Attributes\Reactive;
 new class extends Component {
     use Toast, WithFileUploads;
 
-    #[Validate('required')]
-    public string $first_name = '';
-
-    #[Validate('required')]
-    public string $last_name = '';
-
-    public string $middle_name = '';
-
-    #[Validate('nullable|image|max:1024')]
-    public $profile_picture;
-
-    #[Validate('required|array')]
-    #[Validate(['proof_of_identity.*' => 'file|max:2048'])]
-    public array $proof_of_identity = [];
+    public Tenant $tenant;
 
     #[Validate('nullable')]
-    public ?int $user_id = null;
+    public ?int $user_id;
 
     #[Validate('required')]
-    public string $phone = '';
+    public string $first_name;
 
     #[Validate('required')]
-    public ?int $gender_id = null;
+    public string $last_name;
 
-    #[Validate('required')]
-    public string $address = '';
+    public string $middle_name;
 
-    #[Validate('required|max:20|unique:users')]
-    public string $username = '';
+    #[Validate('required|max:20')]
+    public string $username;
 
-    #[Validate('required|email|unique:users')]
-    public string $email = '';
+    #[Validate('required|email')]
+    public string $email;
 
-    #[Validate('required|min:8')]
+    #[Validate('nullable')]
+    public string $address;
+
+  #[Validate('required')]
+    public string $document_type = '';
+
+    #[Validate('required|max:4000')]
+    public $document_url;
+
+    public string $gender_id;
+
+    #[Validate('nullable|min:8')]
     public string $password = 'password';
+
+    #[Validate('nullable|image|max:1024')]
+    public $avatar;
+
+    public $doc_type = [
+        [
+            'id' => 1,
+            'name' => 'Id',
+        ],
+        [
+            'id' => 2,
+            'name' => 'Certeficate',
+        ],
+    ];
+
+    public function mount(): void
+    {
+
+        $this->first_name = '';
+        $this->last_name = '';
+        $this->middle_name = '';
+    }
 
     public function save(): void
     {
         $data = $this->validate();
 
-        // Create the user first
+        if ($this->document_url && $this->document_url instanceof \Illuminate\Http\UploadedFile) {
+            $url = $this->document_url->store('documents', 'public');
+            $data['document_url'] = "/storage/$url";
+        }
+
         $user = User::create([
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'middle_name' => $this->middle_name,
             'username' => $this->username,
             'email' => $this->email,
-            'password' => Hash::make($this->password),
-            'role_id' => 1,
+            'address' => $this->address,
+            'gender_id' => $this->gender_id,
+            //status is active by default
             'status_id' => 1,
-            'avatar' => '/empty-user.jpg',
+            // role id of tenant
+            'role_id' => 4,
+            'password' => Hash::make($this->password),
         ]);
 
-        // Add the user_id and status_id to the tenant data
         $data['user_id'] = $user->id;
-        $data['status_id'] = 1; // or any appropriate default value
-
-        // Convert proof_of_identity to JSON string
-        if (!empty($this->proof_of_identity)) {
-            $proofUrls = [];
-            foreach ($this->proof_of_identity as $file) {
-                $proofUrls[] = $file->store('proof_of_identity', 'public');
-            }
-            $data['proof_of_identity'] = json_encode($proofUrls);
-        }
-
-        // Create the tenant
         $tenant = Tenant::create($data);
 
-        if ($this->profile_picture) {
-            $url = $this->profile_picture->store('tenants', 'public');
-            $tenant->update(['profile_picture' => "/storage/$url"]);
+        if ($this->avatar) {
+            $url = $this->avatar->store('avatars', 'public');
+            $user->update(['avatar' => "/storage/$url"]);
         }
 
         $this->success('Tenant and user account created successfully.', redirectTo: '/tenants-information');
+    }
+
+    public function download()
+    {
+        return response()->download(public_path($this->tenant->document_url));
     }
 
     public function with(): array
@@ -95,11 +113,6 @@ new class extends Component {
         return [
             'genders' => Gender::all(),
         ];
-    }
-
-    public function generatePassword(): void
-    {
-        $this->password = 'password';
     }
 
     public function generateEmailAndUsername(): void
@@ -190,28 +203,29 @@ new class extends Component {
 
         <div class="lg:grid grid-cols-5">
 
-            <div class="col-span-2 grid gap-3">
+            <div class="col-span-2 grid gap-2">
 
-                <x-file label="Profile Picture" wire:model.blur="profile_picture" hint="Click to change | Max 1MB"
+                <x-file label="Avatar" wire:model.blur="avatar" hint="Click to change | Max 1MB"
                     accept="image/png, image/jpeg" crop-after-change>
-                    <img src="/empty-user.jpg" class="h-40 rounded-lg" />
+                    <img src="{{ $tenant->user->avatar ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
                 </x-file>
-                <x-file label="Proof of Identity" wire:model="proof_of_identity" hint="Upload documents" multiple
-                    accept="image/*,.pdf,.doc,.docx" />
+                <x-select label="Document Type" :options="$doc_type" wire:model.blur="document_type" option-value="name" placeholder="Select Document Type">
+
+                </x-select><x-file wire:model="document_url" label="Proof of Identity"
+                    accept="application/docx, application/pdf, image/png, image/jpeg" />
+
                 <x-input label="First Name" wire:model.blur="first_name" />
                 <x-input label="Middle Name" wire:model.blur="middle_name" hint="optional" />
                 <x-input label="Last Name" wire:model.blur="last_name" />
 
-                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
-                <x-input label="Phone" wire:model.blur="phone" />
-                <x-input label="Address" wire:model.blur="address" />
-
             </div>
-            <div class="col-span-3 grid gap-4">
+            <div class="col-span-3 grid gap-4 lg:ms-10 mt-4">
 
                 <div class="hidden lg:block">
                     <livewire:roles.owner.pages.manage.tenant.components.form-image />
                 </div>
+                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
+                <x-input label="Address" wire:model.blur="address" />
 
                 <div class="m-10">
                     <x-errors title="Oops!" description="Please, fix them." icon="o-face-frown" />
@@ -232,8 +246,7 @@ new class extends Component {
 
                 <x-input label="Username" wire:model.blur="username" />
                 <x-input label="Email" wire:model.blur="email" />
-                <x-input label="Password" wire:model.blur="password" type="password"
-                    hint="Default password is password " />
+                <x-input label="Password" wire:model.blur="password" type="password" hint="password is the default password" />
 
             </div>
 
