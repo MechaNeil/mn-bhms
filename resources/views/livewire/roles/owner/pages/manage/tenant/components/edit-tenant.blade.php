@@ -35,6 +35,7 @@ new class extends Component {
     #[Validate('nullable')]
     public string $address;
 
+    //This is not working properly
     #[Validate('nullable')]
     public string $document_type = '';
 
