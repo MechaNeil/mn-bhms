@@ -2,6 +2,7 @@
 
 use Livewire\WithFileUploads;
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\Gender;
@@ -222,10 +223,10 @@ new class extends Component {
 
 
                 @if ($tenant->document_url)
-                    <div class="mt-2">
-                        <x-button wire:click="download" label="Download Document" icon="bi.cloud-download"
-                            class="btn-secondary" />
-                    </div>
+                <div class="mt-2">
+                    <x-button wire:click="download" label="Download Document" icon="bi.cloud-download"
+                        class="btn-secondary" />
+                </div>
                 @endif
                 <x-input label="First Name" wire:model.blur="first_name" />
                 <x-input label="Middle Name" wire:model.blur="middle_name" hint="optional" />

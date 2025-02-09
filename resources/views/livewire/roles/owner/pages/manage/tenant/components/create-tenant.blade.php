@@ -2,6 +2,7 @@
 
 use Livewire\WithFileUploads;
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\Gender;
@@ -35,7 +36,7 @@ new class extends Component {
     #[Validate('nullable')]
     public string $address;
 
-  #[Validate('required')]
+    #[Validate('required')]
     public string $document_type = '';
 
     #[Validate('required|max:4000')]
