@@ -11,8 +11,6 @@ class Bed extends Model
 
     protected $fillable = ['room_id', 'bed_no', 'monthly_rate', 'status_id'];
 
-
-
     public function room()
     {
         return $this->belongsTo(Room::class);
