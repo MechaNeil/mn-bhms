@@ -34,4 +34,10 @@ class Invoice extends Model
     {
         return $this->hasMany(Payment::class);
     }
+    public function getTenantNameAttribute(): string
+    {
+        return $this->bedAssignment?->tenant?->user
+            ? trim("{$this->bedAssignment->tenant->user->first_name} {$this->bedAssignment->tenant->user->middle_name} {$this->bedAssignment->tenant->user->last_name}")
+            : 'N/A';
+    }
 }

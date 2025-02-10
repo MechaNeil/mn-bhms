@@ -74,4 +74,5 @@ class User extends Authenticatable
     {
         return $this->morphMany(ActivityLog::class, 'related');
     }
+
 }

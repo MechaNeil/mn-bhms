@@ -27,9 +27,9 @@ class BedAssignment extends Model
     ];
 
     /**
- * The function `createInvoices` generates monthly invoices for a tenant based on the start and due
- * dates provided.
- */
+     * The function `createInvoices` generates monthly invoices for a tenant based on the start and due
+     * dates provided.
+     */
 
     public function createInvoices(): void
     {
@@ -53,6 +53,7 @@ class BedAssignment extends Model
             $counter++;
         }
     }
+
     public function bed()
     {
         return $this->belongsTo(Bed::class);

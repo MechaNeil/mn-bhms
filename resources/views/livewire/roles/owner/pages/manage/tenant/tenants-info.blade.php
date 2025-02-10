@@ -81,7 +81,11 @@ public function deleteTenant(int $tenantId): void
       ->withAggregate("user", "last_name") // Added user name aggregation
       ->withAggregate("user", "email") // Added user email aggregation
       ->with(["user"]) // Eager load user relationship
-      ->when($this->search, fn (Builder $q) => $q->where("last_name", "like", "%$this->search%"))
+      ->when($this->search, fn (Builder $q) => $q->whereHas("user", fn (Builder $q) => $q->where(function (Builder $q) {
+          $q->where("first_name", "like", "%$this->search%")
+        ->orWhere("middle_name", "like", "%$this->search%")
+        ->orWhere("last_name", "like", "%$this->search%");
+      })))
       // Remove property filter
       // ->when($this->property_id, fn (Builder $q) => $q->where("property_id", $this->property_id))
       ->orderBy(...array_values($this->sortBy))
