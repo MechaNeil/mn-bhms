@@ -28,39 +28,39 @@ new class extends Component {
   }
 
   // Delete action
-public function deleteTenant(int $tenantId): void
-{
+  public function deleteTenant(int $tenantId): void
+  {
     // Find the tenant by ID
     $tenant = Tenant::find($tenantId);
-    
+
     if ($tenant) {
-        // Get the associated user account
-        $user = User::find($tenant->user_id);
-        
-        // Delete the user account if it exists
-        if ($user) {
-            $user->delete();
-        }
+      // Get the associated user account
+      $user = User::find($tenant->user_id);
 
-        // Delete the tenant record
-        $tenant->delete();
+      // Delete the user account if it exists
+      if ($user) {
+        $user->delete();
+      }
 
-        // Provide feedback to the user
-        $this->success('Tenant and user account deleted successfully.', redirectTo: '/tenants-information');
+      // Delete the tenant record
+      $tenant->delete();
+
+      // Provide feedback to the user
+      $this->success('Tenant and user account deleted successfully.', redirectTo: '/tenants-information');
     } else {
-        $this->error('Tenant not found.');
+      $this->error('Tenant not found.');
     }
-}
+  }
 
   // Table headers
   public function headers(): array
   {
     return [
       ["key" => "user_avatar", "label" => "Profile", "class" => "w-1"],
-      
+
       ["key" => "user_first_name", "label" => "First Name", "class" => ""],
       ["key" => "user_last_name", "label" => "Last Name", "class" => ""],
-      
+
       // Remove property column
       // ["key" => "property_name", "label" => "Property", "class" => ""],
       ["key" => "user_username", "label" => "Username", "class" => ""], // Added user name column
@@ -81,10 +81,10 @@ public function deleteTenant(int $tenantId): void
       ->withAggregate("user", "last_name") // Added user name aggregation
       ->withAggregate("user", "email") // Added user email aggregation
       ->with(["user"]) // Eager load user relationship
-      ->when($this->search, fn (Builder $q) => $q->whereHas("user", fn (Builder $q) => $q->where(function (Builder $q) {
-          $q->where("first_name", "like", "%$this->search%")
-        ->orWhere("middle_name", "like", "%$this->search%")
-        ->orWhere("last_name", "like", "%$this->search%");
+      ->when($this->search, fn(Builder $q) => $q->whereHas("user", fn(Builder $q) => $q->where(function (Builder $q) {
+        $q->where("first_name", "like", "%$this->search%")
+          ->orWhere("middle_name", "like", "%$this->search%")
+          ->orWhere("last_name", "like", "%$this->search%");
       })))
       // Remove property filter
       // ->when($this->property_id, fn (Builder $q) => $q->where("property_id", $this->property_id))
@@ -132,36 +132,36 @@ public function deleteTenant(int $tenantId): void
   <x-header title="Tenant" separator progress-indicator>
     <x-slot:middle class="!justify-end">
       <x-input placeholder="Tenant..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
-    </x-slot>
-    <x-slot:actions>
-      <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}" @click="$wire.drawer = true" responsive icon="o-funnel" />
-      <x-button class="btn normal-case btn-primary" label="Create" link="/create-tenant" responsive icon="o-plus" class="btn-primary" />
-    </x-slot>
+      </x-slot>
+      <x-slot:actions>
+        <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $this->activeFiltersCount() }}" @click="$wire.drawer = true" responsive icon="o-funnel" />
+        <x-button class="btn normal-case btn-primary" label="Create" link="/create-tenant" responsive icon="o-plus" class="btn-primary" />
+        </x-slot>
   </x-header>
 
   <!-- TABLE -->
   <x-card>
     <x-table :headers="$headers" :rows="$tenants" :sort-by="$sortBy" with-pagination link="tenant/{id}/view?name={user_first_name}+{user_last_name}">
       @scope("cell_user_avatar", $user)
-        <x-avatar image="{{ $user->user_avatar ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
-    @endscope
-      
+      <x-avatar image="{{ $user->user_avatar ?? '/empty-user.jpg' }}" class="!w-14 rounded-lg" />
+      @endscope
+
 
       @scope("actions", $user)
-        <x-button icon="o-trash" wire:click="deleteTenant({{ $user->id  }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
+      <x-button icon="o-trash" wire:click="deleteTenant({{ $user->id  }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
       @endscope
 
       {{--
         @scope('cell_user_name', $tenant)
         {{ $tenant->user->name }}
-        @endscope
-        @scope('cell_user_email', $tenant)
-        {{ $tenant->user->email }}
-        @endscope
+      @endscope
+      @scope('cell_user_email', $tenant)
+      {{ $tenant->user->email }}
+      @endscope
       --}}
       <x-slot:empty>
         <x-icon name="o-cube" label="It is empty." />
-      </x-slot>
+        </x-slot>
     </x-table>
   </x-card>
 
@@ -174,6 +174,6 @@ public function deleteTenant(int $tenantId): void
     <x-slot:actions>
       <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
       <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
-    </x-slot>
+      </x-slot>
   </x-drawer>
 </div>

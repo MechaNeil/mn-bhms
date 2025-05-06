@@ -9,6 +9,8 @@ use Livewire\Form;
 class BedForm extends Form
 {
     public ?Bed $bed;
+    
+    public bool $isEditMode = false;
 
     #[Validate('nullable')]
     public $bed_no = '';

@@ -10,6 +10,7 @@ use App\Models\Gender;
 use App\Models\Status;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Hash;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<Tenant>
  */
@@ -23,11 +24,25 @@ class TenantFactory extends Factory
      *
      * @param string $firstName
      * @param string $lastName
+     * @param int $randomValue
      * @return string
      */
-    private function generateUniqueUsername(string $firstName, string $lastName): string
+    private function generateUniqueUsername(string $firstName, string $lastName, int $randomValue): string
     {
-        return strtolower($firstName . '.' . $lastName . rand(1, 1000));
+        return strtolower($firstName . '.' . $lastName . $randomValue);
+    }
+
+    /**
+     * Generate a unique email using first name and last name.
+     *
+     * @param string $firstName
+     * @param string $lastName
+     * @param int $randomValue
+     * @return string
+     */
+    private function generateUniqueEmail(string $firstName, string $lastName, int $randomValue): string
+    {
+        return strtolower($firstName . '.' . $lastName . $randomValue . '@example.com');
     }
 
     /**
@@ -39,14 +54,15 @@ class TenantFactory extends Factory
     {
         $firstName = $this->faker->firstName;
         $lastName = $this->faker->lastName;
+        $randomValue = rand(1, 1000);
 
         // Create the user associated with the tenant
         $user = User::create([
             'first_name' => $firstName,
             'last_name' => $lastName,
             'middle_name' => $this->faker->optional()->firstName,
-            'username' => $this->generateUniqueUsername($firstName, $lastName),
-            'email' => $this->faker->unique()->safeEmail,
+            'username' => $this->generateUniqueUsername($firstName, $lastName, $randomValue),
+            'email' => $this->generateUniqueEmail($firstName, $lastName, $randomValue),
             'gender_id' => Gender::inRandomOrder()->first()->id,
             'address' => $this->faker->address,
             'contact_no' => $this->faker->phoneNumber,

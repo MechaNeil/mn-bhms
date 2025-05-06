@@ -102,7 +102,7 @@ new class extends Component {
 
     <!-- TABLE -->
     <x-card>
-        <x-table :headers="$headers" :rows="$bedAssignments" :sort-by="$sortBy" with-pagination link="bed-assignment/{id}/view-invoice?tenant_name={tenant.user.first_name} {tenant.user.middle_name} {tenant.user.last_name}">
+        <x-table :headers="$headers" :rows="$bedAssignments" :sort-by="$sortBy" with-pagination link="tenant-invoice/{id}/view?tenant_name={tenant.user.first_name} {tenant.user.middle_name} {tenant.user.last_name}">
 
 
             @scope("cell_room_no", $bedAssignment)

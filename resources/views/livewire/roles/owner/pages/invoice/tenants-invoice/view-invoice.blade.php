@@ -10,7 +10,40 @@ new class extends Component {
 
     public bool $myModal2 = false;
 
-    
+
+    public float $bedRate;
+    public float $utilityBills;
+    public float $penaltyAmount;
+    public float $discountAmount;
+    public float $subtotal;
+    public float $sharedRoomDiscount;
+    public float $totalAmount;
+    public float $remainingBalance;
+
+    public function mount(Invoice $invoice)
+    {
+        $this->invoice = $invoice;
+
+        // Initialize values in the mount method
+        $this->bedRate = is_numeric($invoice->bed_rate) ? (float)$invoice->bed_rate : 0;
+        $this->utilityBills = is_numeric($invoice->constant_utility_bill) ? (float)$invoice->constant_utility_bill : 0;
+        $this->penaltyAmount = is_numeric($invoice->penalty_amount) ? (float)$invoice->penalty_amount : 0;
+        $this->discountAmount = is_numeric($invoice->discount_amount) ? (float)$invoice->discount_amount : 0;
+
+        // Calculate subtotal
+        $this->subtotal = $this->bedRate + $this->utilityBills - $this->penaltyAmount - $this->discountAmount;
+
+        // Calculate shared room discount (10% of the subtotal)
+        $this->sharedRoomDiscount = $this->subtotal * 0.10;
+
+        // Calculate total amount
+        $this->totalAmount = $this->subtotal - $this->sharedRoomDiscount;
+
+        // Calculate remaining balance
+        $this->remainingBalance = $this->totalAmount - ($this->invoice->amount_paid ?? 0);
+    }
+
+
 
     public function headers(): array
     {
@@ -29,13 +62,13 @@ new class extends Component {
     {
         return [
             [
-                'invoice_no' => '[INVOICE_NO]',
-                'payer_name' => '[PAYER_NAME]',
-                'total' => '[TOTAL]',
-                'amount_paid' => '[AMOUNT_PAID]',
-                'remaining_balance' => '[REMAINING_BALANCE]',
-                'status' => '[STATUS]',
-                'remarks' => '[REMARKS]'
+                'invoice_no' => $this->invoice->invoice_no,
+                'payer_name' => $this->invoice->tenant_name,
+                'total' => $this->totalAmount,
+                'amount_paid' => $this->invoice->amount_paid,
+                'remaining_balance' => $this->remainingBalance,
+                'status' => $this->invoice->status_name,
+                'remarks' => $this->invoice->remarks
             ]
         ];
     }
@@ -50,15 +83,16 @@ new class extends Component {
     public function dataEntries(): array
     {
         return [
-            ['item' => 'Bed Rate:', 'amount' => '[BED_RATE]'],
-            ['item' => 'Utility Bills', 'amount' => '[UTILITY_BILLS]'],
-            ['item' => 'Penalty Amount:', 'amount' => '[PENALTY_AMOUNT]'],
-            ['item' => 'Discount Amount:', 'amount' => '[DISCOUNT_AMOUNT]'],
-            ['item' => 'Subtotal:', 'amount' => '[SUBTOTAL]'],
-            ['item' => 'Shared Room Discount (10%):', 'amount' => '[SHARED_DISCOUNT]'],
-            ['item' => 'Total:', 'amount' => '[TOTAL_AMOUNT]'],
+            ['item' => 'Bed Rate:', 'amount' => "Php " . $this->bedRate],
+            ['item' => 'Utility Bills', 'amount' => "Php " . $this->utilityBills],
+            ['item' => 'Penalty Amount:', 'amount' => "Php " . $this->penaltyAmount],
+            ['item' => 'Discount Amount:', 'amount' => "Php " . $this->discountAmount],
+            ['item' => 'Subtotal:', 'amount' => "Php " . $this->subtotal],
+            ['item' => 'Shared Room Discount (10%):', 'amount' => "Php " . $this->sharedRoomDiscount],
+            ['item' => 'Total:', 'amount' => "Php " . $this->totalAmount],
         ];
     }
+
 
     public function with(): array
     {
@@ -73,15 +107,15 @@ new class extends Component {
 ?>
 
 <div>
-    <x-header title="[TENANT_NAME]" separator>
+    <x-header title="{{ $invoice->tenant_name }}" separator>
         <x-slot:actions>
             <x-button icon="o-pencil" spinner class="btn-primary normal-case" label="Edit" link="[EDIT_LINK]" />
         </x-slot:actions>
     </x-header>
 
-    <x-card title="BHouse Management System" subtitle="# [INVOICE_NO]" shadow separator>
+    <x-card title="BHouse Management System" subtitle="# {{ $invoice->invoice_no }}" shadow separator>
         <x-slot:menu>
-            <div>Date: [CURRENT_DATE]</div>
+            <div>Date: {{ now()->format('Y-m-d') }}</div>
             <x-button icon="o-share" class="btn-circle btn-sm" />
             <x-icon name="o-heart" class="cursor-pointer" />
         </x-slot:menu>
@@ -90,26 +124,28 @@ new class extends Component {
                 <div>
                     <h6 class="font-bold">From:</h6>
                     <address class="text-sm">
-                        <strong>[COMPANY_NAME]</strong><br>
-                        [COMPANY_ADDRESS]<br>
-                        Phone: [COMPANY_PHONE]<br>
-                        Website: [COMPANY_WEBSITE]<br>
+                        <strong>{{ $invoice->company_name }}</strong><br>
+                        {{ $invoice->company_address }}<br>
+                        Phone: {{ $invoice->company_phone }}<br>
+                        Website: {{ $invoice->company_website }}<br>
                     </address>
                 </div>
                 <div>
                     <h6 class="font-bold">To:</h6>
                     <address class="text-sm">
-                        <strong>[TENANT_NAME]</strong> <br>
-                        Apartment: [APARTMENT_NO]<br>
-                        Room No: [ROOM_NO]<br>
-                        Bed No: [BED_NO] <br>
+                        <strong>{{ $invoice->tenant_name }}</strong> <br>
+                        Apartment: {{ $invoice->property_name }}<br>
+                        Room No: {{ $invoice->room_no }}<br>
+                        Bed No: {{ $invoice->bed_no }} <br>
                     </address>
                 </div>
                 <div>
                     <h6 class="font-bold">Invoice:</h6>
-                    <div class="mb-2"><strong>#[INVOICE_NO]</strong></div>
+                    <div class="mb-2"><strong>#{{ $invoice->invoice_no }}</strong></div>
+                    <h6 class="font-bold">Issued Date:</h6>
+                    <div class="mb-2"><strong>{{ $invoice->date_issued }}</strong></div>
                     <h6 class="font-bold">Due Date:</h6>
-                    <div><strong>[DUE_DATE]</strong></div>
+                    <div><strong>{{ $invoice->due_date }}</strong></div>
                 </div>
             </div>
             <div class="overflow-x-auto mb-6">
@@ -128,6 +164,8 @@ new class extends Component {
                 <x-card title="Charges" shadow>
 
                     <x-table :headers="$columns" :rows="$dataEntries" />
+
+
                 </x-card>
             </div>
         </div>

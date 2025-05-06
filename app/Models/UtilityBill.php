@@ -20,4 +20,9 @@ class UtilityBill extends Model
     {
         return $this->belongsTo(UtilityType::class);
     }
+    // getattributeUtilityBillType name
+    public function getUtilityTypeNameAttribute()
+    {
+        return $this->utilityType->name;
+    }
 }
