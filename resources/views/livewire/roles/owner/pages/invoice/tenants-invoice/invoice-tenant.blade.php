@@ -13,6 +13,15 @@ new class extends Component {
     use Toast;
     use WithPagination;
 
+    public BedAssignment $bedAssignment;
+
+    public function mount(BedAssignment $bedAssignment)
+    {
+        $this->bedAssignment = $bedAssignment;
+    }
+
+
+
     public string $search = '';
     public bool $drawer = false;
     public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
@@ -36,8 +45,8 @@ new class extends Component {
     {
         return [
             ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
-            ['key' => 'bed_assignment_id', 'label' => 'Tenant Name', 'class' => 'w-36'],
             ['key' => 'invoice_no', 'label' => 'Invoice No', 'class' => 'w-36'],
+            ['key' => 'bed_assignment_id', 'label' => 'Tenant Name', 'class' => ''],
             ['key' => 'date_issued', 'label' => 'Date Issued', 'class' => 'w-24'],
             ['key' => 'due_date', 'label' => 'Due Date', 'class' => 'w-24'],
             ['key' => 'amount_paid', 'label' => 'Amount Paid', 'class' => 'w-24'],
@@ -47,6 +56,7 @@ new class extends Component {
     public function invoices(): LengthAwarePaginator
     {
         return Invoice::query()
+            ->where('bed_assignment_id', $this->bedAssignment->id) // Filter by bed_assignment_id
 
             ->with(['bedAssignment.tenant.user']) // Preload relationships
             ->when(
@@ -91,8 +101,9 @@ new class extends Component {
 
 <div>
     <!-- HEADER -->
-    <x-header title="Invoices" separator progress-indicator>
-        <x-slot:middle class="!justify-end">
+    <x-header title="{{ $bedAssignment->tenant_name }}" separator progress-indicator>
+    
+    <x-slot:middle class="!justify-end">
             <x-input placeholder="Search invoice..." wire:model.live.debounce="search" clearable
                 icon="o-magnifying-glass" />
         </x-slot:middle>

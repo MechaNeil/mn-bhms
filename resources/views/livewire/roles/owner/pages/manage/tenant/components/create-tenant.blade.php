@@ -210,23 +210,25 @@ new class extends Component {
                     accept="image/png, image/jpeg" crop-after-change>
                     <img src="{{ $tenant->user->avatar ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
                 </x-file>
-                <x-select label="Document Type" :options="$doc_type" wire:model.blur="document_type" option-value="name" placeholder="Select Document Type">
+                <x-select class="max-w-40" label="Document" :options="$doc_type" wire:model.blur="document_type" option-value="name" placeholder="Select Type">
 
-                </x-select><x-file wire:model="document_url" label="Proof of Identity"
-                    accept="application/docx, application/pdf, image/png, image/jpeg" />
-
+                </x-select>
+                <x-file wire:model="document_url"
+                    accept="application/docx, application/pdf, image/png, image/jpeg"
+                    :disabled="!$this->document_type" />
+                <x-select class="max-w-52" label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
                 <x-input label="First Name" wire:model.blur="first_name" />
                 <x-input label="Middle Name" wire:model.blur="middle_name" hint="optional" />
                 <x-input label="Last Name" wire:model.blur="last_name" />
 
-            </div>
-            <div class="col-span-3 grid gap-4 lg:ms-10 mt-4">
-
-                <div class="hidden lg:block">
-                    <livewire:roles.owner.pages.manage.tenant.components.form-image />
-                </div>
-                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
                 <x-input label="Address" wire:model.blur="address" />
+            </div>
+            <div class="col-span-3 grid gap-2 lg:ms-10 md:mt-2">
+
+                <div class="hidden lg:block ">
+                    <livewire:roles.owner.pages.manage.tenant.components.form-image />
+
+                </div>
 
                 <div class="m-10">
                     <x-errors title="Oops!" description="Please, fix them." icon="o-face-frown" />

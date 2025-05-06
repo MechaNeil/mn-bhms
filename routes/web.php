@@ -25,7 +25,7 @@ Volt::route('/register', 'auth.register')->name('register');
 
 
 Route::get('/logout', function () {
-    auth()->logout();
+    \Illuminate\Support\Facades\Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
 
@@ -105,6 +105,11 @@ Route::middleware(['auth'])->group(function () {
         // Invoice
         Volt::route('/utility-bills', 'roles.owner.pages.invoice.utility-bills.bills'); // Utility Bills
         Volt::route('invoice/{invoice}/view', 'roles.owner.pages.invoice.tenants-invoice.view-invoice'); // View Invoice
+
+        // invoice-tenant
+        Volt::route('tenant-invoice/{bedAssignment}/view', 'roles.owner.pages.invoice.tenants-invoice.invoice-tenant'); // View Invoice List for that Tenant
+
+
         Volt::route('/invoice-list', 'roles.owner.pages.invoice.tenants-invoice.invoice-list'); // Invoice List
         Volt::route('/proof-of-transaction', 'roles.owner.pages.invoice.tenants-invoice.proof-of-transaction'); // Proof of Transaction
 

@@ -27,9 +27,9 @@ class BedAssignment extends Model
     ];
 
     /**
- * The function `createInvoices` generates monthly invoices for a tenant based on the start and due
- * dates provided.
- */
+     * The function `createInvoices` generates monthly invoices for a tenant based on the start and due
+     * dates provided.
+     */
 
     public function createInvoices(): void
     {
@@ -53,6 +53,24 @@ class BedAssignment extends Model
             $counter++;
         }
     }
+    public function getTenantNameAttribute(): string
+    {
+        if ($user = $this->tenant?->user) {
+            $fullName = $user->first_name;
+
+            // Append middle name only if it exists and is not empty
+            if (!empty($user->middle_name)) {
+                $fullName .= " {$user->middle_name}";
+            }
+
+            $fullName .= " {$user->last_name}";
+
+            return trim($fullName); // Trim to remove any accidental spaces
+        }
+
+        return 'N/A';
+    }
+
     public function bed()
     {
         return $this->belongsTo(Bed::class);

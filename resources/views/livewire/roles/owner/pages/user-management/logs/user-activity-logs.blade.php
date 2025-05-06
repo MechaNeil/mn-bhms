@@ -2,7 +2,6 @@
 
 use App\Models\ActivityLog;
 use App\Models\User;
-use App\Models\Property;
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -38,7 +37,6 @@ new class extends Component {
     {
         return [
             ['key' => 'user_name', 'label' => 'User', 'class' => 'w-12'],
-            ['key' => 'property_name', 'label' => 'Property', 'class' => 'w-12'],
             ['key' => 'activity', 'label' => 'Activity', 'class' => 'w-12'],
             ['key' => 'date', 'label' => 'Date', 'class' => 'w-12']
         ];
@@ -48,11 +46,9 @@ new class extends Component {
     {
         return ActivityLog::query()
             ->withAggregate('user', 'username')
-            ->withAggregate('property', 'name')
-            ->with(['user', 'property'])
+            ->with(['user'])
             ->when($this->search, fn(Builder $q) => $q->where('activity', 'like', "%$this->search%"))
             ->when($this->user_id, fn(Builder $q) => $q->where('user_id', $this->user_id))
-            ->when($this->property_id, fn(Builder $q) => $q->where('property_id', $this->property_id))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(4);
     }
@@ -63,7 +59,6 @@ new class extends Component {
             'logs' => $this->logs(),
             'headers' => $this->headers(),
             'users' => User::all(),
-            'properties' => Property::all(),
         ];
     }
 
@@ -110,8 +105,8 @@ new class extends Component {
     <x-card>
         <x-table :headers="$headers" :rows="$logs" :sort-by="$sortBy" with-pagination>
             @scope('actions', $log)
-                <x-button icon="o-trash" wire:click="delete({{ $log['id'] }})" wire:confirm="Are you sure?" spinner
-                    class="btn-ghost btn-sm text-red-500" />
+            <x-button icon="o-trash" wire:click="delete({{ $log['id'] }})" wire:confirm="Are you sure?" spinner
+                class="btn-ghost btn-sm text-red-500" />
             @endscope
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
@@ -125,8 +120,6 @@ new class extends Component {
             <x-input placeholder="Activity..." wire:model.live.debounce="search" icon="o-magnifying-glass"
                 @keydown.enter="$wire.drawer = false" />
             <x-select placeholder="User" wire:model.live="user_id" :options="$users" icon="o-user"
-                placeholder-value="0" />
-            <x-select placeholder="Property" wire:model.live="property_id" :options="$properties" icon="bi.building"
                 placeholder-value="0" />
         </div>
         <x-slot:actions>

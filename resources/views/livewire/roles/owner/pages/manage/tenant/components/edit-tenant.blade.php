@@ -217,9 +217,12 @@ new class extends Component {
                 </x-file>
                 <x-select label="Document Type" :options="$doc_type" wire:model.blur="document_type" option-value="name">
 
-                </x-select><x-file wire:model="document_url" label="Proof of Identity"
-                    accept="application/docx, application/pdf, image/png, image/jpeg" />
-
+                </x-select>
+                
+                    <x-file wire:model="document_url" label="Proof of Identity" class="max-w-52"
+                        accept="application/docx, application/pdf, image/png, image/jpeg"/>
+                        
+                
 
 
                 @if ($tenant->document_url)
@@ -231,6 +234,9 @@ new class extends Component {
                 <x-input label="First Name" wire:model.blur="first_name" />
                 <x-input label="Middle Name" wire:model.blur="middle_name" hint="optional" />
                 <x-input label="Last Name" wire:model.blur="last_name" />
+                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
+                <x-input label="Address" wire:model.blur="address" />
+
 
 
 
@@ -244,8 +250,6 @@ new class extends Component {
                 <div class="hidden lg:block">
                     <livewire:roles.owner.pages.manage.tenant.components.form-image />
                 </div>
-                <x-select label="Gender" wire:model.blur="gender_id" :options="$genders" placeholder="---" />
-                <x-input label="Address" wire:model.blur="address" />
 
                 <div class="m-10">
                     <x-errors title="Oops!" description="Please, fix them." icon="o-face-frown" />

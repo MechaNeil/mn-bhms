@@ -36,8 +36,11 @@ new class extends Component {
     {
         return [
             ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
-            ['key' => 'name', 'label' => 'Name', 'class' => 'w-36'],
-            ['key' => 'rate', 'label' => 'Rate', 'class' => 'w-24'],
+            ['key' => 'utilityType_name', 'label' => 'Invoice Number', 'class'
+            => 'w-20'],
+            
+            ['key' => 'amount', 'label' => 'Amount', 'class' => '
+            w-24'],
             ['key' => 'created_at', 'label' => 'Created At', 'class' => 'w-24'],
             ['key' => 'updated_at', 'label' => 'Updated At', 'class' => 'w-24']
         ];
@@ -48,6 +51,7 @@ new class extends Component {
         return [
             ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
             ['key' => 'number_of_appliances', 'label' => 'Number of Appliances', 'class' => 'w-36'],
+
             ['key' => 'cost', 'label' => 'Cost', 'class' => 'w-24'],
             ['key' => 'created_at', 'label' => 'Created At', 'class' => 'w-24'],
             ['key' => 'updated_at', 'label' => 'Updated At', 'class' => 'w-24']
@@ -57,7 +61,7 @@ new class extends Component {
     public function utilityBills(): LengthAwarePaginator
     {
         return UtilityBill::query()
-            ->orderBy('name', 'asc')
+            ->with('utilityType') // Include the utilityType relationship
             ->paginate(4);
     }
 

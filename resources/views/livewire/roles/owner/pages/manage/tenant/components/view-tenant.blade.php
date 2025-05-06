@@ -23,10 +23,10 @@ new class extends Component {
 }; ?>
 
 <div>
-    <x-header title="{{ $tenant->first_name . ' ' . $tenant->middle_name . ' ' . $tenant->last_name }}" separator>
+    <x-header title="{{ $user->first_name . ' ' . $user->middle_name . ' ' . $user->last_name }}" separator>
         <x-slot:actions>
             <x-button icon="o-pencil" spinner class="btn-primary normal-case" label="Edit"
-                link="/tenant/{{ $tenant->id }}/edit?name={{ $tenant->first_name }} {{ $tenant->last_name }}" />
+                link="/tenant/{{ $tenant->id }}/edit?name={{ $user->first_name }} {{ $user->last_name }}" />
         </x-slot:actions>
     </x-header>
     <div class="grid lg:grid-cols-2 gap-8">
@@ -34,7 +34,7 @@ new class extends Component {
         <x-card title="Info" shadow separator>
             <x-slot:menu>
                 <x-button label="More" icon="o-identification"
-                    link="/tenant/{{ $tenant->id }}/more-info?name={{ $tenant->first_name }} {{ $tenant->last_name }}"
+                    link="/tenant/{{ $tenant->id }}/more-info?name={{ $user->first_name }} {{ $user->last_name }}"
                     class="btn-ghost btn-sm" />
 
             </x-slot:menu>
@@ -46,10 +46,11 @@ new class extends Component {
                 </x-slot:title>
                 <x-slot:subtitle class="text-gray-500 flex flex-col gap-1 mt-2 pl-2">
                     <x-icon name="o-envelope" label="{{ $user->email }}" />
-                    <x-icon name="o-phone" label="{{ $tenant->phone }}" />
-                    <x-icon name="o-map-pin" label="{{ $tenant->address }}" />
+                    <x-icon name="o-phone" label="{{ $user->contact_no }}" />
+                    <x-icon name="o-map-pin" label="{{ $user->address }}" />
                 </x-slot:subtitle>
             </x-avatar>
+
 
         </x-card>
 
