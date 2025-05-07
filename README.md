@@ -84,7 +84,7 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
     - `php artisan key:generate`
     - `php artisan migrate`
     - `yarn dev` for production use this `yarn build`
-- In Laravel Herd inside the open site choose the `bhms-main`
+- In Laravel Herd inside the open site choose the `mn-bhms`
 - Click the url again and it should work normaly, enjoy!!
   
 Please Contribute to this project by leaving a star ⭐
