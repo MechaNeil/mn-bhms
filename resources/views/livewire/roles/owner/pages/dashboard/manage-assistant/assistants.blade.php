@@ -108,8 +108,8 @@ new class extends Component {
         <x-table :headers="$headers" :rows="$assistants" :sort-by="$sortBy" with-pagination
             link="assistant/{id}/edit?name={user_full_name}">
             @scope('actions', $assistant)
-                <x-button icon="o-trash" wire:click="delete({{ $assistant['id'] }})" wire:confirm="Are you sure?" spinner
-                    class="btn-ghost btn-sm text-red-500" />
+            <x-button icon="o-trash" wire:click="delete({{ $assistant['id'] }})" wire:confirm="Are you sure?" spinner
+                class="btn-ghost btn-sm text-red-500" />
             @endscope
 
             <x-slot:empty>
@@ -123,7 +123,7 @@ new class extends Component {
         <div class="grid gap-5">
             <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass"
                 @keydown.enter="$wire.drawer = false" />
-            <x-select placeholder="Property" wire:model.live="property_id" :options="$properties" icon="bi.building"
+            <x-select placeholder="Property" wire:model.live="property_id" :options="$properties" icon="fas.building"
                 placeholder-value="0" />
         </div>
 

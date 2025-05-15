@@ -46,12 +46,12 @@
                     <x-slot:actions>
                         <x-dropdown>
                             <x-slot:trigger>
-                                <x-button icon="far.gear" class="btn-circle btn-ghost" />
+                                <x-button icon="fas.gear" class="btn-circle btn-ghost" />
                             </x-slot:trigger>
 
-                            <x-menu-item icon="far.power-off" title="Logout" no-wire-navigate link="/logout" />
+                            <x-menu-item icon="fas.power-off" title="Logout" no-wire-navigate link="/logout" />
 
-                            <x-menu-item title="Theme" icon="far.swatchbook" @click="$dispatch('mary-toggle-theme')" />
+                            <x-menu-item title="Theme" icon="fas.swatchbook" @click="$dispatch('mary-toggle-theme')" />
 
 
                         </x-dropdown>
@@ -63,38 +63,38 @@
                 <x-menu-separator />
                 @endif
 
-                <x-menu-item title="Dashboard" icon="far.gauge-high" link="/dashboard-owner" />
+                <x-menu-item title="Dashboard" icon="fas.gauge-high" link="/dashboard-owner" />
 
 
 
-                <x-menu-sub title="Manage" icon="far.gear">
-                    <x-menu-item title="Assistant" icon="far.user-gear" link="/assistant-management" />
+                <x-menu-sub title="Manage" icon="fas.gear">
+                    <x-menu-item title="Assistant" icon="fas.user-gear" link="/assistant-management" />
                     <x-menu-item title="Apartment" icon="far.building" link="/apartment" />
-                    <x-menu-item title="Room" icon="far.door-closed" link="/room-management" />
-                    <x-menu-item title="Tenants" icon="far.user-check" link="/tenants-information" />
-                    <x-menu-item title="Beds" icon="far.bed" link="/manage-beds" />
+                    <x-menu-item title="Room" icon="fas.door-closed" link="/room-management" />
+                    <x-menu-item title="Tenants" icon="fas.user-check" link="/tenants-information" />
+                    <x-menu-item title="Beds" icon="fas.bed" link="/manage-beds" />
                     <x-menu-item title="Assign Beds" icon="far.check-square" link="/bed-assignment" />
-                    <x-menu-item title="Invoice" icon="far.file-invoice-dollar" link="/invoice-list" />
-                    <x-menu-item title="Bills" icon="far.money-bill" link="/utility-bills" />
+                    <x-menu-item title="Invoice" icon="fas.file-invoice-dollar" link="/invoice-list" />
+                    <x-menu-item title="Bills" icon="fas.money-bill" link="/utility-bills" />
                 </x-menu-sub>
 
                 <x-menu-sub title="Notify" icon="far.bell">
                     <x-menu-item title="Requests" icon="far.question-circle" link="/requests" />
-                    <x-menu-item title="SMS" icon="far.comment-sms" link="/sms-configuration" />
-                    <x-menu-item title="Notice Board" icon="far.bullhorn" link="/notice-board" />
+                    <x-menu-item title="SMS" icon="fas.comment-sms" link="/sms-configuration" />
+                    <x-menu-item title="Notice Board" icon="fas.bullhorn" link="/notice-board" />
                 </x-menu-sub>
 
-                <x-menu-sub title="Reports" icon="far.chart-line">
+                <x-menu-sub title="Reports" icon="fas.chart-line">
                     <x-menu-item title="Collectibles Months" icon="far.calendar-check" link="/collectibles-month" />
                     <x-menu-item title="Collectibles Tenants" icon="far.user" link="/collectibles-tenants" />
-                    <x-menu-item title="Monthly Payments" icon="far.wallet" link="/monthly-payment" />
+                    <x-menu-item title="Monthly Payments" icon="fas.wallet" link="/monthly-payment" />
                     <x-menu-item title="Payments List" icon="far.credit-card" link="/payment-list" />
                 </x-menu-sub>
 
                 <x-menu-sub title="Users" icon="far.user-circle">
-                    <x-menu-item title="Manage Users" icon="far.users-gear" link="/manage-users" />
+                    <x-menu-item title="Manage Users" icon="fas.users-gear" link="/manage-users" />
                     <x-menu-item title="Activity Logs" icon="far.clock" link="/activity-logs" />
-                    <x-menu-item title="User Permissions" icon="far.lock" link="/user-permissions" />
+                    <x-menu-item title="User Permissions" icon="fas.lock" link="/user-permissions" />
                 </x-menu-sub>
                 <x-menu-item title="Home" icon="o-sparkles" link="/" />
 

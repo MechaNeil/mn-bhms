@@ -44,7 +44,7 @@
                     <x-slot:actions>
                         <x-dropdown>
                             <x-slot:trigger>
-                                <x-button icon="far.gear" class="btn-circle btn-ghost" />
+                                <x-button icon="fas.gear" class="btn-circle btn-ghost" />
                             </x-slot:trigger>
 
                             <x-menu-item icon="o-power" title="Logout" no-wire-navigate link="/logout"
@@ -60,9 +60,9 @@
 
                 <x-menu-separator />
                 @if ($user->role_id == 1)
-                <x-menu-item title="Dashboard" icon="far.gauge-high" link="/dashboard-owner" />
+                <x-menu-item title="Dashboard" icon="fas.gauge-high" link="/dashboard-owner" />
                 @elseif ($user->role_id == 4)
-                <x-menu-item title="Dashboard" icon="far.gauge-high" link="/dashboard-tenant" />
+                <x-menu-item title="Dashboard" icon="fas.gauge-high" link="/dashboard-tenant" />
                 @endif
                 @else
                 <x-menu-separator />
