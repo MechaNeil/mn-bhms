@@ -1,7 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* Tailwind */
+@import "tailwindcss";      
+ 
+/* daisyUI */
+@plugin "daisyui" {         
+    themes: light --default, dark --prefersdark;   
+}   
+ 
+/* maryUI */
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php"; 
+ 
+/* Dark theme variant support */
+@custom-variant dark (&:where(.dark, .dark *)); 
+ 
+/* Laravel 12 defaults */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php"; 
+@source "../../storage/framework/views/*.php"; 
+@source "../**/*.blade.php"; 
+@source "../**/*.js"; 
+@source "../**/*.vue"; 
 /* Active page highlight */
 .mary-table-pagination span[aria-current="page"] > span {
     @apply bg-primary text-base-100;
