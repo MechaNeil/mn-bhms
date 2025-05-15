@@ -39,7 +39,7 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
  <img align="right" alt="coffe" width="40" src="https://user-images.githubusercontent.com/74038190/216120974-24a76b31-7f39-41f1-a38f-b3c1377cc612.png">
  
 ## 💻 Technologies
-- **Laravel (Latest version)**
+- **Laravel Framework 12.14.1**
 - **Livewire (Version 3)**
 - **Volt**
 - **Vite**
