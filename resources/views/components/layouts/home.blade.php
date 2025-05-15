@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -38,13 +38,13 @@
 
                 {{-- User --}}
                 @if ($user = auth()->user())
-                    <x-menu-separator />
-                    <x-list-item :item="$user" value="username" sub-value="role.name"  no-separator no-hover
+                <x-menu-separator />
+                <x-list-item :item="$user" value="username" sub-value="role.name" no-separator no-hover
                     class="-mx-2 !-my-2 rounded">
                     <x-slot:actions>
                         <x-dropdown>
                             <x-slot:trigger>
-                                <x-button icon="bi.gear" class="btn-circle btn-ghost" />
+                                <x-button icon="far.gear" class="btn-circle btn-ghost" />
                             </x-slot:trigger>
 
                             <x-menu-item icon="o-power" title="Logout" no-wire-navigate link="/logout"
@@ -54,25 +54,25 @@
 
 
                         </x-dropdown>
-                       
+
                     </x-slot:actions>
                 </x-list-item>
 
-                    <x-menu-separator />
-                    @if ($user->role_id == 1)
-                        <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-owner" />
-                    @elseif ($user->role_id == 4)
-                        <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-tenant" />
-                    @endif
+                <x-menu-separator />
+                @if ($user->role_id == 1)
+                <x-menu-item title="Dashboard" icon="far.gauge-high" link="/dashboard-owner" />
+                @elseif ($user->role_id == 4)
+                <x-menu-item title="Dashboard" icon="far.gauge-high" link="/dashboard-tenant" />
+                @endif
                 @else
-                    <x-menu-separator />
-                    <x-menu-item title="Get Started" link="/login" icon="o-paper-airplane" responsive />
-                    <x-menu-separator />
+                <x-menu-separator />
+                <x-menu-item title="Get Started" link="/login" icon="o-paper-airplane" responsive />
+                <x-menu-separator />
 
                 @endif
 
                 <x-menu-item title="Home" icon="o-sparkles" link="/" />
-                <x-menu-item title="About Us" icon="bi.building" link="/about-us" />
+                <x-menu-item title="About Us" icon="far.building" link="/about-us" />
                 <x-menu-item title="Help" icon="fas.hands-helping" link="/help" />
 
 
@@ -86,7 +86,7 @@
     </x-main>
     <x-theme-toggle darkTheme="dark" lightTheme="light" class="hidden" />
 
-    {{--  TOAST area --}}
+    {{-- TOAST area --}}
     <x-toast />
 
     {{-- Spotlight --}}

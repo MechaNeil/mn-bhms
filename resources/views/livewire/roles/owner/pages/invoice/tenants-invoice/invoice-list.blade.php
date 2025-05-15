@@ -108,10 +108,11 @@ new class extends Component {
             link="invoice/{id}/view?name={tenant_name}"> @scope('actions', $invoice)
             <x-button icon="o-trash" wire:click="delete({{ $invoice['id'] }})" wire:confirm="Are you sure?" spinner
                 class="btn-ghost btn-sm text-red-500" />
+            
             @endscope
 
-            @scope("cell_bed_assignment_id", $invoice)
-            {{ $invoice->bedAssignment->tenant->user->first_name }} {{ $invoice->bedAssignment->tenant->user->middle_name }} {{ $invoice->bedAssignment->tenant->user->last_name }}
+                @scope("cell_bed_assignment_id", $invoice)
+                {{ $invoice->bedAssignment->tenant->user->first_name }} {{ $invoice->bedAssignment->tenant->user->middle_name }} {{ $invoice->bedAssignment->tenant->user->last_name }}
             @endscope
 
 
