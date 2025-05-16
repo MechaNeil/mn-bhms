@@ -30,17 +30,17 @@ class extends Component {
         ],
         ['icon' => 'fas.money-bill-alt', 'value' => 'Php 70, 000', 'title' => 'Total Collectables', 'description' => 'Overall'],
     ] as $widgets)
-            <x-stat class="transform transition-all duration-300 hover:scale-105" title="{{ $widgets['title'] }}"
+            <x-stat class="transform transition-all duration-300 shadow-xs hover:scale-105" title="{{ $widgets['title'] }}"
                 description="{{ $widgets['description'] }}" value="{{ $widgets['value'] }}"
                 icon="{{ $widgets['icon'] }}" />
         @endforeach
     </div>
     <div class="grid lg:grid-cols-6 gap-8 mt-8">
         <div class="col-span-6 lg:col-span-4">
-            <x-card title="Chart" shadow separator>I have title, subtitle, separator and shadow.</x-card>
+            <x-card title="Total Revenue" shadow separator>I have title, subtitle, separator and shadow.</x-card>
         </div>
         <div class="col-span-6 lg:col-span-2">
-            <x-card title="Chart" shadow separator>I have title, subtitle, separator and shadow.</x-card>
+            <x-card title="Occupancy Rate" shadow separator>I have title, subtitle, separator and shadow.</x-card>
         </div>
     </div>
     <div class="grid lg:grid-cols-4 gap-8 mt-8">
