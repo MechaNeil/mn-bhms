@@ -18,6 +18,7 @@ new class extends Component {
     {
         $this->tenant = $tenant;
         $this->user = $tenant->user;
+        
     }
 }; ?>
 
@@ -59,25 +60,6 @@ new class extends Component {
     </div>
 
     <x-card class="mt-8" title="Payments" subtitle="Our findings about you" shadow separator>
-        <x-table :headers="[
-            ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
-            ['key' => 'invoice_no', 'label' => 'Invoice No', 'class' => 'w-36'],
-            ['key' => 'date_issued', 'label' => 'Date Issued', 'class' => 'w-24'],
-            ['key' => 'due_date', 'label' => 'Due Date', 'class' => 'w-24'],
-            ['key' => 'amount_paid', 'label' => 'Amount Paid', 'class' => 'w-24'],
-            ['key' => 'status', 'label' => 'Status', 'class' => 'w-24'],
-        ]"
-            :rows="$tenant->bedAssignments->flatMap(fn($ba) => $ba->invoices()->paginate(10)->getCollection()->map(fn($invoice) => [
-            'id' => $invoice->id,
-            'invoice_no' => $invoice->invoice_no,
-            'date_issued' => $invoice->date_issued,
-            'due_date' => $invoice->due_date,
-            'amount_paid' => $invoice->amount_paid,
-            'status' => $invoice->status->name ?? '',
-        ]))->all()">
-            <x-slot:empty>
-                <x-icon name="o-cube" label="No payments found for this tenant." />
-            </x-slot:empty>
-        </x-table>
+        I have title, subtitle, separator and shadow.
     </x-card>
 </div>
