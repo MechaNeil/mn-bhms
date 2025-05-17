@@ -1,13 +1,12 @@
 <?php
 
-use App\Models\{BedAssignment, Invoice};
-use Illuminate\Support\Collection;
+use App\Models\{Invoice};
+
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Livewire\Attributes\On;
 
 new class extends Component {
     use Toast;
@@ -79,11 +78,12 @@ new class extends Component {
             ['key' => 'id', 'label' => 'ID', 'class' => 'w-12'],
             ['key' => 'bed_assignment_id', 'label' => 'Tenant Name', 'class' => 'w-36'],
             ['key' => 'invoice_no', 'label' => 'Invoice No', 'class' => 'w-36'],
-            ['key' => 'date_issued', 'label' => 'Date Issued', 'class' => 'w-24'],
+            // ['key' => 'date_issued', 'label' => 'Date Issued', 'class' => 'w-24'],
             ['key' => 'due_date', 'label' => 'Due Date', 'class' => 'w-24'],
-            ['key' => 'amount_paid', 'label' => 'Amount Paid', 'class' => 'w-24'],
-            ['key' => 'total_amount', 'label' => 'Total Amount', 'class' => 'w-24'],
-            ['key' => 'remaining_balance', 'label' => 'Remaining Balance', 'class' => 'w-24'],
+            ['key' => 'amount_paid', 'label' => 'Paid', 'class' => 'w-24'],
+            ['key' => 'total_amount', 'label' => 'Total', 'class' => 'w-24'],
+            ['key' => 'remaining_balance', 'label' => 'kaBalance', 'class' => 'w-24'],
+            ['key' => 'status', 'label' => 'Status', 'class' => 'w-24'],
         ];
     }
 
@@ -221,6 +221,10 @@ new class extends Component {
 
             @scope("cell_remaining_balance", $invoice)
             {{ number_format($invoice->remaining_balance, 2) }}
+            @endscope
+
+            @scope("cell_status", $invoice)
+            {{ $invoice->status->name ?? '-' }}
             @endscope
 
             <x-slot:empty>
