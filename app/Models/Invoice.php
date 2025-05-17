@@ -51,21 +51,21 @@ class Invoice extends Model
 
         return 'N/A';
     }
-    public function getCompanyNameAttribute():string
+    public function getCompanyNameAttribute(): string
     {
         return  $this->bedAssignment?->bed?->room?->property?->company?->name ?? 'N/A';
     }
-    public function getCompanyAddressAttribute():string
+    public function getCompanyAddressAttribute(): string
     {
         return  $this->bedAssignment?->bed?->room?->property?->company?->address ?? 'N/A';
     }
-    public function getCompanyWebsiteAttribute():string
+    public function getCompanyWebsiteAttribute(): string
     {
         return  $this->bedAssignment?->bed?->room?->property?->company?->website ?? 'N/A';
     }
 
 
-        public function getCompanyPhoneAttribute():string
+    public function getCompanyPhoneAttribute(): string
     {
         return  $this->bedAssignment?->bed?->room?->property?->company?->user?->contact_no ?? 'N/A';
     }
@@ -99,5 +99,23 @@ class Invoice extends Model
     public function getStatusNameAttribute(): string
     {
         return $this->status?->name ?? 'N/A';
+    }
+    public function getTotalAmountAttribute()
+    {
+        $bedRate = is_numeric($this->bed_rate) ? (float)$this->bed_rate : 0;
+        $utilityBills = is_numeric($this->constant_utility_bill) ? (float)$this->constant_utility_bill : 0;
+        $penaltyAmount = is_numeric($this->penalty_amount) ? (float)$this->penalty_amount : 0;
+        $discountAmount = is_numeric($this->discount_amount) ? (float)$this->discount_amount : 0;
+
+        $subtotal = $bedRate + $utilityBills - $penaltyAmount - $discountAmount;
+        $sharedRoomDiscount = $subtotal * 0.10;
+        $totalAmount = $subtotal - $sharedRoomDiscount;
+
+        return $totalAmount;
+    }
+
+    public function getRemainingBalanceAttribute()
+    {
+        return $this->total_amount - ($this->amount_paid ?? 0);
     }
 }
