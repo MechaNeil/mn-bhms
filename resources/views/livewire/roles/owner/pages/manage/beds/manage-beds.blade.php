@@ -97,9 +97,9 @@ new class extends Component
             ->withAggregate('status', 'name')
             ->withAggregate('room', 'room_no')
             ->with(['room', 'status'])
-            ->when($this->search, fn (Builder $q) => $q->where('bed_no', 'like', "%$this->search%"))
-            ->when($this->status_id, fn (Builder $q) => $q->where('status_id', $this->status_id))
-            ->when($this->room_id, fn (Builder $q) => $q->where('room_id', $this->room_id))
+            ->when($this->search, fn(Builder $q) => $q->where('bed_no', 'like', "%$this->search%"))
+            ->when($this->status_id, fn(Builder $q) => $q->where('status_id', $this->status_id))
+            ->when($this->room_id, fn(Builder $q) => $q->where('room_id', $this->room_id))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(4);
     }
@@ -160,9 +160,8 @@ new class extends Component
     {
         $this->form->reset();
         $this->bedModal = true;
-        $this->isEditMode = false; // Set to true when editing
-        $this->form->isEditMode = false; // Set to true when editing
-
+        $this->isEditMode = false; // Set to false only when creating
+        $this->form->isEditMode = false; // Set to false only when creating
     }
 
     public function save()
@@ -170,7 +169,7 @@ new class extends Component
         $this->validate();
         if ($this->isEditMode) {
             $this->form->update();
-            $this->isEditMode = false;
+            // Do not set $this->isEditMode = false here
         } else {
             $this->form->store();
         }
@@ -184,17 +183,17 @@ new class extends Component
     <x-header title="Bed" separator progress-indicator>
         <x-slot:middle class="!justify-end">
             <x-input placeholder="Bed..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
-        </x-slot>
-        <x-slot:actions>
-            <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $activeFiltersCount }}" @click="$wire.drawer = true" responsive icon="o-funnel" />
-            <x-button class="btn normal-case btn-primary" label="Create" icon="o-plus" @click="$wire.showModal()" />
-        </x-slot>
+            </x-slot>
+            <x-slot:actions>
+                <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $activeFiltersCount }}" @click="$wire.drawer = true" responsive icon="o-funnel" />
+                <x-button class="btn normal-case btn-primary" label="Create" icon="o-plus" @click="$wire.showModal()" />
+                </x-slot>
     </x-header>
 
     <x-modal wire:model="bedModal" title="{{ $isEditMode ? 'Edit Bed' : 'Create Bed ' }} " subtitle="Livewire example" separator>
         <x-form wire:submit="save">
             @if ($isEditMode)
-                <x-input label="Bed No" wire:model="{{ $isEditMode ? 'form.bed_no' : ' bed_no ' }}" readonly />
+            <x-input label="Bed No" wire:model="{{ $isEditMode ? 'form.bed_no' : ' bed_no ' }}" readonly />
             @endif
 
             <x-select label="Room" wire:model.blur="form.room_id" :options="$rooms" option-label="room_no" placeholder="Select a room" />
@@ -203,7 +202,7 @@ new class extends Component
             <x-slot:actions>
                 <x-button label="Cancel" @click="$wire.bedModal = false" />
                 <x-button label="Confirm" class="btn-primary" type="submit" spinner="save" />
-            </x-slot>
+                </x-slot>
         </x-form>
     </x-modal>
 
@@ -211,16 +210,16 @@ new class extends Component
     <x-card>
         <x-table :headers="$headers" :rows="$beds" :sort-by="$sortBy" with-pagination striped @row-click="$wire.edit($event.detail.id)">
             @scope("actions", $beds)
-                <x-button icon="o-trash" wire:click="delete({{ $beds['id'] }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
+            <x-button icon="o-trash" wire:click="delete({{ $beds['id'] }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
             @endscope
 
             @scope("cell_daily_rate", $beds)
-                Php {{ number_format($beds->monthly_rate / $this->getDaysInMonth(), 2) }}
+            Php {{ number_format($beds->monthly_rate / $this->getDaysInMonth(), 2) }}
             @endscope
 
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
-            </x-slot>
+                </x-slot>
         </x-table>
     </x-card>
 
@@ -235,6 +234,6 @@ new class extends Component
         <x-slot:actions>
             <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
             <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
-        </x-slot>
+            </x-slot>
     </x-drawer>
 </div>
