@@ -32,7 +32,7 @@ class extends Component {
     public function mount()
     {
         // Check if the user is logged in and redirect based on role
-        if ($user = auth()->user()) {
+        if ($user = Auth::user()) {
             if ($user->role_id == 1) {
                 return redirect('/dashboard-owner'); // Redirect to admin dashboard
             } elseif ($user->role_id == 4) {

@@ -30,7 +30,7 @@ class extends Component {
             ['icon' => 'far.money-bill-alt', 'value' => 'Php 70, 000', 'title' => 'Total Payments', 'description' => ''],
             ['icon' => 'far.calendar', 'value' => '1', 'title' => 'Due Date', 'description' => '',],
     ] as $widgets)
-            <x-stat class="transform transition-all duration-300 hover:scale-105" title="{{ $widgets['title'] }}"
+            <x-stat class="transform transition-all duration-300 hover:scale-105 shadow-xs" title="{{ $widgets['title'] }}"
                 description="{{ $widgets['description'] }}" value="{{ $widgets['value'] }}"
                 icon="{{ $widgets['icon'] }}" />
         @endforeach
@@ -39,18 +39,18 @@ class extends Component {
 
 
     <div class="grid lg:grid-cols-6 gap-8 mt-8">
-        <div class="col-span-6 lg:col-span-2">
+        <div class="col-span-6 lg:col-span-3">
             <x-card title="Info" shadow separator>
                 <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-2 gap-6 mt-2">
                     @foreach ([
             
-                    ['icon' => 'bi.door-closed-fill', 'value' => 'RM-0000', 'title' => 'Room No', 'description' => ''],
+                    ['icon' => 'fas.door-closed', 'value' => 'RM-0000', 'title' => 'Room No', 'description' => ''],
                     ['icon' => 'fas.bed', 'value' => 'BD-0000', 'title' => 'Bed No', 'description' => ''],
-                    ['icon' => 'bi.house', 'value' => 'AP-0000', 'title' => 'Property', 'description' => ''],
+                    ['icon' => 'fas.house', 'value' => 'AP-0000', 'title' => 'Property', 'description' => ''],
 
                     ['icon' => 'far.money-bill-alt', 'value' => 'MN BHMS', 'title' => 'Company', 'description' => ''],
                 ] as $widgets)
-                        <x-stat class="transform transition-all duration-300 hover:scale-105" title="{{ $widgets['title'] }}"
+                        <x-stat class="transform transition-all duration-300 hover:scale-105 " title="{{ $widgets['title'] }}"
                             description="{{ $widgets['description'] }}" value="{{ $widgets['value'] }}"
                             icon="{{ $widgets['icon'] }}" />
                     @endforeach
@@ -58,7 +58,7 @@ class extends Component {
             
             </x-card>
         </div>
-        <div class="col-span-6 lg:col-span-4">
+        <div class="col-span-6 lg:col-span-3">
             <x-card title="List of Due Date" shadow separator>I have title, subtitle, separator and shadow.</x-card>
         </div>
     </div>
