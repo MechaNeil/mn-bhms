@@ -227,7 +227,7 @@ new class extends Component {
 
                 @if ($tenant->document_url)
                 <div class="mt-2">
-                    <x-button wire:click="download" label="Download Document" icon="bi.cloud-download"
+                    <x-button wire:click="download" label="Download Document" icon="lucide.download"
                         class="btn-secondary" />
                 </div>
                 @endif

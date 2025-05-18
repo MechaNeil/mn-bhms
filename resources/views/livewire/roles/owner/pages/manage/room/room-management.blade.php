@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Room;
+use App\Models\Company;
 use App\Models\Property;
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
@@ -51,7 +52,14 @@ new class extends Component {
 
     public function mount()
     {
-        $this->companies = \App\Models\Company::all()->map(function ($company) {
+        // Set default sort to created_at desc if redirected from create-room
+        if (session('roomCreated')) {
+            $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
+            session()->forget('roomCreated'); // Clear the flag after using it
+        } else {
+            $this->sortBy = ['column' => 'room_no', 'direction' => 'asc'];
+        }
+        $this->companies = Company::all()->map(function ($company) {
             return [
                 'id' => $company->id,
                 'name' => $company->name,
@@ -69,7 +77,7 @@ new class extends Component {
 
     public function updateProperties()
     {
-        $propertyQuery = \App\Models\Property::query();
+        $propertyQuery = Property::query();
         if ($this->company_id) {
             $propertyQuery->where('company_id', $this->company_id);
         }

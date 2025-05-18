@@ -6,7 +6,7 @@ use App\Models\Property;
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
-use Livewire\Attributes\On;
+
 
 new class extends Component {
     // Traits
@@ -14,7 +14,7 @@ new class extends Component {
 
     public Room $room;
 
-        #[Rule('nullable')]
+    #[Rule('nullable')]
     public string $room_no = '';
 
     #[Rule('nullable|image|max:1024')]
@@ -59,9 +59,11 @@ new class extends Component {
             $url = $this->photo->store('room', 'public');
             $this->room->update(['image' => "/storage/$url"]);
         }
-        $this->dispatch('post-created'); 
+
 
         // Provide success feedback
+        session(['roomCreated' => true]);
+        $this->dispatch('roomCreated');
         $this->success('Room created successfully.', redirectTo: '/room-management');
     }
 };
@@ -88,7 +90,7 @@ new class extends Component {
                 <x-file label="Image" wire:model.blur="photo" accept="image/png, image/jpeg" crop-after-change>
                     <img src="{{ $room->image ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
                 </x-file>
-     
+
                 <x-select label="Property" icon-right="o-building-office" wire:model.blur="property_id"
                     :options="$properties" placeholder="---" />
 
@@ -107,7 +109,7 @@ new class extends Component {
 
                 <x-editor wire:model="description" label="Description" hint="The full product description" />
             </div>
-        </div> 
+        </div>
 
         <x-slot:actions>
             <x-button label="Cancel" link="/room-management" />

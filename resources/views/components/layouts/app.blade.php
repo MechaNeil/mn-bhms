@@ -65,7 +65,7 @@
 
                 <x-menu-item title="Dashboard" icon="fas.gauge-high" link="/dashboard-owner" />
 
-
+                <x-menu-item title="Pay Invoice" icon="lucide.philippine-peso" link="/pay-invoice" />
 
                 <x-menu-sub title="Manage" icon="fas.gear">
                     <x-menu-item title="Assistant" icon="fas.user-gear" link="/assistant-management" />

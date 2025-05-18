@@ -82,7 +82,7 @@ new class extends Component {
             ['key' => 'due_date', 'label' => 'Due Date', 'class' => 'w-24'],
             ['key' => 'amount_paid', 'label' => 'Paid', 'class' => 'w-24'],
             ['key' => 'total_amount', 'label' => 'Total', 'class' => 'w-24'],
-            ['key' => 'remaining_balance', 'label' => 'kaBalance', 'class' => 'w-24'],
+            ['key' => 'remaining_balance', 'label' => 'Balance', 'class' => 'w-24'],
             ['key' => 'status', 'label' => 'Status', 'class' => 'w-24'],
         ];
     }
@@ -172,6 +172,31 @@ new class extends Component {
         }
     }
 
+    public function updateTenantsDropdown()
+    {
+        $tenantQuery = \App\Models\Tenant::query()
+            ->whereHas('bedAssignments.invoices');
+
+        if ($this->company_id) {
+            $tenantQuery->whereHas('bedAssignments.bed.room.property.company', function ($q) {
+                $q->where('id', $this->company_id);
+            });
+        }
+
+        if ($this->property_id) {
+            $tenantQuery->whereHas('bedAssignments.bed.room.property', function ($q) {
+                $q->where('id', $this->property_id);
+            });
+        }
+
+        $this->tenants = $tenantQuery->with('user')->get()->map(function ($tenant) {
+            return [
+                'id' => $tenant->id,
+                'name' => trim(($tenant->user->first_name ?? '') . ' ' . ($tenant->user->middle_name ?? '') . ' ' . ($tenant->user->last_name ?? '')),
+            ];
+        })->toArray();
+    }
+
     public function updatedCompanyId()
     {
         $propertyQuery = \App\Models\Property::query();
@@ -185,6 +210,15 @@ new class extends Component {
             ];
         })->toArray();
         $this->property_id = null; // Reset property selection when company changes
+        $this->updateTenantsDropdown(); // Update tenants dropdown
+        $this->tenant_id = null; // Optionally reset tenant selection
+        $this->resetPage();
+    }
+
+    public function updatedPropertyId()
+    {
+        $this->updateTenantsDropdown(); // Update tenants dropdown
+        $this->tenant_id = null; // Optionally reset tenant selection
         $this->resetPage();
     }
 }; ?>

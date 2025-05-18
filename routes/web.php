@@ -109,6 +109,8 @@ Route::middleware(['auth'])->group(function () {
         // invoice-tenant
         Volt::route('tenant-invoice/{bedAssignment}/view', 'roles.owner.pages.invoice.tenants-invoice.invoice-tenant'); // View Invoice List for that Tenant
 
+        // pay
+        Volt::route('/pay-invoice', 'roles.owner.pages.invoice.payment.pay');
 
         Volt::route('/invoice-list', 'roles.owner.pages.invoice.tenants-invoice.invoice-list'); // Invoice List
         Volt::route('/proof-of-transaction', 'roles.owner.pages.invoice.tenants-invoice.proof-of-transaction'); // Proof of Transaction

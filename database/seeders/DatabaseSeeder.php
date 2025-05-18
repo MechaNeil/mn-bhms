@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             BedAssignmentSeeder::class,
             PermissionSeeder::class,
             RolePermissionSeeder::class,
-            PaymentSeeder::class, // Added
+
         ]);
     }
 }

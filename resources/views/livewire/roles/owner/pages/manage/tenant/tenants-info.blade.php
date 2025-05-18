@@ -2,6 +2,8 @@
 
 use App\Models\Tenant;
 use App\Models\User; // Added User model
+use App\Models\Property;
+use App\Models\Company;
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -77,7 +79,7 @@ new class extends Component {
 
   public function mount()
   {
-    $this->companies = \App\Models\Company::all()->map(function ($company) {
+    $this->companies = Company::all()->map(function ($company) {
       return [
         'id' => $company->id,
         'name' => $company->name,
@@ -95,7 +97,7 @@ new class extends Component {
 
   public function updateProperties()
   {
-    $propertyQuery = \App\Models\Property::query();
+    $propertyQuery = Property::query();
     if ($this->company_id) {
       $propertyQuery->where('company_id', $this->company_id);
     }
