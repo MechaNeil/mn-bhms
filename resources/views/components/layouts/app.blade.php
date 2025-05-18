@@ -10,6 +10,7 @@
     {{-- <link rel="stylesheet" href="{{ asset('js/easymde/dist/easymde.min.css') }}">
     <script src="{{ asset('js/easymde/dist/easymde.min.js') }}"></script> --}}
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">

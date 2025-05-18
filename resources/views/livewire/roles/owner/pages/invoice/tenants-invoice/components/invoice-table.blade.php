@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\{Invoice, Tenant, Company, Property};
+use App\Models\{Invoice, Tenant, Company, Property, PaymentMethod, Payment};
 
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -12,6 +12,9 @@ new class extends Component {
     use Toast;
     use WithPagination;
 
+    public int $cashDefault = 2;
+
+    public string $showSelectedInvoice = 'selectedInvoice';
     public int $perPage = 5;
     public string $invoice_search = '';
     public bool $invoice_drawer = false;
@@ -27,6 +30,10 @@ new class extends Component {
     public array $properties = [];
     public array $selected = [];
     public bool $selectAll = false;
+
+    public bool $showPaymentDialog = false;
+    public array $selectedPayments = [];
+    public array $paymentMethods = [];
 
     public function mount()
     {
@@ -50,6 +57,14 @@ new class extends Component {
         })->toArray();
 
         $this->updatePropertyDropdown();
+
+        // Load payment methods
+        $this->paymentMethods = PaymentMethod::all()->map(function ($method) {
+            return [
+                'id' => $method->id,
+                'name' => $method->name,
+            ];
+        })->toArray();
     }
 
     public function clearInvoiceFilters(): void
@@ -180,6 +195,73 @@ new class extends Component {
         $this->selectAll = false;
     }
 
+    public function getSelectedInvoices()
+    {
+        return Invoice::whereIn('id', $this->selected)->get();
+    }
+
+    public function initializeSelectedPayments()
+    {
+        $this->selectedPayments = [];
+        foreach ($this->selected as $invoiceId) {
+            $invoice = Invoice::find($invoiceId);
+            if ($invoice) {
+                $this->selectedPayments[$invoiceId] = [
+                    'payment_date' => date('Y-m-d'), // Today's date
+                    'amount_paid' => $invoice->remaining_balance, // Default to full remaining balance
+                    'proof' => 'pending-upload',
+                    'payment_method_id' => 2 // Default to cash (assuming ID 2 is cash)
+                ];
+            }
+        }
+        $this->showPaymentDialog = true;
+    }
+
+    public function processPayments()
+    {
+        $this->validate([
+            'selectedPayments.*.payment_date' => 'required|date',
+            'selectedPayments.*.amount_paid' => 'required|numeric|min:0',
+            'selectedPayments.*.proof' => 'required',
+            'selectedPayments.*.payment_method_id' => 'required|exists:payment_methods,id',
+        ]);
+
+        foreach ($this->selectedPayments as $invoiceId => $paymentData) {
+            $invoice = Invoice::find($invoiceId);
+            if (!$invoice) continue;
+
+            // Ensure amount paid doesn't exceed remaining balance
+            $amountToPay = min($paymentData['amount_paid'], $invoice->remaining_balance);
+
+            // Create payment record
+            $payment = Payment::create([
+                'invoice_id' => $invoiceId,
+                'payment_date' => $paymentData['payment_date'],
+                'amount_paid' => $amountToPay,
+                'proof' => $paymentData['proof'],
+                'payment_method_id' => $paymentData['payment_method_id']
+            ]);
+
+            // Update invoice
+            $newAmountPaid = ($invoice->amount_paid ?? 0) + $amountToPay;
+            $newRemainingBalance = $invoice->total_amount - $newAmountPaid;
+
+            $invoice->update([
+                'amount_paid' => $newAmountPaid,
+                'status_id' => $newAmountPaid >= $invoice->total_amount ? 10 : 11 // 10 for paid, 11 for pending
+            ]);
+        }
+
+        $this->showPaymentDialog = false;
+        $this->clearSelection();
+        $this->success('Payments processed successfully!', position: 'toast-bottom');
+    }
+
+    public function getSelectedTotal()
+    {
+        return array_sum(array_column($this->selectedPayments, 'amount_paid'));
+    }
+
     public function with(): array
     {
         return [
@@ -191,6 +273,7 @@ new class extends Component {
             'properties' => $this->properties,
             'selected' => $this->selected,
             'selectedCount' => $this->getSelectedCount(),
+            'paymentMethods' => $this->paymentMethods,
         ];
     }
 
@@ -272,33 +355,29 @@ new class extends Component {
     <!-- TABLE -->
     <x-card>
         <x-table :headers="$headers" :rows="$invoices" :sort-by="$sortBy" with-pagination selectable per-page="perPage" :per-page-values="[3, 5, 10]"
-            wire:model="selected" all-select-checkbox wire:model.live="selectAll"
+            wire:model.live="selected"
             link="invoice/{id}/view?name={tenant_name}">
             @scope('actions', $invoice)
             <x-button icon="o-trash" wire:click="delete({{ $invoice['id'] }})" wire:confirm="Are you sure?" spinner
                 class="btn-ghost btn-sm text-red-500" />
             @endscope
-
             @scope("cell_bed_assignment_id", $invoice)
             {{ $invoice->bedAssignment->tenant->user->first_name }} {{ $invoice->bedAssignment->tenant->user->middle_name }} {{ $invoice->bedAssignment->tenant->user->last_name }}
             @endscope
-
             @scope("cell_total_amount", $invoice)
             {{ number_format($invoice->total_amount, 2) }}
             @endscope
-
             @scope("cell_remaining_balance", $invoice)
             {{ number_format($invoice->remaining_balance, 2) }}
             @endscope
-
             @scope("cell_status", $invoice)
             {{ $invoice->status->name ?? '-' }}
             @endscope
-
             <x-slot:empty>
                 <x-icon name="o-cube" label="It is empty." />
             </x-slot:empty>
         </x-table>
+
     </x-card>
 
     <!-- FILTER DRAWER -->
@@ -317,6 +396,92 @@ new class extends Component {
         <x-slot:actions>
             <x-button label="Reset" icon="o-x-mark" wire:click="clearInvoiceFilters" spinner />
             <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.invoice_drawer = false" />
+        </x-slot:actions>
+    </x-drawer>
+
+    <!-- Payment Selection Dialog -->
+    <div x-show="$wire.selected.length > 0"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="transform translate-y-full"
+        x-transition:enter-end="transform translate-y-0"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="transform translate-y-0"
+        x-transition:leave-end="transform translate-y-full"
+        class="fixed bottom-0 inset-x-0 pb-2 sm:pb-5 z-30">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="p-2 rounded-lg bg-base-200 shadow-lg sm:p-3">
+                <div class="flex items-center justify-between flex-wrap">
+                    <div class="flex-1 flex items-center">
+                        <span class="flex p-2 rounded-lg">
+                            <x-icon name="o-banknotes" class="h-6 w-6 text-primary" />
+                        </span>
+                        <p class="ml-3 font-medium">
+                            <span class="mr-2">{{ count($selected) }} invoice(s) selected.</span>
+                        </p>
+                    </div>
+                    <div class="mt-0 flex-shrink-0 sm:mt-0 sm:ml-4">
+                        <x-button icon="o-x-mark" @click="$wire.clearSelection()" class="btn-ghost" />
+                        <x-button icon="o-currency-dollar" label="Process Payments" class="btn-primary" @click="$wire.initializeSelectedPayments()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Processing Dialog -->
+    <x-drawer
+        wire:model="showPaymentDialog"
+        title="Process Payments"
+        left
+        separator
+        with-close-button
+        class="lg:w-1/2">
+        <div class="grid gap-4">
+            @if(!empty($selected))
+            @foreach($selectedPayments as $invoiceId => $payment)
+            @php $invoice = \App\Models\Invoice::find($invoiceId) @endphp
+            <div class="bg-base-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Invoice #{{ $invoice->invoice_no }}</h3>
+                    <span class="badge badge-info">Balance: {{ number_format($invoice->remaining_balance, 2) }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <x-input type="date"
+
+                        wire:model="selectedPayments.{{ $invoiceId }}.payment_date"
+                        label="Payment Date" />
+                    <x-input
+                        type="number"
+                        wire:model="selectedPayments.{{ $invoiceId }}.amount_paid"
+                        label="Amount"
+                        prefix="PHP"
+                        step="0.01"
+                        min="0"
+                        money />
+                    <x-input wire:model="selectedPayments.{{ $invoiceId }}.proof"
+                        label="Proof Reference" />
+                    <x-select wire:model="selectedPayments.{{ $invoiceId }}.payment_method_id"
+                        label="Payment Method"
+                        :options="$paymentMethods"
+                        option-label="name"
+                        option-value="id"
+                        placeholder="Select Payment Method"
+                        required />
+                </div>
+            </div>
+            @endforeach
+
+            <div class="flex items-center justify-between pt-4 border-t">
+                <div class="text-lg font-semibold">
+                    Total Amount: {{ number_format($this->getSelectedTotal(), 2) }}
+                </div>
+            </div>
+            @endif
+        </div>
+
+        <x-slot:actions>
+            <x-button label="Cancel" @click="$wire.showPaymentDialog = false" />
+            <x-button label="Process All Payments" class="btn-primary" wire:click="processPayments" spinner />
         </x-slot:actions>
     </x-drawer>
 </div>
