@@ -35,6 +35,7 @@ new class extends Component {
     public array $selectedPayments = [];
     public array $paymentMethods = [];
 
+    public function triggerUpdateTable() {}
     public function mount()
     {
         // Populate tenants dropdown: only tenants who have at least one invoice
@@ -208,7 +209,7 @@ new class extends Component {
             if ($invoice) {
                 $this->selectedPayments[$invoiceId] = [
                     'payment_date' => date('Y-m-d'), // Today's date
-                    'amount_paid' => $invoice->remaining_balance, // Default to full remaining balance
+                    'paid_amount' => $invoice->remaining_balance, // Default to full remaining balance
                     'proof' => 'pending-upload',
                     'payment_method_id' => 2 // Default to cash (assuming ID 2 is cash)
                 ];
@@ -221,7 +222,7 @@ new class extends Component {
     {
         $this->validate([
             'selectedPayments.*.payment_date' => 'required|date',
-            'selectedPayments.*.amount_paid' => 'required|numeric|min:0',
+            'selectedPayments.*.paid_amount' => 'required|numeric|min:0',
             'selectedPayments.*.proof' => 'required',
             'selectedPayments.*.payment_method_id' => 'required|exists:payment_methods,id',
         ]);
@@ -231,13 +232,13 @@ new class extends Component {
             if (!$invoice) continue;
 
             // Ensure amount paid doesn't exceed remaining balance
-            $amountToPay = min($paymentData['amount_paid'], $invoice->remaining_balance);
+            $amountToPay = min($paymentData['paid_amount'], $invoice->remaining_balance);
 
             // Create payment record
             $payment = Payment::create([
                 'invoice_id' => $invoiceId,
                 'payment_date' => $paymentData['payment_date'],
-                'amount_paid' => $amountToPay,
+                'paid_amount' => $amountToPay,
                 'proof' => $paymentData['proof'],
                 'payment_method_id' => $paymentData['payment_method_id']
             ]);
@@ -254,12 +255,13 @@ new class extends Component {
 
         $this->showPaymentDialog = false;
         $this->clearSelection();
+        $this->dispatch('updateTable');
         $this->success('Payments processed successfully!', position: 'toast-bottom');
     }
 
     public function getSelectedTotal()
     {
-        return array_sum(array_column($this->selectedPayments, 'amount_paid'));
+        return array_sum(array_column($this->selectedPayments, 'paid_amount'));
     }
 
     public function with(): array
@@ -443,8 +445,17 @@ new class extends Component {
             @php $invoice = \App\Models\Invoice::find($invoiceId) @endphp
             <div class="bg-base-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold">Invoice #{{ $invoice->invoice_no }}</h3>
-                    <span class="badge badge-info">Balance: {{ number_format($invoice->remaining_balance, 2) }}</span>
+                    <div>
+                        <h3 class="text-lg font-semibold">Invoice #{{ $invoice->invoice_no }}</h3>
+                        <p class="text-sm">Total: {{ number_format($invoice->total_amount, 2) }}</p>
+                        <p class="text-sm">Already Paid: {{ number_format($invoice->amount_paid ?? 0, 2) }}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="badge {{ $invoice->remaining_balance == $invoice->total_amount ? 'badge-error' : ($invoice->remaining_balance > 0 ? 'badge-warning' : 'badge-success') }}">
+                            Balance: {{ number_format($invoice->remaining_balance, 2) }}
+                        </span>
+                        <p class="text-xs mt-1">{{ $invoice->status->name ?? '-' }}</p>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <x-input type="date"
@@ -453,12 +464,9 @@ new class extends Component {
                         label="Payment Date" />
                     <x-input
                         type="number"
-                        wire:model="selectedPayments.{{ $invoiceId }}.amount_paid"
+                        wire:model="selectedPayments.{{ $invoiceId }}.paid_amount"
                         label="Amount"
-                        prefix="PHP"
-                        step="0.01"
-                        min="0"
-                        money />
+                        prefix="PHP" />
                     <x-input wire:model="selectedPayments.{{ $invoiceId }}.proof"
                         label="Proof Reference" />
                     <x-select wire:model="selectedPayments.{{ $invoiceId }}.payment_method_id"

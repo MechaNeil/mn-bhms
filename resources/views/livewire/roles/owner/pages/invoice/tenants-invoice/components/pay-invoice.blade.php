@@ -23,6 +23,18 @@ new class extends Component {
     public array $companies = [];
     public array $properties = [];
 
+
+
+
+    protected $listeners = ['updateTable' => 'updatePaymentTable'];
+
+    public function updatePaymentTable()
+    {
+        $this->resetPage();
+        $this->success('Payment table updated.', position: 'toast-bottom');
+    }
+
+
     public function mount()
     {
         // Populate tenants dropdown: only tenants who have at least one payment
@@ -72,6 +84,7 @@ new class extends Component {
             'payment_property_id'
         ]);
         $this->resetPage();
+        // $this->drawer = false; // Close the drawer after clearing filters
         $this->success('Payment filters cleared.', position: 'toast-bottom');
     }
 
@@ -88,7 +101,7 @@ new class extends Component {
             ['key' => 'invoice_id', 'label' => 'Invoice No', 'class' => 'w-36'],
             ['key' => 'tenant_name', 'label' => 'Tenant Name', 'class' => 'w-36'],
             ['key' => 'payment_date', 'label' => 'Payment Date', 'class' => 'w-24'],
-            ['key' => 'amount_paid', 'label' => 'Amount Paid', 'class' => 'w-24'],
+            ['key' => 'paid_amount', 'label' => 'Amount Paid', 'class' => 'w-24'],
             ['key' => 'payment_method', 'label' => 'Payment Method', 'class' => 'w-24'],
             ['key' => 'proof', 'label' => 'Proof', 'class' => 'w-24'],
         ];
@@ -195,8 +208,8 @@ new class extends Component {
             {{ $payment->invoice->invoice_no }}
             @endscope
 
-            @scope("cell_amount_paid", $payment)
-            {{ number_format($payment->amount_paid, 2) }}
+            @scope("cell_paid_amount", $payment)
+            {{ number_format($payment->paid_amount, 2) }}
             @endscope
 
             @scope("cell_payment_method", $payment)
