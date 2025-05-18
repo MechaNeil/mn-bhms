@@ -328,7 +328,8 @@ new class extends Component {
             $this->invoice_tenant_id = null;
         }
 
-        if (!is_array($property) && $property != '') {
+        // Only reset page for specific properties, not for selection updates
+        if (!is_array($property) && $property != '' && $property !== 'selected' && !str_starts_with($property, 'selected.')) {
             $this->resetPage();
         }
     }
