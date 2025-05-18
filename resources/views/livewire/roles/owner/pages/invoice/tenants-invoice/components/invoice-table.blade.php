@@ -12,6 +12,7 @@ new class extends Component {
     use Toast;
     use WithPagination;
 
+    public int $perPage = 5;
     public string $invoice_search = '';
     public bool $invoice_drawer = false;
     public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
@@ -134,7 +135,7 @@ new class extends Component {
                 });
             })
             ->orderBy(...array_values($this->sortBy))
-            ->paginate(5);
+            ->paginate($this->perPage);
     }
 
     public function activeInvoiceFiltersCount(): int
@@ -248,6 +249,11 @@ new class extends Component {
             $this->resetPage();
         }
     }
+
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
+    }
 }; ?>
 
 <div>
@@ -260,15 +266,12 @@ new class extends Component {
         <x-slot:actions>
             <x-button class="btn normal-case bg-base-300" label="Filters" badge="{{ $activeInvoiceFiltersCount }}"
                 @click="$wire.invoice_drawer = true" responsive icon="o-funnel" />
-            @if($selectedCount > 0)
-            <x-button class="btn-error" icon="o-x-mark" wire:click="clearSelection">Clear Selection ({{ $selectedCount }})</x-button>
-            @endif
         </x-slot:actions>
     </x-header>
 
     <!-- TABLE -->
     <x-card>
-        <x-table :headers="$headers" :rows="$invoices" :sort-by="$sortBy" with-pagination selectable
+        <x-table :headers="$headers" :rows="$invoices" :sort-by="$sortBy" with-pagination selectable per-page="perPage" :per-page-values="[3, 5, 10]"
             wire:model="selected" all-select-checkbox wire:model.live="selectAll"
             link="invoice/{id}/view?name={tenant_name}">
             @scope('actions', $invoice)
