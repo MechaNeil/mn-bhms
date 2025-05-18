@@ -14,7 +14,7 @@ new class extends Component {
 
     public string $search = '';
     public bool $drawer = false;
-    public array $sortBy = ['column' => 'due_date', 'direction' => 'asc'];
+    public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
     public ?int $tenant_id = null;
     public ?string $payment_status = null; // 'paid', 'unpaid', or null
     public array $tenants = [];
@@ -132,8 +132,7 @@ new class extends Component {
                     $query->where('id', $this->property_id);
                 });
             })
-            ->orderBy('date_issued', 'asc')
-            ->orderBy('due_date', 'asc')
+
             ->orderBy(...array_values($this->sortBy))
             ->paginate(4);
     }
