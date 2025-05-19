@@ -208,8 +208,8 @@ new class extends Component {
             $invoice = Invoice::find($invoiceId);
             if ($invoice) {
                 $this->selectedPayments[$invoiceId] = [
-                    'payment_date' => date('Y-m-d'), // Today's date
-                    'paid_amount' => $invoice->remaining_balance, // Default to full remaining balance
+                    'payment_date' => now()->format('Y-m-d'),
+                    'paid_amount' => max(0, $invoice->remaining_balance), // Ensure non-negative value
                     'proof' => 'pending-upload',
                     'payment_method_id' => 2 // Default to cash (assuming ID 2 is cash)
                 ];
@@ -261,7 +261,9 @@ new class extends Component {
 
     public function getSelectedTotal()
     {
-        return array_sum(array_column($this->selectedPayments, 'paid_amount'));
+        return array_sum(array_map(function ($payment) {
+            return max(0, $payment['paid_amount']);
+        }, $this->selectedPayments));
     }
 
     public function with(): array
@@ -464,6 +466,7 @@ new class extends Component {
                         label="Payment Date" />
                     <x-input
                         type="number"
+                        min="0"
                         wire:model="selectedPayments.{{ $invoiceId }}.paid_amount"
                         label="Amount"
                         prefix="PHP" />

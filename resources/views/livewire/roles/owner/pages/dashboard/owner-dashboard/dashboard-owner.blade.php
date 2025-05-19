@@ -21,6 +21,7 @@
 
 use Livewire\Volt\Component;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use App\Models\{Invoice, Payment, Bed, BedAssignment};
 use Carbon\Carbon;
 use Illuminate\Support\{Collection, Facades\DB};
@@ -34,9 +35,16 @@ new
         public float $totalCollectables = 0;
         public array $occupancyRate = [];
         public array $monthlyRevenue = [];
+        public $selectMonth = 1; // Default to Last 7 Days
+        public $reportTitle = 'Last 7 Days Revenue';
 
         // Chart configurations
-        public array $revenueChart = [];
+        public array $revenueChart = [
+            'type' => 'bar',
+            'data' => [
+            ]
+            
+        ];
         public array $occupancyChart = [];
 
         public function mount()
@@ -70,56 +78,156 @@ new
                 'rate' => $totalBeds > 0 ? round(($occupiedBeds / $totalBeds) * 100, 1) : 0
             ];
 
-            $sixMonthsAgo = Carbon::now()->subMonths(5)->startOfMonth();
-            $this->monthlyRevenue = Payment::select(
-                DB::raw('SUM(paid_amount) as total_revenue'),
-                DB::raw('DATE_FORMAT(payment_date, "%Y-%m") as month')
-            )
-                ->where('payment_date', '>=', $sixMonthsAgo)
-                ->groupBy('month')
-                ->orderBy('month')
-                ->pluck('total_revenue', 'month')
-                ->toArray();
+            $this->monthlyRevenue = $this->calculateRevenue();
 
             // Initialize chart configurations
             $this->initializeCharts();
         }
 
+        #[On('updated')]
+        public function updatedSelectMonth($value)
+        {
+            $this->monthlyRevenue = $this->calculateRevenue();
+            $this->initializeCharts();
+        }
+
+
+        public function calculateRevenue()
+        {
+            $query = Payment::query();
+            $now = Carbon::now();
+
+            // Get the earliest payment date
+            $earliestPayment = Payment::oldest('payment_date')->first();
+            $earliestDate = $earliestPayment ? Carbon::parse($earliestPayment->payment_date) : $now;
+
+            switch ($this->selectMonth) {
+                case 1: // Last 7 Days
+                    $startDate = $now->copy()->subDays(6)->startOfDay();
+                    $this->reportTitle = 'Last 7 Days Revenue';
+                    // Create a date range for the last 7 days
+                    $dates = collect(range(0, 6))->map(function ($days) use ($now) {
+                        $date = $now->copy()->subDays($days)->format('Y-m-d');
+                        return [$date => 0];
+                    })->collapse()->toArray();
+
+                    $revenues = $query->where('payment_date', '>=', $startDate)
+                        ->selectRaw('DATE(payment_date) as date, SUM(paid_amount) as total_revenue')
+                        ->groupBy('date')
+                        ->get()
+                        ->pluck('total_revenue', 'date')
+                        ->toArray();
+
+                    return array_merge($dates, $revenues);
+                    break;
+                case 2: // Last 15 Days
+                    $startDate = $now->copy()->subDays(14)->startOfDay();
+                    $this->reportTitle = 'Last 15 Days Revenue';
+                    $query->where('payment_date', '>=', $startDate)
+                        ->selectRaw('DATE(payment_date) as date, SUM(paid_amount) as total_revenue')
+                        ->groupBy('date');
+                    break;
+                case 3: // Last 30 Days
+                    $startDate = $now->copy()->subDays(29)->startOfDay();
+                    $this->reportTitle = 'Last 30 Days Revenue';
+                    $query->where('payment_date', '>=', $startDate)
+                        ->selectRaw('DATE(payment_date) as date, SUM(paid_amount) as total_revenue')
+                        ->groupBy('date');
+                    break;
+                case 4: // Monthly Report
+                    $startDate = $now->copy()->startOfYear();
+                    $this->reportTitle = 'Monthly Revenue Report ' . $now->year;
+                    // Create array for all months in the current year
+                    $dates = collect(range(1, 12))->map(function ($month) use ($now) {
+                        $date = $now->copy()->month($month)->format('Y-m');
+                        return [$date => 0];
+                    })->collapse()->toArray();
+
+                    $revenues = $query->whereYear('payment_date', $now->year)
+                        ->selectRaw('DATE_FORMAT(payment_date, "%Y-%m") as date, SUM(paid_amount) as total_revenue')
+                        ->groupBy('date')
+                        ->get()
+                        ->pluck('total_revenue', 'date')
+                        ->toArray();
+
+                    return array_merge($dates, $revenues);
+                    break;
+                case 5: // Yearly Report
+                    $year = $now->year;
+                    $this->reportTitle = "Revenue Report {$year}";
+
+                    // Get yearly total directly without creating empty dates array
+                    $revenue = $query->whereYear('payment_date', $year)
+                        ->selectRaw('SUM(paid_amount) as total_revenue')
+                        ->value('total_revenue') ?? 0;
+
+                    return [$year => $revenue];
+                    break;
+            }
+
+            return $query->orderBy('date')->get()
+                ->mapWithKeys(function ($item) {
+                    return [$item->date => $item->total_revenue];
+                })->toArray();
+        }
+
         public function initializeCharts()
         {
-            // Revenue Chart
-            $revenueLabels = array_map(function ($date) {
-                [$year, $month] = explode('-', $date);
-                return Carbon::createFromDate($year, $month)->format('M Y');
-            }, array_keys($this->monthlyRevenue));
+            // Sort the revenue data by date
+            ksort($this->monthlyRevenue);
 
-            $this->revenueChart = [
-                'type' => 'line',
-                'data' => [
-                    'labels' => $revenueLabels,
-                    'datasets' => [
-                        [
-                            'label' => 'Monthly Revenue',
-                            'data' => array_values($this->monthlyRevenue),
-                            'borderColor' => 'rgb(75, 192, 192)',
-                            'tension' => 0.1,
-                            'fill' => true
+            // Update chart data
+            \Illuminate\Support\Arr::set(
+                $this->revenueChart,
+                'data.labels',
+                array_map(fn($date) => $this->formatDateLabel($date), array_keys($this->monthlyRevenue))
+            );
+
+            \Illuminate\Support\Arr::set($this->revenueChart, 'data.datasets.0', [
+                'label' => $this->reportTitle,
+                'data' => array_values($this->monthlyRevenue),
+                'backgroundColor' => 'rgba(75, 192, 192, 0.7)',
+                'borderColor' => 'rgb(75, 192, 192)',
+                'borderWidth' => 1,
+                'borderRadius' => 5
+            ]);
+
+            // Add chart options
+            \Illuminate\Support\Arr::set($this->revenueChart, 'options', [
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'aspectRatio' => 0.9,
+                'plugins' => [
+                    'legend' => [
+                        'display' => true,
+                        'position' => 'top'
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => $this->reportTitle,
+                        'font' => [
+                            'size' => 16
                         ]
                     ]
                 ],
-                'options' => [
-                    'responsive' => true,
-                    'maintainAspectRatio' => false,
-                    'scales' => [
-                        'y' => [
-                            'beginAtZero' => true,
-                            'ticks' => [
-                                'callback' => "function(value) { return '₱' + value.toLocaleString(); }"
+                'scales' => [
+                    'y' => [
+                        'beginAtZero' => true,
+                        'ticks' => [
+                            'font' => [
+                                'size' => 12
+                            ]
+                        ]
+                    ],
+                    'x' => [
+                        'ticks' => [
+                            'font' => [
+                                'size' => 12
                             ]
                         ]
                     ]
-                ]
-            ];
+                ],
+            ]);
 
             // Occupancy Chart
             $this->occupancyChart = [
@@ -211,30 +319,31 @@ new
             ];
         }
         public array $monthSample = [
-            // ['id' => 1, 'name' => 'January'],
-            // ['id' => 2, 'name' => 'February'],
-            // ['id' => 3, 'name' => 'March'],
-            // ['id' => 4, 'name' => 'April'],
-            // ['id' => 5, 'name' => 'May'],
-            // ['id' => 6, 'name' => 'June'],
-            // ['id' => 7, 'name' => 'July'],
-            // ['id' => 8, 'name' => 'August'],
-            // ['id' => 9, 'name' => 'September'],
-            // ['id' => 10, 'name' => 'October'],
-            // ['id' => 11, 'name' => 'November'],
-            // ['id' => 12, 'name' => 'December'],
-
             ['id' => 1, 'name' => 'Last 7 Days'],
             ['id' => 2, 'name' => 'Last 15 Days'],
             ['id' => 3, 'name' => 'Last 30 Days'],
-            ['id' => 4, 'name' => 'Last 60 Days'],
-            ['id' => 5, 'name' => 'Last 90 Days'],
-            ['id' => 6, 'name' => 'Last 6 Months'],
-            ['id' => 7, 'name' => 'Last Year'],
-            ['id' => 8, 'name' => 'All Time']
-
-
+            ['id' => 4, 'name' => 'Monthly Report'],
+            ['id' => 5, 'name' => 'Yearly Report']
         ];
+
+        public function formatDateLabel($date)
+        {
+            switch ($this->selectMonth) {
+                case 1: // Last 7 Days
+                case 2: // Last 15 Days
+                case 3: // Last 30 Days
+                    return Carbon::parse($date)->format('M d');
+                case 4: // Monthly Report
+                    return Carbon::parse($date . '-01')->format('M Y');
+                case 5: // Yearly Report
+                    return $date;
+                default:
+                    return $date;
+            }
+        }
+
+
+        
     }; ?>
 
 <div>
@@ -245,7 +354,7 @@ new
                 @click.stop="$dispatch('mary-search-open')" />
             </x-slot>
             <x-slot:actions>
-                <x-select inlinelabel="Select Month" :options="$monthSample" wire:model="selectMonth" />
+                <x-select inlinelabel="Select Month" :options="$monthSample" wire:model.live="selectMonth" />
 
             </x-slot:actions>
     </x-header>
@@ -279,8 +388,8 @@ new
     <!-- Revenue and Occupancy cards -->
     <div class="grid lg:grid-cols-6 gap-8 mt-8">
         <div class="col-span-6 lg:col-span-4">
-            <x-card title="Total Revenue" subtitle="Last 6 months revenue" shadow separator>
-                <div class="w-full h-[300px]">
+            <x-card title="Revenue Analysis" :subtitle="$reportTitle" shadow separator>
+                <div class="w-full">
                     <x-chart wire:model="revenueChart" />
                 </div>
             </x-card>
