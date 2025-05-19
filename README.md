@@ -31,7 +31,7 @@ This system was developed to automate the management of boarding houses, ensurin
 - **Report Generation**: Generate real-time reports for collectibles, payments, and more.
 
 ## 📄 Database
-![mnbhmsdb](https://github.com/user-attachments/assets/0f9c7e31-cb62-44e1-b9a9-82ae21cd687e)
+![mnbhmsdb](https://github.com/user-attachments/assets/e94200da-8c3c-4441-810b-49b6253fe629)
 
 
 ## 🔎 System Benefits
