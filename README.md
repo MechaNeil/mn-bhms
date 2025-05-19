@@ -90,6 +90,7 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
 - Open the terminal again and run
     - `php artisan key:generate`
     - `php artisan migrate`
+    - `php artisan db:seed` to populate the database
     - `yarn dev` for production use this `yarn build`
 - In Laravel Herd inside the open site choose the `mn-bhms`
 - Click the url again and it should work normaly, enjoy!!
