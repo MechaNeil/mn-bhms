@@ -14,6 +14,9 @@
 
 
 # Boarding House Management System (BHMS)
+![mnbhms](https://github.com/user-attachments/assets/0c08848c-e59c-4d24-81ee-9ed6451e00a9)
+
+
 
 ## 📲 Introduction
 The **Boarding House Management System (BHMS)** is an automated platform designed to streamline the operations of boarding houses. It allows management to electronically monitor, track, and manage all operations efficiently, providing an improved experience for both tenants and landlords.
@@ -26,6 +29,10 @@ This system was developed to automate the management of boarding houses, ensurin
 - **Room Management**: Track and monitor room availability and assignments.
 - **Payment Tracking**: Simplify rental payment processes with automated tracking.
 - **Report Generation**: Generate real-time reports for collectibles, payments, and more.
+
+## 📄 Database
+![mnbhmsdb](https://github.com/user-attachments/assets/0f9c7e31-cb62-44e1-b9a9-82ae21cd687e)
+
 
 ## 🔎 System Benefits
 The BHMS has been evaluated by end-users and received high ratings in terms of:
