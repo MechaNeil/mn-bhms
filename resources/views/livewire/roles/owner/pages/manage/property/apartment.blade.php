@@ -43,8 +43,8 @@ new class extends Component {
     {
         return [
             ['key' => 'image', 'label' => '', 'class' => 'w-1'],
-            ['key' => 'apartment_no', 'label' => 'Apartment No', 'class' => 'w-12'],
-            ['key' => 'name', 'label' => 'Name', 'class' => 'w-64'],
+            ['key' => 'apartment_no', 'label' => 'ID', 'class' => 'w-12'],
+            ['key' => 'name', 'label' => 'Property', 'class' => 'w-64'],
             ['key' => 'company_name', 'label' => 'Company', 'class' => 'w-64'],
             
             // ['key' => 'user_contact_no', 'label' => 'Contact', 'class' => 'w-64'],

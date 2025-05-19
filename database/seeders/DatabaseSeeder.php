@@ -16,9 +16,10 @@ use App\Models\Company;
 use App\Models\Property;
 
 class DatabaseSeeder extends Seeder
-{/**
- * Seed the application's database.
- */
+{
+    /**
+     * Seed the application's database.
+     */
     public function run(): void
     {
         // Create the Admin role
@@ -37,9 +38,8 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             AdminSeeder::class,
             OwnerSeeder::class,
-
             ConstantUtilityBillSeeder::class,
-
+            PaymentMethodSeeder::class, // Added
         ]);
 
         // Seed Users
@@ -66,12 +66,13 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call([
-            
+
             UtilityTypeSeeder::class,
             UtilityBillSeeder::class,
             BedAssignmentSeeder::class,
             PermissionSeeder::class,
             RolePermissionSeeder::class,
+
         ]);
     }
 }

@@ -46,7 +46,7 @@
                         <x-slot:actions>
                             <x-dropdown>
                                 <x-slot:trigger>
-                                    <x-button icon="bi.gear" class="btn-circle btn-ghost" />
+                                    <x-button icon="fas.gear" class="btn-circle btn-ghost" />
                                 </x-slot:trigger>
 
                                 <x-menu-item icon="o-power" title="Logout" no-wire-navigate link="/logout"
@@ -64,13 +64,13 @@
                 @endif
 
 
-                    <x-menu-item title="Dashboard" icon="bi.speedometer" link="/dashboard-tenant" />
+                    <x-menu-item title="Dashboard" icon="fas.gauge-high" link="/dashboard-tenant" />
 
-                    <x-menu-item title="Notice" icon="bi.megaphone" link="/notice-board-tnt" />
-                    <x-menu-item title="Request" icon="bi.question-circle" link="/requests-tnt" />
-                    <x-menu-item title="Invoice" icon="far.money-bill-alt" link="/invoice-tnt" />
-                    <x-menu-item title="Payment History" icon="far.money-bill-1" link="/payment-history-tnt" />
-                    <x-menu-item title="Proof Payment" icon="bi.credit-card" link="/proof-payment-tnt" />
+                    <x-menu-item title="Notice" icon="fas.bullhorn" link="/notice-board-tnt" />
+                    <x-menu-item title="Request" icon="far.question-circle" link="/requests-tnt" />
+                    <x-menu-item title="Invoice" icon="fas.file-invoice-dollar" link="/invoice-tnt" />
+                    <x-menu-item title="Payment History" icon="fas.wallet" link="/payment-history-tnt" />
+                    <x-menu-item title="Proof Payment" icon="far.credit-card" link="/proof-payment-tnt" />
                     <x-menu-item title="Home" icon="o-sparkles" link="/" />
 
             </x-menu>

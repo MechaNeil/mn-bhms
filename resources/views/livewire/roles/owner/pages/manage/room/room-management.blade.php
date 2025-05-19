@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Room;
+use App\Models\Company;
 use App\Models\Property;
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
@@ -14,10 +15,13 @@ new class extends Component {
     use Toast;
     use WithPagination;
 
-    public int $property_id = 0;
+    public ?int $property_id = null;
     public string $search = '';
     public bool $drawer = false;
     public array $sortBy = ['column' => 'room_no', 'direction' => 'asc'];
+    public ?int $company_id = null;
+    public array $companies = [];
+    public array $properties = [];
 
 
     public function clear(): void
@@ -46,13 +50,59 @@ new class extends Component {
         ];
     }
 
+    public function mount()
+    {
+        // Set default sort to created_at desc if redirected from create-room
+        if (session('roomCreated')) {
+            $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
+            session()->forget('roomCreated'); // Clear the flag after using it
+        } else {
+            $this->sortBy = ['column' => 'room_no', 'direction' => 'asc'];
+        }
+        $this->companies = Company::all()->map(function ($company) {
+            return [
+                'id' => $company->id,
+                'name' => $company->name,
+            ];
+        })->toArray();
+        $this->updateProperties();
+    }
+
+    public function updatedCompanyId()
+    {
+        $this->updateProperties();
+        $this->property_id = null; // Reset property selection when company changes
+        $this->resetPage();
+    }
+
+    public function updateProperties()
+    {
+        $propertyQuery = Property::query();
+        if ($this->company_id) {
+            $propertyQuery->where('company_id', $this->company_id);
+        }
+        $this->properties = $propertyQuery->get()->map(function ($property) {
+            return [
+                'id' => $property->id,
+                'name' => $property->apartment_no . ' - ' . $property->name,
+            ];
+        })->toArray();
+    }
+
     public function rooms(): LengthAwarePaginator
     {
         return Room::query()
             ->withAggregate('property', 'name')
             ->with(['property'])
             ->when($this->search, fn(Builder $q) => $q->where('room_no', 'like', "%$this->search%"))
-            ->when($this->property_id, fn(Builder $q) => $q->where('property_id', $this->property_id))
+            ->when($this->company_id, function (Builder $q) {
+                $q->whereHas('property.company', function ($query) {
+                    $query->where('id', $this->company_id);
+                });
+            })
+            ->when($this->property_id, function (Builder $q) {
+                $q->where('property_id', $this->property_id);
+            })
             ->orderBy(...array_values($this->sortBy))
             ->paginate(4);
     }
@@ -62,7 +112,10 @@ new class extends Component {
         return [
             'rooms' => $this->rooms(),
             'headers' => $this->headers(),
-            'properties' => Property::all(),
+            'companies' => $this->companies,
+            'properties' => $this->properties,
+            'company_id' => $this->company_id,
+            'property_id' => $this->property_id,
         ];
     }
 
@@ -133,8 +186,8 @@ new class extends Component {
         <div class="grid gap-5">
             <x-input placeholder="Room..." wire:model.live.debounce="search" icon="o-magnifying-glass"
                 @keydown.enter="$wire.drawer = false" />
-            <x-select placeholder="Property" wire:model.live="property_id" :options="$properties" icon="o-flag"
-                placeholder-value="0" />
+            <x-select label="Company" wire:model.live="company_id" :options="$companies" option-label="name" option-value="id" placeholder="All Companies" />
+            <x-select label="Property" wire:model.live="property_id" :options="$properties" option-label="name" option-value="id" placeholder="All Properties" />
         </div>
         <x-slot:actions>
             <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />

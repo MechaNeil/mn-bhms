@@ -10,6 +10,8 @@
     {{-- <link rel="stylesheet" href="{{ asset('js/easymde/dist/easymde.min.css') }}">
     <script src="{{ asset('js/easymde/dist/easymde.min.js') }}"></script> --}}
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
@@ -65,7 +67,7 @@
 
                 <x-menu-item title="Dashboard" icon="fas.gauge-high" link="/dashboard-owner" />
 
-
+                <!-- <x-menu-item title="Pay Invoice" icon="lucide.philippine-peso" link="/pay-invoice" /> -->
 
                 <x-menu-sub title="Manage" icon="fas.gear">
                     <x-menu-item title="Assistant" icon="fas.user-gear" link="/assistant-management" />

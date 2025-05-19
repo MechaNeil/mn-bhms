@@ -1,5 +1,7 @@
 <?php
+
 use App\Models\User;
+use App\Models\Gender;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
 
-new #[Layout('components.layouts.auth')] #[Title('Register')] 
+new #[Layout('components.layouts.auth')] #[Title('Register')]
 class extends Component {
     // first_name, last_name, middle_name, username, email, password, password_confirmation
     public $first_name;
@@ -18,9 +20,10 @@ class extends Component {
     public $email;
     public $password;
     public $password_confirmation;
-    public $role_id = 0;
+    public $role_id = '';
     public $contact_no;
     public $address;
+    public $gender_id = '';
 
     public function with(): array
     {
@@ -32,9 +35,11 @@ class extends Component {
                 return $role->id != 1;
             });
         }
+        $gender = Gender::all();
 
         return [
             'roles' => $roles,
+            'genders' => $gender,
         ];
     }
 
@@ -53,6 +58,7 @@ class extends Component {
             'role_id' => 'required',
             'contact_no' => 'required',
             'address' => 'required',
+            'gender_id' => 'required',
         ];
     }
 
@@ -74,6 +80,7 @@ class extends Component {
         'role_id.required' => 'Please select a role.',
         'contact_no.required' => 'Contact number is required.',
         'address.required' => 'Address is required.',
+        'gender_id.required' => 'Gender is required.',
     ];
 
     public function updated($propertyName)
@@ -87,7 +94,7 @@ class extends Component {
     public function mount()
     {
         // Check if the user is logged in and redirect based on role
-        if ($user = auth()->user()) {
+        if ($user = Auth::user()) {
             if ($user->role_id == 1) {
                 return redirect('/dashboard-owner'); // Redirect to admin dashboard
             } elseif ($user->role_id == 4) {
@@ -98,6 +105,16 @@ class extends Component {
 
     public function register()
     {
+        // Extra check for existing user by email or username
+        if (User::where('email', $this->email)->exists()) {
+            session()->flash('error', 'A user with this email already exists.');
+            return;
+        }
+        if (User::where('username', $this->username)->exists()) {
+            session()->flash('error', 'A user with this username already exists.');
+            return;
+        }
+
         $data = $this->validate();
 
         // Check if an admin already exists before creating a new user
@@ -112,7 +129,7 @@ class extends Component {
 
         $user = User::create($data);
 
-        auth()->login($user);
+        Auth::login($user);
 
         request()->session()->regenerate();
 
@@ -136,19 +153,21 @@ class extends Component {
         <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
             <div class="grid gap-4">
                 <x-select icon="o-user" :options="$roles" placeholder="Assign Role" placeholder-value="0"
-                    {{-- Set a value for placeholder. Default is `null` --}} wire:model="role_id" class="h-14" />
-                <x-input label="First Name" wire:model.blur="first_name" icon="o-user" inline />
-                <x-input label="Last Name" wire:model.blur="last_name" icon="o-user" inline />
-                <x-input label="Middle Name" wire:model.blur="middle_name" icon="o-user" inline />
-                <x-input label="Username" wire:model.blur="username" icon="o-user" inline />
+                    wire:model="role_id" class="h-14" />
+
+                <x-input label="First Name" wire:model.blur="first_name" placeholder="First Name" icon="o-user" inline />
+                <x-input label="Last Name" wire:model.blur="last_name" placeholder="Last Name" icon="o-user" inline />
+                <x-input label="Middle Name" wire:model.blur="middle_name" placeholder="Middle Name" icon="o-user" inline />
+                <x-input label="Username" wire:model.blur="username" placeholder="Username" icon="o-user" inline />
             </div>
             <div class="grid gap-4">
-                <x-input label="Contact No" wire:model.blur="contact_no" icon="o-phone" inline />
-                <x-input label="Address" wire:model.blur="address" icon="o-map" inline />
+                <x-select icon="o-user" :options="$genders" placeholder="Select gender" placeholder-value="0" wire:model="gender_id" class="h-14" />
+                <x-input label="Contact No" wire:model.blur="contact_no" placeholder="Contact No." icon="o-phone" inline />
+                <x-input label="Address" wire:model.blur="address" placeholder="Address" icon="o-map" inline />
 
-                <x-input label="E-mail" wire:model.blur="email" icon="o-envelope" inline />
-                <x-input label="Password" wire:model.blur="password" type="password" icon="o-key" inline />
-                <x-input label="Confirm Password" wire:model.blur="password_confirmation" type="password" icon="o-key"
+                <x-input label="E-mail" wire:model.blur="email" placeholder="Email" icon="o-envelope" inline />
+                <x-input label="Password" wire:model.blur="password" type="password" placeholder="Password" icon="o-key" inline />
+                <x-input label="Confirm Password" wire:model.blur="password_confirmation" type="password" placeholder="Confirm Password" icon="o-key"
                     inline />
             </div>
         </div>

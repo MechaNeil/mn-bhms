@@ -216,7 +216,7 @@ return new class extends Migration {
 
             $table->date('payment_date');
 
-            $table->decimal('amount_paid', 10, 2);
+            $table->decimal('paid_amount', 10, 2);
             $table->string('proof')->nullable();
             $table->foreignId('payment_method_id')->constrained('payment_methods');
             $table->timestamps();

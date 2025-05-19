@@ -2,6 +2,8 @@
 
 use App\Models\Tenant;
 use App\Models\User; // Added User model
+use App\Models\Property;
+use App\Models\Company;
 use Illuminate\Support\Collection;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -14,11 +16,14 @@ new class extends Component {
   use Toast;
   use WithPagination;
 
-  // Remove property_id
-  // public int $property_id = 0;
   public string $search = "";
   public bool $drawer = false;
   public array $sortBy = ["column" => "user_last_name", "direction" => "asc"]; // Updated column name
+
+  public ?int $company_id = null;
+  public ?int $property_id = null;
+  public array $companies = [];
+  public array $properties = [];
 
   public function clear(): void
   {
@@ -72,22 +77,62 @@ new class extends Component {
     ];
   }
 
+  public function mount()
+  {
+    $this->companies = Company::all()->map(function ($company) {
+      return [
+        'id' => $company->id,
+        'name' => $company->name,
+      ];
+    })->toArray();
+    $this->updateProperties();
+  }
+
+  public function updatedCompanyId()
+  {
+    $this->updateProperties();
+    $this->property_id = null; // Reset property selection when company changes
+    $this->resetPage();
+  }
+
+  public function updateProperties()
+  {
+    $propertyQuery = Property::query();
+    if ($this->company_id) {
+      $propertyQuery->where('company_id', $this->company_id);
+    }
+    $this->properties = $propertyQuery->get()->map(function ($property) {
+      return [
+        'id' => $property->id,
+        'name' => $property->apartment_no . ' - ' . $property->name,
+      ];
+    })->toArray();
+  }
+
   public function tenants(): LengthAwarePaginator
   {
     return Tenant::query()
-      ->withAggregate("user", "avatar") // Added user name aggregation
-      ->withAggregate("user", "username") // Added user name aggregation
-      ->withAggregate("user", "first_name") // Added user name aggregation
-      ->withAggregate("user", "last_name") // Added user name aggregation
-      ->withAggregate("user", "email") // Added user email aggregation
-      ->with(["user"]) // Eager load user relationship
+      ->withAggregate("user", "avatar")
+      ->withAggregate("user", "username")
+      ->withAggregate("user", "first_name")
+      ->withAggregate("user", "last_name")
+      ->withAggregate("user", "email")
+      ->with(["user", "bedAssignments.bed.room.property.company"])
       ->when($this->search, fn(Builder $q) => $q->whereHas("user", fn(Builder $q) => $q->where(function (Builder $q) {
         $q->where("first_name", "like", "%$this->search%")
           ->orWhere("middle_name", "like", "%$this->search%")
           ->orWhere("last_name", "like", "%$this->search%");
       })))
-      // Remove property filter
-      // ->when($this->property_id, fn (Builder $q) => $q->where("property_id", $this->property_id))
+      ->when($this->company_id, function (Builder $q) {
+        $q->whereHas('bedAssignments.bed.room.property.company', function ($query) {
+          $query->where('id', $this->company_id);
+        });
+      })
+      ->when($this->property_id, function (Builder $q) {
+        $q->whereHas('bedAssignments.bed.room.property', function ($query) {
+          $query->where('id', $this->property_id);
+        });
+      })
       ->orderBy(...array_values($this->sortBy))
       ->paginate(4);
   }
@@ -97,8 +142,10 @@ new class extends Component {
     return [
       "tenants" => $this->tenants(),
       "headers" => $this->headers(),
-      // Remove properties
-      // "properties" => Property::all(),
+      'companies' => $this->companies,
+      'properties' => $this->properties,
+      'company_id' => $this->company_id,
+      'property_id' => $this->property_id,
     ];
   }
 
@@ -169,7 +216,8 @@ new class extends Component {
   <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
     <div class="grid gap-5">
       <x-input placeholder="Tenant..." wire:model.live.debounce="search" icon="o-magnifying-glass" @keydown.enter="$wire.drawer = false" />
-      <!-- Remove Property filter -->
+      <x-select label="Company" wire:model.live="company_id" :options="$companies" option-label="name" option-value="id" placeholder="All Companies" />
+      <x-select label="Property" wire:model.live="property_id" :options="$properties" option-label="name" option-value="id" placeholder="All Properties" />
     </div>
     <x-slot:actions>
       <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />

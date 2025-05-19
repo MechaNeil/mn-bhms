@@ -32,7 +32,7 @@ class extends Component {
     public function mount()
     {
         // Check if the user is logged in and redirect based on role
-        if ($user = auth()->user()) {
+        if ($user = Auth::user()) {
             if ($user->role_id == 1) {
                 return redirect('/dashboard-owner'); // Redirect to admin dashboard
             } elseif ($user->role_id == 4) {
@@ -79,8 +79,8 @@ class extends Component {
         <livewire:auth.component.login-image>
     </div> 
     <x-form wire:submit="login">
-        <x-input label="Username" wire:model.blur="username" icon="o-user" inline />
-        <x-input label="Password" wire:model.live.debounce="password" type="password" icon="o-key" inline />
+        <x-input label="Username" wire:model.blur="username" icon="o-user" placeholder="Your Username" inline />
+        <x-input label="Password" wire:model.live.debounce="password" type="password" icon="o-key" placeholder="Your Password" inline />
  
         <x-slot:actions>
             <x-button label="Create an account" class="btn-ghost" link="/register" />
