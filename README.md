@@ -91,7 +91,8 @@ The system ensures an efficient, user-friendly experience for all users, enhanci
     - `php artisan key:generate`
     - `php artisan migrate`
     - `php artisan db:seed` to populate the database
-    - `yarn dev` for production use this `yarn build`
+    - For hot reaload development use `yarn dev`
+    - For production use `yarn build`
 - In Laravel Herd inside the open site choose the `mn-bhms`
 - Click the url again and it should work normaly, enjoy!!
   
